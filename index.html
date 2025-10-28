@@ -6,28 +6,36 @@
   <title>YALOKGAR — Личный сайт</title>
   <meta name="description" content="Личная страница YALOKGAR. C/C++ разработчик: кроссплатформенные приложения (Qt), системное программирование, оптимизация производительности. Проекты и контакты." />
   <link rel="canonical" href="https://yalokgar.com/" />
+  <link rel="me" href="https://github.com/YALOKGARua" />
+  <link rel="me" href="https://t.me/YALOKGAR" />
+  <link rel="preconnect" href="https://github-readme-stats.vercel.app" crossorigin />
+  <link rel="preconnect" href="https://github-readme-streak-stats.herokuapp.com" crossorigin />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://yalokgar.com/" />
   <meta property="og:title" content="YALOKGAR — Личный сайт" />
   <meta property="og:description" content="C/C++ разработчик: кроссплатформенные приложения (Qt), системное программирование, оптимизация производительности. Проекты и контакты." />
-  <meta property="og:image" content="/assets/images/og-image.jpg" />
+  <meta property="og:image" content="https://yalokgar.com/assets/images/og-image.jpg" />
+  <meta property="og:image:alt" content="Фото YALOKGAR" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="YALOKGAR — Личный сайт" />
   <meta name="twitter:description" content="C/C++ разработчик: кроссплатформенные приложения (Qt), системное программирование, оптимизация производительности. Проекты и контакты." />
-  <meta name="twitter:image" content="/assets/images/og-image.jpg" />
+  <meta name="twitter:image" content="https://yalokgar.com/assets/images/og-image.jpg" />
 
   <meta name="theme-color" content="#0ea5e9" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta property="og:site_name" content="YALOKGAR" />
+  <meta property="og:locale" content="ru_RU" />
 
   <!-- Favicons (добавим позже) -->
-  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
-  <link rel="alternate icon" href="/assets/favicon.png" />
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+  <link rel="alternate icon" href="./assets/favicon.png" />
 
   <!-- Прелоад фото (заменить при добавлении) -->
-  <link rel="preload" as="image" href="/assets/images/profile.jpg" imagesrcset="/assets/images/profile@2x.jpg 2x" />
+  <link rel="preload" as="image" href="./assets/images/profile.jpg" imagesrcset="./assets/images/profile@2x.jpg 2x" />
 
   <!-- Стили -->
   <link rel="stylesheet" href="./styles.css" />
@@ -55,7 +63,7 @@
   <header class="site-header">
     <div class="container header-inner">
       <a href="#top" class="brand" aria-label="На главную">YALOKGAR</a>
-      <nav class="nav" aria-label="Основная навигация">
+      <nav id="site-nav" class="nav" aria-label="Основная навигация">
         <a href="#about">Обо мне</a>
         <a href="#skills">Навыки</a>
         <a href="#projects">Проекты</a>
@@ -63,6 +71,7 @@
         <a href="#stats">Статистика</a>
         <a href="#contact">Контакты</a>
       </nav>
+      <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="site-nav">☰</button>
       <button class="theme-toggle" aria-label="Переключить тему" title="Тема">🌓</button>
     </div>
   </header>
@@ -76,13 +85,13 @@
           <div class="cta">
             <a class="btn primary" href="/assets/CV.pdf" download>Скачать резюме</a>
             <a class="btn outline" href="#contact">Написать мне</a>
-            <a class="btn outline" href="https://github.com/YALOKGARua" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn outline" href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer">GitHub</a>
           </div>
         </div>
         <div class="hero-media">
           <div class="avatar">
             <!-- TODO: Замените на своё фото в assets/images/profile.jpg -->
-            <img src="/assets/images/profile.jpg" alt="Фото YALOKGAR" width="240" height="240" />
+            <img src="./assets/images/profile.jpg" alt="Фото YALOKGAR" width="240" height="240" loading="lazy" decoding="async" />
           </div>
         </div>
       </div>
@@ -144,7 +153,7 @@
               <h3>DBManager</h3>
               <p>C++.</p>
               <div class="links">
-                <a class="btn small" href="https://github.com/YALOKGARua/DBManager" target="_blank" rel="noopener" aria-label="Исходный код DBManager на GitHub">GitHub</a>
+                <a class="btn small" href="https://github.com/YALOKGARua/DBManager" target="_blank" rel="noopener noreferrer" aria-label="Исходный код DBManager на GitHub">GitHub</a>
               </div>
             </div>
           </article>
@@ -153,7 +162,7 @@
               <h3>AntiCheatYALOKGAR</h3>
               <p>Anti-Cheat System на C++/Assembly.</p>
               <div class="links">
-                <a class="btn small" href="https://github.com/YALOKGARua/AntiCheatYALOKGAR" target="_blank" rel="noopener" aria-label="Исходный код AntiCheatYALOKGAR на GitHub">GitHub</a>
+                <a class="btn small" href="https://github.com/YALOKGARua/AntiCheatYALOKGAR" target="_blank" rel="noopener noreferrer" aria-label="Исходный код AntiCheatYALOKGAR на GitHub">GitHub</a>
               </div>
             </div>
           </article>
@@ -162,7 +171,7 @@
               <h3>CryptoMaster-</h3>
               <p>C++.</p>
               <div class="links">
-                <a class="btn small" href="https://github.com/YALOKGARua/CryptoMaster-" target="_blank" rel="noopener" aria-label="Исходный код CryptoMaster- на GitHub">GitHub</a>
+                <a class="btn small" href="https://github.com/YALOKGARua/CryptoMaster-" target="_blank" rel="noopener noreferrer" aria-label="Исходный код CryptoMaster- на GitHub">GitHub</a>
               </div>
             </div>
           </article>
@@ -171,7 +180,7 @@
               <h3>TradingStrategy</h3>
               <p>Quant/Trading.</p>
               <div class="links">
-                <a class="btn small" href="https://github.com/YALOKGARua/TradingStrategy" target="_blank" rel="noopener" aria-label="Исходный код TradingStrategy на GitHub">GitHub</a>
+                <a class="btn small" href="https://github.com/YALOKGARua/TradingStrategy" target="_blank" rel="noopener noreferrer" aria-label="Исходный код TradingStrategy на GitHub">GitHub</a>
               </div>
             </div>
           </article>
@@ -180,7 +189,7 @@
               <h3>VirtuProcessor</h3>
               <p>Эмулятор мини‑CPU на C: арифметика, логические операции, работа с памятью, CLI.</p>
               <div class="links">
-                <a class="btn small" href="https://github.com/YALOKGARua/VirtuProcessor" target="_blank" rel="noopener" aria-label="Исходный код VirtuProcessor на GitHub">GitHub</a>
+                <a class="btn small" href="https://github.com/YALOKGARua/VirtuProcessor" target="_blank" rel="noopener noreferrer" aria-label="Исходный код VirtuProcessor на GitHub">GitHub</a>
               </div>
             </div>
           </article>
@@ -269,9 +278,9 @@
           <li>Местоположение: Украина, Киев</li>
           <li>Организация: BNB Solution</li>
           <li>Email: <a href="mailto:hi@yalokgar.com">hi@yalokgar.com</a></li>
-          <li>Telegram: <a href="https://t.me/YALOKGAR" target="_blank" rel="noopener">t.me/YALOKGAR</a></li>
-          <li>GitHub: <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener">github.com/YALOKGARua</a></li>
-          <li>ORCID: <a href="https://orcid.org/0009-0003-2879-2740" target="_blank" rel="noopener">0009-0003-2879-2740</a></li>
+          <li>Telegram: <a href="https://t.me/YALOKGAR" target="_blank" rel="noopener noreferrer">t.me/YALOKGAR</a></li>
+          <li>GitHub: <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer">github.com/YALOKGARua</a></li>
+          <li>ORCID: <a href="https://orcid.org/0009-0003-2879-2740" target="_blank" rel="noopener noreferrer">0009-0003-2879-2740</a></li>
         </ul>
       </div>
     </section>
@@ -288,4 +297,3 @@
   <noscript>Для полноценной работы сайта включите JavaScript.</noscript>
 </body>
 </html>
-]]>

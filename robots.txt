@@ -1,0 +1,5 @@
+# robots.txt for https://yalokgar.com
+User-agent: *
+Allow: /
+
+Sitemap: https://yalokgar.com/sitemap.xml
