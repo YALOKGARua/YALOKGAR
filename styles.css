@@ -1,4 +1,4 @@
-/* ========== Base Reset & Tokens ========== */
+/* ========== Design System: Reset & Tokens ========== */
 *,
 *::before,
 *::after {
@@ -14,10 +14,12 @@ html {
 :root {
   color-scheme: light dark;
 
-  /* Colors */
-  --accent: #0ea5e9;
-  --accent-600: #0284c7;
+  /* Brand */
+  --accent: #0ea5e9;     /* sky-500 */
+  --accent-600: #0284c7; /* sky-600 */
+  --accent-300: #38bdf8; /* sky-400/300 for gradients */
 
+  /* Neutrals */
   --bg: #ffffff;
   --surface: #f8fafc;
   --text: #0f172a;
@@ -32,6 +34,12 @@ html {
   /* Layout */
   --container: 1100px;
   --header-h: 64px;
+
+  /* Fancy */
+  --glass-bg: color-mix(in srgb, var(--surface) 78%, transparent);
+  --glass-brd: color-mix(in srgb, var(--border) 80%, transparent);
+  --ring-shadow: 0 0 0 1px color-mix(in srgb, var(--border) 85%, transparent) inset;
+  --accent-glow: 0 10px 30px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -41,7 +49,11 @@ html {
     --text: #e5e7eb;
     --text-muted: #94a3b8;
     --border: #1f2937;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 20px rgba(0, 0, 0, 0.35);
+
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 10px 20px rgba(0, 0, 0, 0.3);
+    --glass-bg: color-mix(in srgb, var(--surface) 70%, transparent);
+    --glass-brd: color-mix(in srgb, var(--border) 70%, transparent);
+    --accent-glow: 0 20px 50px color-mix(in srgb, var(--accent) 30%, transparent);
   }
 }
 
@@ -52,17 +64,35 @@ html {
   --text: #e5e7eb;
   --text-muted: #94a3b8;
   --border: #1f2937;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 20px rgba(0, 0, 0, 0.35);
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 10px 20px rgba(0, 0, 0, 0.3);
+  --glass-bg: color-mix(in srgb, var(--surface) 70%, transparent);
+  --glass-brd: color-mix(in srgb, var(--border) 70%, transparent);
+  --accent-glow: 0 20px 50px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background:
+    radial-gradient(900px 900px at 10% -20%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 60%),
+    radial-gradient(800px 800px at 110% 0%, color-mix(in srgb, #a78bfa 10%, transparent), transparent 55%),
+    linear-gradient(180deg, color-mix(in srgb, var(--bg) 96%, transparent) 0%, var(--bg) 100%);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle noise overlay for depth (very light) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, #ffffff06 0 2px, transparent 2px 4px);
+  mix-blend-mode: overlay;
+  opacity: 0.02;
 }
 
 img,
@@ -71,6 +101,11 @@ video {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  color: #fff;
 }
 
 a {
@@ -96,11 +131,13 @@ button:focus-visible,
 }
 
 .section {
-  padding: 72px 0;
+  padding: 84px 0;
   scroll-margin-top: calc(var(--header-h) + 24px);
 }
 .section.alt {
-  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
 }
 
 h1,
@@ -109,9 +146,26 @@ h3,
 h4 {
   color: var(--text);
 }
+
+h1 {
+  font-weight: 800;
+}
+
 h2 {
-  font-size: clamp(24px, 3vw, 32px);
-  margin: 0 0 16px 0;
+  font-size: clamp(24px, 3vw, 34px);
+  margin: 0 0 18px 0;
+  letter-spacing: 0.2px;
+  position: relative;
+}
+h2::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 30%, transparent));
+  border-radius: 999px;
+  margin-top: 10px;
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 /* ========== Header ========== */
@@ -119,10 +173,11 @@ h2 {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
   border-bottom: 1px solid var(--border);
-  backdrop-filter: saturate(120%) blur(8px);
-  -webkit-backdrop-filter: saturate(120%) blur(8px);
+  backdrop-filter: saturate(130%) blur(10px);
+  -webkit-backdrop-filter: saturate(130%) blur(10px);
+  box-shadow: 0 6px 30px rgba(2, 6, 23, 0.08);
 }
 @supports not (color-mix(in srgb, white 88%, transparent)) {
   .site-header {
@@ -137,7 +192,7 @@ h2 {
   gap: 16px;
 }
 .brand {
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0.2px;
   color: var(--text);
 }
@@ -149,31 +204,23 @@ h2 {
 .nav a {
   color: var(--text-muted);
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: 10px;
+  position: relative;
+  transition: color .2s ease, background .2s ease, border-color .2s ease;
 }
 .nav a:hover {
   color: var(--text);
   text-decoration: none;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-brd);
+  box-shadow: var(--shadow);
 }
 .nav a.active {
   color: var(--text);
   text-decoration: none;
-  background: var(--surface);
-  border: 1px solid var(--border);
-}
-.theme-toggle {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  border-radius: 10px;
-  padding: 8px 10px;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-.theme-toggle:hover {
-  background: var(--bg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-brd);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 /* Mobile menu toggle (burger) */
@@ -185,6 +232,7 @@ h2 {
   padding: 8px 10px;
   cursor: pointer;
   display: none; /* visible on mobile via media query */
+  transition: background .2s ease;
 }
 .menu-toggle:hover {
   background: var(--bg);
@@ -212,15 +260,27 @@ h2 {
 }
 
 /* ========== Hero ========== */
+.hero {
+  position: relative;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(600px 300px at 35% 25%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%);
+  opacity: .35;
+}
 .hero-inner {
+  position: relative;
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   gap: 28px;
   align-items: center;
 }
 .hero h1 {
-  font-size: clamp(32px, 4vw, 48px);
-  line-height: 1.1;
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1.08;
   margin: 0 0 16px 0;
 }
 .accent {
@@ -242,12 +302,17 @@ h2 {
   justify-content: center;
 }
 .avatar {
-  width: clamp(160px, 30vw, 240px);
+  width: clamp(160px, 30vw, 260px);
   aspect-ratio: 1 / 1;
   border-radius: 999px;
   overflow: hidden;
   border: 2px solid color-mix(in srgb, var(--accent) 50%, transparent);
-  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.18), 0 0 0 6px color-mix(in srgb, var(--accent) 15%, transparent);
+  transition: transform .35s ease;
+  transform-origin: 50% 60%;
+}
+.avatar:hover {
+  transform: translateY(-2px) scale(1.015);
 }
 @supports not (aspect-ratio: 1/1) {
   .avatar {
@@ -283,19 +348,18 @@ h2 {
   background: var(--bg);
 }
 .btn.primary {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-300) 100%);
+  border-color: color-mix(in srgb, var(--accent) 75%, var(--border));
   color: #fff;
-  box-shadow: 0 10px 30px color-mix(in srgb, var(--accent) 25%, transparent);
+  box-shadow: var(--accent-glow);
 }
 .btn.primary:hover {
-  filter: brightness(0.95);
-  background: var(--accent-600);
-  border-color: var(--accent-600);
+  filter: brightness(0.97);
+  transform: translateY(-1px) scale(1.01);
 }
 .btn.outline {
   background: transparent;
-  border-color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--border));
   color: var(--accent);
 }
 .btn.small {
@@ -310,15 +374,36 @@ h2 {
   flex-wrap: wrap;
   padding: 0;
   margin: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 .chip {
   list-style: none;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-brd);
   color: var(--text);
   padding: 8px 12px;
   border-radius: 999px;
   box-shadow: 0 1px 1px rgba(2, 6, 23, 0.04);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  caret-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  pointer-events: none;
+  cursor: default;
+}
+.chip:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--glass-brd));
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.14);
 }
 
 /* ========== Projects Grid & Cards ========== */
@@ -328,17 +413,19 @@ h2 {
   gap: 18px;
 }
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-brd);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   overflow: hidden;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
 }
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 40px rgba(2, 6, 23, 0.12);
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  transform: translateY(-4px);
+  box-shadow: 0 14px 40px rgba(2, 6, 23, 0.22);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--glass-brd));
 }
 .card-body {
   padding: 18px;
@@ -351,7 +438,6 @@ h2 {
   gap: 10px;
   margin-top: 12px;
 }
-
 
 /* ========== Contacts ========== */
 .contacts {
@@ -369,10 +455,25 @@ h2 {
 /* ========== Footer ========== */
 .site-footer {
   border-top: 1px solid var(--border);
-  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
   color: var(--text-muted);
   text-align: center;
   padding: 24px 0;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* ========== Reveal-on-Scroll ========== */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px) scale(.98);
+  transition: opacity .6s cubic-bezier(.22,.61,.36,1), transform .6s cubic-bezier(.22,.61,.36,1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-inview {
+  opacity: 1;
+  transform: none;
 }
 
 /* ========== Responsive ========== */
@@ -390,12 +491,14 @@ h2 {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-brd);
     border-radius: var(--radius-sm);
     padding: 8px;
     box-shadow: var(--shadow);
     z-index: 1000;
+    backdrop-filter: blur(8px) saturate(130%);
+    -webkit-backdrop-filter: blur(8px) saturate(130%);
   }
   .nav.open {
     display: flex;
@@ -416,7 +519,7 @@ h2 {
 
 @media (max-width: 640px) {
   .section {
-    padding: 56px 0;
+    padding: 64px 0;
   }
 }
 
@@ -429,5 +532,23 @@ h2 {
   }
   html {
     scroll-behavior: auto !important;
+  }
+}
+
+/* Hide text caret in non-editable content to prevent stray vertical blue bar (caret browsing) */
+:where(body, body *):not(input):not(textarea):not([contenteditable]) {
+  caret-color: transparent;
+}
+
+/* Mobile-specific caret/selection/tap fixes for non-interactive chips block */
+@media (max-width: 980px) {
+  body { caret-color: transparent !important; }
+  .chips, .chips * {
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    pointer-events: none;
+    caret-color: transparent !important;
   }
 }
