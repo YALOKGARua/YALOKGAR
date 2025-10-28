@@ -332,41 +332,6 @@ h2 {
   margin-top: 12px;
 }
 
-/* ========== Timeline ========== */
-.timeline {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  margin-left: 10px;
-  border-left: 2px solid var(--border);
-}
-.timeline li {
-  position: relative;
-  padding-left: 16px;
-  margin-left: 10px;
-  margin-bottom: 18px;
-}
-.timeline li::before {
-  content: "";
-  position: absolute;
-  left: -10px;
-  top: 0.6em;
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: var(--accent);
-  box-shadow: 0 0 0 3px var(--bg);
-}
-.time {
-  color: var(--text-muted);
-  font-weight: 600;
-  display: inline-block;
-  min-width: 120px;
-}
-.desc strong {
-  display: block;
-  margin-bottom: 4px;
-}
 
 /* ========== Contacts ========== */
 .contacts {
