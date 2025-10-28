@@ -1,0 +1,59 @@
+<![CDATA[<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Страница не найдена — YALOKGAR</title>
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    .not-found {
+      min-height: calc(100dvh - var(--header-h) - 120px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 48px 16px;
+    }
+    .not-found .code {
+      font-size: clamp(56px, 10vw, 108px);
+      font-weight: 800;
+      letter-spacing: 2px;
+      line-height: 1;
+      margin: 0 0 12px 0;
+      color: var(--accent);
+    }
+    .not-found p {
+      margin: 0 0 20px 0;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="brand" aria-label="На главную">YALOKGAR</a>
+    </div>
+  </header>
+
+  <main class="not-found">
+    <div>
+      <div class="code">404</div>
+      <h1>Страница не найдена</h1>
+      <p>Возможно, страница была перемещена или адрес введён с ошибкой.</p>
+      <div class="cta">
+        <a class="btn primary" href="/">На главную</a>
+        <a class="btn outline" href="mailto:hi@yalokgar.com">Сообщить о проблеме</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year">2025</span> YALOKGAR.</p>
+    </div>
+  </footer>
+
+  <script defer src="./script.js"></script>
+</body>
+</html>]]>

@@ -1,0 +1,186 @@
+<![CDATA[<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>YALOKGAR — Личный сайт</title>
+  <meta name="description" content="Личная страница YALOKGAR. Проекты, опыт, контакты. Разрабатываю современные веб‑решения." />
+  <link rel="canonical" href="https://yalokgar.com/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yalokgar.com/" />
+  <meta property="og:title" content="YALOKGAR — Личный сайт" />
+  <meta property="og:description" content="Проекты, опыт, контакты. Разрабатываю современные веб‑решения." />
+  <meta property="og:image" content="/assets/images/og-image.jpg" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="YALOKGAR — Личный сайт" />
+  <meta name="twitter:description" content="Проекты, опыт, контакты. Разрабатываю современные веб‑решения." />
+  <meta name="twitter:image" content="/assets/images/og-image.jpg" />
+
+  <meta name="theme-color" content="#0ea5e9" />
+
+  <!-- Favicons (добавим позже) -->
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="alternate icon" href="/assets/favicon.png" />
+
+  <!-- Прелоад фото (заменить при добавлении) -->
+  <link rel="preload" as="image" href="/assets/images/profile.jpg" imagesrcset="/assets/images/profile@2x.jpg 2x" />
+
+  <!-- Стили -->
+  <link rel="stylesheet" href="./styles.css" />
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "YALOKGAR",
+    "url": "https://yalokgar.com/",
+    "image": "https://yalokgar.com/assets/images/profile.jpg",
+    "jobTitle": "Разработчик",
+    "sameAs": [
+      "https://github.com/YALOKGARua"
+    ]
+  }
+  </script>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">Перейти к основному содержимому</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#top" class="brand" aria-label="На главную">YALOKGAR</a>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="#about">Обо мне</a>
+        <a href="#skills">Навыки</a>
+        <a href="#projects">Проекты</a>
+        <a href="#experience">Опыт</a>
+        <a href="#contact">Контакты</a>
+      </nav>
+      <button class="theme-toggle" aria-label="Переключить тему" title="Тема">🌓</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="hero" class="hero section">
+      <div class="container hero-inner">
+        <div class="hero-text">
+          <h1>Привет! Я <span class="accent">YALOKGAR</span></h1>
+          <p class="subtitle">Разрабатываю современные веб‑проекты. Люблю чистый код, понятный UI и быстрые сайты.</p>
+          <div class="cta">
+            <a class="btn primary" href="/assets/CV.pdf" download>Скачать резюме</a>
+            <a class="btn outline" href="#contact">Написать мне</a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <div class="avatar">
+            <!-- TODO: Замените на своё фото в assets/images/profile.jpg -->
+            <img src="/assets/images/profile.jpg" alt="Фото YALOKGAR" width="240" height="240" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <div class="container">
+        <h2>Обо мне</h2>
+        <p>
+          Кратко о себе: специализируюсь на фронтенде/бэкенде, строю качественные продукты
+          и решаю бизнес‑задачи через технологии. Открыт к сотрудничеству и интересным проектам.
+        </p>
+      </div>
+    </section>
+
+    <section id="skills" class="section alt">
+      <div class="container">
+        <h2>Навыки</h2>
+        <ul class="chips" role="list">
+          <li class="chip">HTML5</li>
+          <li class="chip">CSS3</li>
+          <li class="chip">JavaScript</li>
+          <li class="chip">TypeScript</li>
+          <li class="chip">React</li>
+          <li class="chip">Node.js</li>
+          <li class="chip">Git</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="container">
+        <h2>Проекты</h2>
+        <div class="grid projects">
+          <article class="card">
+            <div class="card-body">
+              <h3>Проект №1</h3>
+              <p>Краткое описание проекта. Чем полезен, какие технологии использовались.</p>
+              <div class="links">
+                <a class="btn small" href="#" aria-label="Открыть сайт проекта">Сайт</a>
+                <a class="btn small outline" href="#" aria-label="Исходный код проекта на GitHub">GitHub</a>
+              </div>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-body">
+              <h3>Проект №2</h3>
+              <p>Краткое описание проекта. Чем полезен, какие технологии использовались.</p>
+              <div class="links">
+                <a class="btn small" href="#" aria-label="Открыть сайт проекта">Сайт</a>
+                <a class="btn small outline" href="#" aria-label="Исходный код проекта на GitHub">GitHub</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience" class="section alt">
+      <div class="container">
+        <h2>Опыт</h2>
+        <ul class="timeline" role="list">
+          <li>
+            <span class="time">2023 — наст.</span>
+            <div class="desc">
+              <strong>Позиция / Компания</strong>
+              <p>Ключевые достижения и обязанности.</p>
+            </div>
+          </li>
+          <li>
+            <span class="time">2021 — 2023</span>
+            <div class="desc">
+              <strong>Позиция / Компания</strong>
+              <p>Ключевые достижения и обязанности.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="container">
+        <h2>Контакты</h2>
+        <ul class="contacts" role="list">
+          <li>Email: <a href="mailto:hi@yalokgar.com">hi@yalokgar.com</a></li>
+          <li>Telegram: <a href="https://t.me/yalokgar" target="_blank" rel="noopener">t.me/yalokgar</a></li>
+          <li>GitHub: <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener">github.com/YALOKGARua</a></li>
+          <li>LinkedIn: <a href="#" target="_blank" rel="noopener">профиль</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year">2025</span> YALOKGAR. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <!-- Скрипты (добавим функционал позже) -->
+  <script defer src="./script.js"></script>
+  <noscript>Для полноценной работы сайта включите JavaScript.</noscript>
+</body>
+</html>
+]]>
