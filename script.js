@@ -90,7 +90,7 @@
           }
         });
       },
-      { rootMargin: "-40% 0px -55% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0.6 }
     );
     sections.forEach((sec) => observer.observe(sec));
   }
@@ -567,10 +567,10 @@
           return `rgba(${r}, ${g}, ${b}, ${a})`;
         };
         this.fadeColor = rgba(accent, this.opts.backgroundAlpha);
-        this.textColor = rgba(accent, this.low ? 0.75 : 0.9);
-        this.shadowColor = rgba(accent, 0.55);
-        this.shadowBlur = this.low ? 2 : 8;
-        this.step = this.low ? 2 : 1;
+        this.textColor = rgba(accent, this.low ? 0.7 : 0.82);
+        this.shadowColor = rgba(accent, 0.4);
+        this.shadowBlur = this.low ? 0 : 4;
+        this.step = this.low ? 3 : 2;
       }
       _resize(sizeEl) {
         const rect = (sizeEl || this.canvas).getBoundingClientRect();
@@ -641,20 +641,36 @@
     if (heroCanvas) {
       const hero = document.getElementById("hero");
       const low = document.documentElement.dataset.lowperf === "1";
-      const heroRain = new CodeRain(heroCanvas, { fontSize: low ? 16 : 14, speed: low ? 0.6 : 0.9, backgroundAlpha: low ? 0.05 : 0.06 });
-      heroCanvas._rain = heroRain;
-      const onResize = () => heroRain._resize(hero || heroCanvas);
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          heroRain.visible = e.isIntersecting;
-          if (e.isIntersecting) heroRain.start(); else heroRain.stop();
-        });
-      }, { rootMargin: "-10% 0px", threshold: 0 });
-      onResize();
-      if (hero) io.observe(hero);
-      else heroRain.start();
-      window.addEventListener("resize", onResize, { passive: true });
-      disposers.push(() => { try { io.disconnect(); } catch(e){} window.removeEventListener("resize", onResize); heroRain.dispose(); });
+      let heroRain = null;
+
+      const create = () => {
+        if (heroRain) return;
+        heroRain = new CodeRain(heroCanvas, { fontSize: low ? 16 : 14, speed: low ? 0.6 : 0.9, backgroundAlpha: low ? 0.05 : 0.06 });
+        heroCanvas._rain = heroRain;
+
+        const onResize = () => heroRain._resize(hero || heroCanvas);
+        onResize();
+
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            heroRain.visible = e.isIntersecting;
+            if (e.isIntersecting) heroRain.start(); else heroRain.stop();
+          });
+        }, { rootMargin: "-10% 0px", threshold: 0 });
+
+        if (hero) io.observe(hero);
+        else heroRain.start();
+
+        window.addEventListener("resize", onResize, { passive: true });
+        disposers.push(() => { try { io.disconnect(); } catch(e){} window.removeEventListener("resize", onResize); heroRain.dispose(); });
+      };
+
+      if (hero) {
+        hero.addEventListener("pointerenter", create, { once: true });
+      } else {
+        // No hero container? initialize lazily after load
+        setTimeout(create, 0);
+      }
     }
 
     // Fullscreen canvas on 404
@@ -691,37 +707,42 @@
 
   // Boot
   let rain;
+  const scheduleNonCritical = (fn) => {
+    const rIC = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
+    if (document.readyState === "complete") rIC(fn);
+    else window.addEventListener("load", () => rIC(fn), { once: true });
+  };
+
   const boot = () => {
     applyForcedLowPerf();
-    if (document.documentElement.dataset.lowperf === "1") {
-      try {
-        initThemeToggle();
-        initTypewriterVars();
-        initTypingRotation();
-        initCardTilt();
-        initScrollProgressBar();
-        initH2Anchors();
-        initHeroParallaxAndRainBoost();
-        initAutoHideHeader();
-        initContactCopyButtons();
-      } catch(_) {}
-      try { rain = initCodeRain(); } catch(_) {}
-    } else {
-      detectLowPerf(() => {
+
+    // Essential, low-cost inits first
+    try {
+      initThemeToggle();
+      initTypewriterVars();
+      initH2Anchors();
+      initContactCopyButtons();
+    } catch(_) {}
+
+    const low = document.documentElement.dataset.lowperf === "1";
+    const hydrate = () => {
+      scheduleNonCritical(() => {
         try {
-          initThemeToggle();
-          initTypewriterVars();
           initTypingRotation();
-          initCardTilt();
           initScrollProgressBar();
-          initH2Anchors();
-          initHeroParallaxAndRainBoost();
           initAutoHideHeader();
-          initContactCopyButtons();
+          initCardTilt();
+          initHeroParallaxAndRainBoost();
         } catch(_) {}
-        try { rain = initCodeRain(); } catch(_) {}
+        if (!low) {
+          try { rain = initCodeRain(); } catch(_) {}
+        }
+        scheduleNonCritical(initAOSAnimations);
       });
-    }
+    };
+
+    if (low) hydrate();
+    else detectLowPerf(() => hydrate());
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
   else boot();
@@ -729,7 +750,8 @@
   window.addEventListener("pagehide", () => { try { rain && rain.dispose(); } catch(_) {} });
 
   // Initialize AOS animations if available (lightweight settings)
-  if (window.AOS) {
+  function initAOSAnimations() {
+    if (!window.AOS) return;
     const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const setAOS = (el, type, delay, duration = 500, easing = "ease-out-cubic", offset = 32) => {
