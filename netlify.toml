@@ -14,7 +14,7 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
     # CSP allows our local assets and HTTPS images (GitHub stats widgets), blocks everything else
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; img-src 'self' https: data:; font-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
 
 # Caching: long cache for static assets, no-cache for HTML documents
 [[headers]]
@@ -25,12 +25,12 @@
 [[headers]]
   for = "/styles.css"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/script.js"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/index.html"
@@ -41,6 +41,16 @@
   for = "/404.html"
   [headers.values]
     Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/photo_2025-05-15_16-53-42.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/favicon.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
 # Canonical domain: force HTTPS and apex (yalokgar.com)
 [[redirects]]
@@ -59,4 +69,11 @@
   from = "https://www.yalokgar.com/*"
   to = "https://yalokgar.com/:splat"
   status = 301
+  force = true
+
+# Serve favicon from site root path for broad client compatibility
+[[redirects]]
+  from = "/favicon.ico"
+  to = "/photo_2025-05-15_16-53-42.jpg"
+  status = 200
   force = true

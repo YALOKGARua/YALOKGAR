@@ -6,6 +6,19 @@
   <title>Страница не найдена — YALOKGAR</title>
   <meta name="robots" content="noindex" />
   <link rel="icon" href="./photo_2025-05-15_16-53-42.jpg" type="image/jpeg" />
+  <link rel="shortcut icon" href="./photo_2025-05-15_16-53-42.jpg" type="image/jpeg" />
+  <link rel="apple-touch-icon" href="./photo_2025-05-15_16-53-42.jpg" />
+  <link rel="mask-icon" href="./assets/favicon.svg" color="#0ea5e9" />
+  <!-- UI libs and fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize/modern-normalize.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+
+  <!-- Стили -->
   <link rel="stylesheet" href="./styles.css" />
   <style>
     .not-found {
@@ -21,7 +34,11 @@
       letter-spacing: 2px;
       line-height: 1;
       margin: 0 0 12px 0;
-      color: var(--accent);
+      background: linear-gradient(90deg, var(--accent), color-mix(in srgb, #a78bfa 40%, var(--accent)));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 8px 30px color-mix(in srgb, var(--accent) 28%, transparent);
     }
     .not-found p {
       margin: 0 0 20px 0;
@@ -30,10 +47,13 @@
     }
   </style>
 </head>
-<body>
+<body id="top">
+  <div class="scroll-progress" aria-hidden="true"></div>
+  <canvas id="code-rain-404" aria-hidden="true"></canvas>
   <header class="site-header">
     <div class="container header-inner">
       <a href="/" class="brand" aria-label="На главную">YALOKGAR</a>
+      <button class="theme-toggle" aria-label="Сменить тему" title="Тема: системная"><i class="ri-computer-line" aria-hidden="true"></i></button>
     </div>
   </header>
 
@@ -44,8 +64,8 @@
         <h1>Страница не найдена</h1>
         <p>Возможно, страница была перемещена или адрес введён с ошибкой.</p>
         <div class="cta">
-          <a class="btn primary" href="/">На главную</a>
-          <a class="btn outline" href="mailto:hi@yalokgar.com">Сообщить о проблеме</a>
+          <a class="btn primary" href="/"><i class="ri-home-5-line" aria-hidden="true"></i>На главную</a>
+          <a class="btn outline" href="mailto:yalokgar@gmail.com"><i class="ri-mail-line" aria-hidden="true"></i>Сообщить о проблеме</a>
         </div>
         <nav aria-label="Популярные разделы" style="margin-top:14px">
           <a class="btn small" href="/#about">Обо мне</a>
@@ -58,6 +78,11 @@
       </div>
     </article>
   </main>
+  <div class="section-divider" aria-hidden="true">
+    <svg class="wave" viewBox="0 0 1440 100" preserveAspectRatio="none">
+      <path d="M0,64 C240,120 480,8 720,48 C960,88 1200,88 1440,32 L1440,100 L0,100 Z"></path>
+    </svg>
+  </div>
 
   <footer class="site-footer">
     <div class="container">
@@ -65,6 +90,8 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.min.js" defer></script>
   <script defer src="./script.js"></script>
+  <a href="#top" class="to-top" aria-label="Наверх"><i class="ri-arrow-up-line" aria-hidden="true"></i></a>
 </body>
 </html>
