@@ -639,8 +639,9 @@ h2::after {
   display: block;
 }
 .section-divider .wave path {
-  fill: color-mix(in srgb, var(--accent) 18%, transparent);
-  filter: drop-shadow(0 -6px 20px color-mix(in srgb, var(--accent) 22%, transparent));
+  /* Тонируем под текущий фон, чтобы не было “чёрной” волны после деплоя */
+  fill: color-mix(in srgb, var(--bg) 84%, var(--accent) 16%);
+  filter: drop-shadow(0 -6px 20px color-mix(in srgb, var(--accent) 28%, transparent));
   transform-origin: center;
   animation: wave-shift 12s ease-in-out infinite alternate;
 }
