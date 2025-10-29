@@ -640,6 +640,8 @@ h2::after {
 }
 .section-divider .wave path {
   /* Тонируем под текущий фон, чтобы не было “чёрной” волны после деплоя */
+  /* Fallback for browsers without color-mix support */
+  fill: var(--bg);
   fill: color-mix(in srgb, var(--bg) 84%, var(--accent) 16%);
   filter: drop-shadow(0 -6px 20px color-mix(in srgb, var(--accent) 28%, transparent));
   transform-origin: center;
@@ -1245,3 +1247,67 @@ h2::after {
     height: 40px;
   }
 }
+
+/* ========== Low Performance Mode (degrade heavy visuals) ========== */
+html[data-lowperf="1"] .hero::after {
+  animation: none !important;
+  opacity: .04 !important;
+}
+html[data-lowperf="1"] .hero-media .ring--1,
+html[data-lowperf="1"] .hero-media .ring--2 {
+  animation: none !important; /* stop slow ring rotations */
+}
+html[data-lowperf="1"] .hero-media .ring::after {
+  display: none !important;   /* remove sweeping arcs */
+}
+html[data-lowperf="1"] .hero-media .sparkle {
+  display: none !important;   /* remove sparkles */
+}
+html[data-lowperf="1"] .hero-media .orb {
+  filter: none !important;    /* remove heavy blur */
+  opacity: .35 !important;
+}
+html[data-lowperf="1"] .accent {
+  animation: none !important; /* stop "breathing" gradient */
+  text-shadow: 0 4px 20px color-mix(in srgb, var(--accent) 14%, transparent) !important;
+}
+html[data-lowperf="1"] .card:hover::after {
+  animation: none !important; /* disable glint sweep on cards */
+  opacity: .28 !important;
+}
+html[data-lowperf="1"] #projects .card h3 {
+  animation: none !important; /* disable title sheen */
+}
+html[data-lowperf="1"] #skills .chips::before {
+  animation: none !important; /* stop background lines motion */
+}
+html[data-lowperf="1"] .btn.primary::before {
+  display: none !important;   /* remove button shine overlay */
+}
+html[data-lowperf="1"] .section-divider .wave path {
+  animation: none !important; /* stop wave shift */
+}
+html[data-lowperf="1"] .anchor-flash {
+  animation: none !important; box-shadow: none !important;
+}
+
+/* Reduce expensive blur/backdrop for low-end devices */
+html[data-lowperf="1"] .site-header,
+html[data-lowperf="1"] .card,
+html[data-lowperf="1"] .to-top,
+html[data-lowperf="1"] .section.alt,
+html[data-lowperf="1"] .nav {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 1px 6px rgba(2, 6, 23, 0.15) !important;
+}
+
+/* Additional lowperf reductions */
+html[data-lowperf="1"] h2::after {
+  animation: none !important;
+  box-shadow: none !important;
+  background-position: 0% 50% !important;
+}
+html[data-lowperf="1"] body::before { display: none !important; }
+html[data-lowperf="1"] .avatar { transition: none !important; }
+html[data-lowperf="1"] .avatar:hover { transform: none !important; }

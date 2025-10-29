@@ -98,10 +98,11 @@
   // Reveal-on-scroll fallback for elements with .reveal (when AOS is not available)
   (function revealFallback() {
     const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const root = document.documentElement;
     const revealEls = Array.from(document.querySelectorAll(".reveal"));
 
-    // If reduced motion, ensure everything is visible immediately (accessibility)
-    if (prefersReduced) {
+    // If reduced motion or low performance, ensure everything is visible immediately (accessibility/perf)
+    if (prefersReduced || root.dataset.lowperf === "1") {
       revealEls.forEach((el) => el.classList.add("is-inview"));
       return;
     }
@@ -128,6 +129,60 @@
       }
     }
   })();
+
+  // Force/remember low performance mode via query/localStorage + heuristic
+  function applyForcedLowPerf() {
+    const root = document.documentElement;
+    try {
+      const params = new URLSearchParams(location.search);
+      const storeKey = "lowperf";
+      if (params.get("lowperf") === "1" || params.get("perf") === "low") {
+        root.dataset.lowperf = "1";
+        try { localStorage.setItem(storeKey, "1"); } catch(_) {}
+      } else if (params.get("lowperf") === "0" || params.get("perf") === "high") {
+        delete root.dataset.lowperf;
+        try { localStorage.removeItem(storeKey); } catch(_) {}
+      } else {
+        try { if (localStorage.getItem(storeKey) === "1") root.dataset.lowperf = "1"; } catch(_) {}
+      }
+      // Heuristic if not forced
+      if (!root.dataset.lowperf) {
+        const hc = navigator.hardwareConcurrency || 0;
+        const dm = navigator.deviceMemory || 0;
+        const isMobile = Math.max(screen.width, screen.height) <= 900;
+        if ((hc && hc <= 4) || (dm && dm <= 4 && isMobile)) {
+          root.dataset.lowperf = "1";
+        }
+      }
+    } catch(_) {}
+  }
+
+  // Low performance detector: sets data-lowperf="1" on <html> if FPS is low
+  function detectLowPerf(callback) {
+    const root = document.documentElement;
+    let frames = 0;
+    const maxFrames = 24;
+    let start = performance.now();
+    let last = start;
+    let worst = 0;
+
+    function tick(now) {
+      const dt = now - last;
+      last = now;
+      worst = Math.max(worst, dt);
+      frames++;
+      if (frames < maxFrames) {
+        requestAnimationFrame(tick);
+      } else {
+        const total = now - start;
+        const fps = (frames / total) * 1000;
+        const low = fps < 50 || worst > 32;
+        if (low) root.dataset.lowperf = "1";
+        if (typeof callback === "function") callback(low);
+      }
+    }
+    requestAnimationFrame(tick);
+  }
 
   // Code rain and typewriter enhancements
   function initTypewriterVars() {
@@ -189,7 +244,7 @@
   function initCardTilt() {
     const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const finePointer = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    if (prefersReduced || !finePointer) return;
+    if (prefersReduced || !finePointer || document.documentElement.dataset.lowperf === "1") return;
 
     const cards = document.querySelectorAll(".card");
     cards.forEach((card) => {
@@ -239,6 +294,7 @@
   function initScrollProgressBar() {
     const bar = document.querySelector(".scroll-progress");
     if (!bar) return;
+    if (document.documentElement.dataset.lowperf === "1") { try { bar.style.display = "none"; } catch(_) {} return; }
 
     let raf = 0;
     const set = () => {
@@ -274,7 +330,7 @@
   // Parallax for hero and boost code rain speed on hover
   function initHeroParallaxAndRainBoost() {
     const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
+    if (prefersReduced || document.documentElement.dataset.lowperf === "1") return;
 
     const hero = document.getElementById("hero");
     if (!hero) return;
@@ -476,8 +532,6 @@
 
   function initCodeRain() {
     const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return { dispose() {} };
-
     class CodeRain {
       constructor(canvas, options) {
         this.canvas = canvas;
@@ -487,13 +541,17 @@
           speed: 0.9,
           backgroundAlpha: 0.08
         }, options || {});
-        this.scale = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+        let dpr = window.devicePixelRatio || 1;
+        if (document.documentElement.dataset.lowperf === "1") dpr = 1;
+        this.scale = Math.max(1, Math.min(2, dpr));
         this.chars = ("01{}[]()<>;=+-*/%#&|^~!?$" + " C++QtλΣ→←·•").split("");
         this.running = false;
         this.visible = true;
         this._tick = this._tick.bind(this);
         this._setupStyles();
         this._resize();
+        this.low = document.documentElement.dataset.lowperf === "1";
+        this._skip = 0;
       }
       _setupStyles() {
         const fs = this.opts.fontSize;
@@ -509,8 +567,10 @@
           return `rgba(${r}, ${g}, ${b}, ${a})`;
         };
         this.fadeColor = rgba(accent, this.opts.backgroundAlpha);
-        this.textColor = rgba(accent, 0.9);
+        this.textColor = rgba(accent, this.low ? 0.75 : 0.9);
         this.shadowColor = rgba(accent, 0.55);
+        this.shadowBlur = this.low ? 2 : 8;
+        this.step = this.low ? 2 : 1;
       }
       _resize(sizeEl) {
         const rect = (sizeEl || this.canvas).getBoundingClientRect();
@@ -541,6 +601,13 @@
           this.raf = requestAnimationFrame(this._tick);
           return;
         }
+        if (this.low) {
+          this._skip = !this._skip;
+          if (this._skip) {
+            this.raf = requestAnimationFrame(this._tick);
+            return;
+          }
+        }
         const ctx = this.ctx;
         const { fontSize, speed } = this.opts;
         const w = this.canvas.width / this.scale;
@@ -552,9 +619,9 @@
 
         ctx.fillStyle = this.textColor;
         ctx.shadowColor = this.shadowColor;
-        ctx.shadowBlur = 8;
+        ctx.shadowBlur = this.shadowBlur;
 
-        for (let i = 0; i < this.columns; i++) {
+        for (let i = 0; i < this.columns; i += this.step) {
           const ch = this.chars[(Math.random() * this.chars.length) | 0];
           const x = i * fontSize;
           const y = this.drops[i] * fontSize;
@@ -573,7 +640,8 @@
     const heroCanvas = document.getElementById("code-rain");
     if (heroCanvas) {
       const hero = document.getElementById("hero");
-      const heroRain = new CodeRain(heroCanvas, { fontSize: 14, speed: 0.9, backgroundAlpha: 0.06 });
+      const low = document.documentElement.dataset.lowperf === "1";
+      const heroRain = new CodeRain(heroCanvas, { fontSize: low ? 16 : 14, speed: low ? 0.6 : 0.9, backgroundAlpha: low ? 0.05 : 0.06 });
       heroCanvas._rain = heroRain;
       const onResize = () => heroRain._resize(hero || heroCanvas);
       const io = new IntersectionObserver((entries) => {
@@ -592,7 +660,8 @@
     // Fullscreen canvas on 404
     const fullCanvas = document.getElementById("code-rain-404");
     if (fullCanvas) {
-      const rain404 = new CodeRain(fullCanvas, { fontSize: 16, speed: 1.0, backgroundAlpha: 0.045 });
+      const low404 = document.documentElement.dataset.lowperf === "1";
+      const rain404 = new CodeRain(fullCanvas, { fontSize: low404 ? 18 : 16, speed: low404 ? 0.7 : 1.0, backgroundAlpha: low404 ? 0.04 : 0.045 });
       const onResize404 = () => rain404._resize(); // canvas is fixed to viewport
       const io404 = new IntersectionObserver((entries) => {
         entries.forEach(e => {
@@ -623,18 +692,36 @@
   // Boot
   let rain;
   const boot = () => {
-    try {
-      initThemeToggle();
-      initTypewriterVars();
-      initTypingRotation();
-      initCardTilt();
-      initScrollProgressBar();
-      initH2Anchors();
-      initHeroParallaxAndRainBoost();
-      initAutoHideHeader();
-      initContactCopyButtons();
-    } catch(_) {}
-    try { rain = initCodeRain(); } catch(_) {}
+    applyForcedLowPerf();
+    if (document.documentElement.dataset.lowperf === "1") {
+      try {
+        initThemeToggle();
+        initTypewriterVars();
+        initTypingRotation();
+        initCardTilt();
+        initScrollProgressBar();
+        initH2Anchors();
+        initHeroParallaxAndRainBoost();
+        initAutoHideHeader();
+        initContactCopyButtons();
+      } catch(_) {}
+      try { rain = initCodeRain(); } catch(_) {}
+    } else {
+      detectLowPerf(() => {
+        try {
+          initThemeToggle();
+          initTypewriterVars();
+          initTypingRotation();
+          initCardTilt();
+          initScrollProgressBar();
+          initH2Anchors();
+          initHeroParallaxAndRainBoost();
+          initAutoHideHeader();
+          initContactCopyButtons();
+        } catch(_) {}
+        try { rain = initCodeRain(); } catch(_) {}
+      });
+    }
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
   else boot();
@@ -705,7 +792,7 @@
       easing: "ease-out-cubic",
       anchorPlacement: "top-bottom",
       startEvent: "load",
-      disable: () => (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      disable: () => ((window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) || document.documentElement.dataset.lowperf === "1")
     });
 
     // Refresh after load to ensure proper positions
