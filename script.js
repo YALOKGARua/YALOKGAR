@@ -130,7 +130,6 @@
     }
   })();
 
-  // Force/remember low performance mode via query/localStorage + heuristic
   function applyForcedLowPerf() {
     const root = document.documentElement;
     try {
@@ -145,7 +144,9 @@
       } else {
         try { if (localStorage.getItem(storeKey) === "1") root.dataset.lowperf = "1"; } catch(_) {}
       }
-      // Heuristic if not forced
+      if (!root.dataset.lowperf) {
+        root.dataset.lowperf = "1";
+      }
       if (!root.dataset.lowperf) {
         const hc = navigator.hardwareConcurrency || 0;
         const dm = navigator.deviceMemory || 0;
@@ -475,7 +476,6 @@
     });
   }
 
-  // Theme toggle (system/dark/light)
   function initThemeToggle() {
     const btn = document.querySelector(".theme-toggle");
     if (!btn) return;
@@ -528,6 +528,37 @@
       if (typeof mql.addEventListener === "function") mql.addEventListener("change", onChange);
       else if (typeof mql.addListener === "function") mql.addListener(onChange);
     } catch (_) {}
+  }
+
+  function initFxToggle() {
+    const btn = document.querySelector(".fx-toggle");
+    if (!btn) return;
+    const root = document.documentElement;
+    const icon = btn.querySelector("i");
+    const storeKey = "lowperf";
+    const apply = (low) => {
+      if (low) {
+        root.dataset.lowperf = "1";
+        if (icon) icon.className = "ri-magic-line";
+        btn.title = "Эффекты: выключены";
+        btn.setAttribute("aria-label", "Сменить эффекты (выключены)");
+      } else {
+        delete root.dataset.lowperf;
+        if (icon) icon.className = "ri-magic-line";
+        btn.title = "Эффекты: включены";
+        btn.setAttribute("aria-label", "Сменить эффекты (включены)");
+      }
+    };
+    const read = () => {
+      try { return localStorage.getItem(storeKey) === "1"; } catch(_) { return true; }
+    };
+    let low = read();
+    apply(low);
+    btn.addEventListener("click", () => {
+      low = !low;
+      try { if (low) localStorage.setItem(storeKey, "1"); else localStorage.removeItem(storeKey); } catch(_) {}
+      apply(low);
+    });
   }
 
   function initCodeRain() {
@@ -719,6 +750,7 @@
     // Essential, low-cost inits first
     try {
       initThemeToggle();
+      initFxToggle();
       initTypewriterVars();
       initH2Anchors();
       initContactCopyButtons();
@@ -737,7 +769,6 @@
         if (!low) {
           try { rain = initCodeRain(); } catch(_) {}
         }
-        scheduleNonCritical(initAOSAnimations);
       });
     };
 
@@ -749,91 +780,7 @@
 
   window.addEventListener("pagehide", () => { try { rain && rain.dispose(); } catch(_) {} });
 
-  // Initialize AOS animations if available (lightweight settings)
-  function initAOSAnimations() {
-    if (!window.AOS) return;
-    const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const setAOS = (el, type, delay, duration = 500, easing = "ease-out-cubic", offset = 32) => {
-      if (!el) return;
-      if (!el.hasAttribute("data-aos")) {
-        el.setAttribute("data-aos", type);
-        el.setAttribute("data-aos-delay", String(Math.min(delay, 500)));
-        el.setAttribute("data-aos-offset", String(offset));
-        el.setAttribute("data-aos-duration", String(duration));
-        el.setAttribute("data-aos-easing", easing);
-      }
-      if (!el.classList.contains("reveal")) el.classList.add("reveal");
-    };
-
-    const cascade = (rootSelector, childSelector, types = ["fade-up"], step = 70, base = 0) => {
-      document.querySelectorAll(rootSelector).forEach((root) => {
-        const items = root.querySelectorAll(childSelector);
-        items.forEach((el, i) => {
-          const type = Array.isArray(types) ? types[i % types.length] : types;
-          setAOS(el, type, base + i * step);
-        });
-      });
-    };
-
-    const decorateAnimations = () => {
-      if (prefersReduced) return; // Skip heavy motion for users who prefer reduced motion
-
-      // Sections: animate headings
-      document.querySelectorAll("section h2").forEach((el, i) => setAOS(el, "fade-right", i * 50));
-
-      // Containers: first level children (texts, lists, ctas)
-      document.querySelectorAll("section .container").forEach((container) => {
-        const kids = container.querySelectorAll(":scope > p, :scope > ul, :scope > .cta, :scope > .contacts, :scope > .chips");
-        kids.forEach((el, i) => setAOS(el, "fade-up", i * 70));
-      });
-
-      // Grids of projects/stat blocks
-      cascade(".grid.projects", ".card", ["zoom-in", "fade-up"], 80);
-
-      // Chips and contacts list
-      cascade(".chips", ".chip", ["zoom-in"], 45);
-      cascade(".contacts", "li", ["fade-up"], 60);
-
-      // Buttons inside ctas/links
-      cascade(".cta", ".btn", ["zoom-in"], 50);
-
-      // Stats images and other images inside cards
-      document.querySelectorAll(".card img, #stats img").forEach((el, i) => setAOS(el, "fade-up", i * 60));
-
-      // Nav items light enter animation
-      document.querySelectorAll("#site-nav a").forEach((el, i) => setAOS(el, "fade-down", i * 30, 400, "ease-out-cubic", 0));
-    };
-
-    decorateAnimations();
-
-    AOS.init({
-      once: true,
-      offset: 48,
-      duration: 500,
-      easing: "ease-out-cubic",
-      anchorPlacement: "top-bottom",
-      startEvent: "load",
-      disable: () => ((window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) || document.documentElement.dataset.lowperf === "1")
-    });
-
-    // Refresh after load to ensure proper positions
-    window.addEventListener("load", () => {
-      try { AOS.refresh(); } catch (_) {}
-    });
-
-    // Safety fallback: if after 900ms элементы .reveal остались невидимыми, показать их каскадом
-    setTimeout(() => {
-      const stillHidden = Array.from(document.querySelectorAll(".reveal"))
-        .filter((el) => !el.classList.contains("is-inview"));
-      stillHidden.forEach((el, i) => {
-        if (!el.style.getPropertyValue("--reveal-delay")) {
-          el.style.setProperty("--reveal-delay", `${Math.min(i * 60, 500)}ms`);
-        }
-        el.classList.add("is-inview");
-      });
-    }, 900);
-  }
+  
 
   // Scroll-to-top floating button visibility
   const toTopBtn = document.querySelector(".to-top");

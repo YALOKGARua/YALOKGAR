@@ -313,6 +313,27 @@ h2::after {
   line-height: 0;
 }
 
+.fx-toggle {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s ease;
+  margin-left: 8px;
+}
+.fx-toggle:hover {
+  background: var(--bg);
+}
+.fx-toggle .ri {
+  font-size: 18px;
+  line-height: 0;
+}
+
 /* Skip link */
 .skip-link {
   position: absolute;
