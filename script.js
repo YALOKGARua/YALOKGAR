@@ -145,13 +145,10 @@
         try { if (localStorage.getItem(storeKey) === "1") root.dataset.lowperf = "1"; } catch(_) {}
       }
       if (!root.dataset.lowperf) {
-        root.dataset.lowperf = "1";
-      }
-      if (!root.dataset.lowperf) {
         const hc = navigator.hardwareConcurrency || 0;
         const dm = navigator.deviceMemory || 0;
         const isMobile = Math.max(screen.width, screen.height) <= 900;
-        if ((hc && hc <= 4) || (dm && dm <= 4 && isMobile)) {
+        if ((hc && hc <= 2) || (dm && dm <= 2 && isMobile)) {
           root.dataset.lowperf = "1";
         }
       }
@@ -547,10 +544,11 @@
         if (icon) icon.className = "ri-magic-line";
         btn.title = "Эффекты: включены";
         btn.setAttribute("aria-label", "Сменить эффекты (включены)");
+        try { initCodeRain(); } catch(_) {}
       }
     };
     const read = () => {
-      try { return localStorage.getItem(storeKey) === "1"; } catch(_) { return true; }
+      try { return localStorage.getItem(storeKey) === "1"; } catch(_) { return false; }
     };
     let low = read();
     apply(low);
@@ -670,6 +668,9 @@
     // Hero canvas sized to hero section
     const heroCanvas = document.getElementById("code-rain");
     if (heroCanvas) {
+      if (heroCanvas._rain) {
+        return;
+      }
       const hero = document.getElementById("hero");
       const low = document.documentElement.dataset.lowperf === "1";
       let heroRain = null;
@@ -697,10 +698,12 @@
       };
 
       if (hero) {
-        hero.addEventListener("pointerenter", create, { once: true });
+        if (!low) {
+          hero.addEventListener("pointerenter", create, { once: true });
+          setTimeout(create, 0);
+        }
       } else {
-        // No hero container? initialize lazily after load
-        setTimeout(create, 0);
+        if (!low) setTimeout(create, 0);
       }
     }
 
