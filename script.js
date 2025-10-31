@@ -286,6 +286,99 @@
     });
   }
 
+  function initCursorRing() {
+    const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced || document.documentElement.dataset.lowperf === "1") return;
+
+    const ring = document.createElement("div");
+    ring.className = "cursor-ring";
+    (document.documentElement || document.body).appendChild(ring);
+
+    let x = window.innerWidth * 0.5;
+    let y = window.innerHeight * 0.5;
+    let tx = x, ty = y;
+    let scale = 1, tScale = 1;
+    let raf = 0;
+
+    const update = () => {
+      x += (tx - x) * 0.18;
+      y += (ty - y) * 0.18;
+      scale += (tScale - scale) * 0.2;
+      ring.style.transform = `translate3d(${(x - 10)}px, ${(y - 10)}px, 0) scale(${scale})`;
+      raf = requestAnimationFrame(update);
+    };
+
+    const isInteractive = (el) => !!(el && el.closest('a, button, .btn, .menu-toggle, .theme-toggle, .fx-toggle, .nav a, .card, .copy-btn, .swiper-button-prev, .swiper-button-next'));
+    const move = (e) => { tx = e.clientX; ty = e.clientY; if (!raf) raf = requestAnimationFrame(update); };
+    const over = (e) => { tScale = isInteractive(e.target) ? 1.35 : 1.0; };
+    const down = () => { tScale = Math.max(0.85, tScale - 0.2); };
+    const up = () => { tScale = isInteractive(document.elementFromPoint(tx, ty)) ? 1.35 : 1.0; };
+
+    document.addEventListener("pointermove", move, { passive: true });
+    document.addEventListener("mousemove", move, { passive: true });
+    document.addEventListener("pointerover", over, { passive: true });
+    document.addEventListener("pointerdown", down, { passive: true });
+    document.addEventListener("pointerup", up, { passive: true });
+    window.addEventListener("blur", () => { tScale = 1; }, { passive: true });
+
+    let scrollTimer = 0;
+    const hideWhileScroll = () => {
+      ring.style.opacity = "0";
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => { ring.style.opacity = "0.75"; }, 140);
+    };
+    window.addEventListener("scroll", hideWhileScroll, { passive: true });
+    window.addEventListener("wheel", hideWhileScroll, { passive: true });
+    document.addEventListener("mouseleave", () => { ring.style.opacity = "0"; }, { passive: true });
+    document.addEventListener("mouseenter", () => { ring.style.opacity = "0.75"; }, { passive: true });
+
+    if (!raf) raf = requestAnimationFrame(update);
+  }
+
+  function initButtonEffects() {
+    const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.addEventListener("pointerdown", (e) => {
+      const btn = e.target && e.target.closest && e.target.closest('.btn.primary');
+      if (!btn) return;
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const ripple = document.createElement("span");
+      ripple.className = "ripple";
+      ripple.style.left = x + "px";
+      ripple.style.top = y + "px";
+      btn.appendChild(ripple);
+      requestAnimationFrame(() => ripple.classList.add("animate"));
+      setTimeout(() => { try { btn.removeChild(ripple); } catch(_) {} }, 650);
+      if (!prefersReduced) {
+        btn.classList.add("click-shine");
+        setTimeout(() => btn.classList.remove("click-shine"), 620);
+      }
+    }, { passive: true });
+  }
+
+  function initSpotlightsOverlay() {
+    const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced || document.documentElement.dataset.lowperf === "1") return;
+    const root = document.documentElement;
+    let raf = 0;
+    const step = () => {
+      const y = window.scrollY || 0;
+      root.style.setProperty("--sp1y", `calc(18% + ${Math.round(y * 0.06)}px)`);
+      root.style.setProperty("--sp2y", `calc(32% + ${Math.round(-y * 0.04)}px)`);
+      raf = 0;
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(step); };
+    const onMove = (e) => {
+      const nx = e.clientX / Math.max(1, window.innerWidth);
+      root.style.setProperty("--sp1x", `${Math.round(10 + nx * 30)}%`);
+      root.style.setProperty("--sp2x", `${Math.round(60 + nx * 30)}%`);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("pointermove", onMove, { passive: true });
+    step();
+  }
+
   // Scroll progress bar
   function initScrollProgressBar() {
     const bar = document.querySelector(".scroll-progress");
@@ -748,6 +841,9 @@
 
   const boot = () => {
     applyForcedLowPerf();
+    const root = document.documentElement;
+    try { localStorage.removeItem("lowperf"); } catch(_) {}
+    try { delete root.dataset.lowperf; } catch(_) {}
 
     // Essential, low-cost inits first
     try {
@@ -756,9 +852,11 @@
       initTypewriterVars();
       initH2Anchors();
       initContactCopyButtons();
+      initCursorRing();
+      initButtonEffects();
     } catch(_) {}
 
-    const low = document.documentElement.dataset.lowperf === "1";
+    const low = false;
     const hydrate = () => {
       scheduleNonCritical(() => {
         try {
@@ -767,6 +865,7 @@
           if (!low) initAutoHideHeader();
           initCardTilt();
           initHeroParallaxAndRainBoost();
+          if (!low) initSpotlightsOverlay();
         } catch(_) {}
 
         try {
@@ -822,8 +921,7 @@
       });
     };
 
-    if (low) hydrate();
-    else detectLowPerf(() => hydrate());
+    hydrate();
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
   else boot();
