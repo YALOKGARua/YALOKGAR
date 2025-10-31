@@ -107,26 +107,24 @@
       return;
     }
 
-    if (!window.AOS) {
-      if (revealEls.length) {
-        const rObserver = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add("is-inview");
-                rObserver.unobserve(entry.target);
-              }
-            });
-          },
-          { rootMargin: "0px 0px -10% 0px", threshold: 0.15 }
-        );
-        revealEls.forEach((el, i) => {
-          if (!el.style.getPropertyValue("--reveal-delay")) {
-            el.style.setProperty("--reveal-delay", `${Math.min(i * 80, 400)}ms`);
-          }
+    if (revealEls.length) {
+      const rObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-inview");
+              rObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { rootMargin: "0px 0px -10% 0px", threshold: 0.15 }
+      );
+      revealEls.forEach((el, i) => {
+        if (!el.style.getPropertyValue("--reveal-delay")) {
+          el.style.setProperty("--reveal-delay", `${Math.min(i * 80, 400)}ms`);
+        }
         rObserver.observe(el);
-        });
-      }
+      });
     }
   })();
 
@@ -568,7 +566,7 @@
         this.opts = Object.assign({
           fontSize: 14,
           speed: 0.9,
-          backgroundAlpha: 0.08
+          backgroundAlpha: 0.04
         }, options || {});
         let dpr = window.devicePixelRatio || 1;
         if (document.documentElement.dataset.lowperf === "1") dpr = 1;
@@ -588,6 +586,7 @@
         this.ctx.font = `${fs}px ${mono}`;
         this.ctx.textBaseline = "top";
         const accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#0ea5e9";
+        const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() || "#0d1117";
         const rgba = (hex, a = 1) => {
           let h = hex.replace("#","").trim();
           if (h.length === 3) h = h.split("").map(x=>x+x).join("");
@@ -595,9 +594,9 @@
           const r = (n>>16)&255, g = (n>>8)&255, b = n&255;
           return `rgba(${r}, ${g}, ${b}, ${a})`;
         };
-        this.fadeColor = rgba(accent, this.opts.backgroundAlpha);
-        this.textColor = rgba(accent, this.low ? 0.7 : 0.82);
-        this.shadowColor = rgba(accent, 0.4);
+        this.fadeColor = rgba(bg, this.opts.backgroundAlpha);
+        this.textColor = rgba(accent, this.low ? 0.6 : 0.75);
+        this.shadowColor = rgba(accent, 0.25);
         this.shadowBlur = this.low ? 0 : 4;
         this.step = this.low ? 3 : 2;
       }
@@ -763,12 +762,60 @@
     const hydrate = () => {
       scheduleNonCritical(() => {
         try {
-          initTypingRotation();
-          initScrollProgressBar();
-          initAutoHideHeader();
+          if (!low) initTypingRotation();
+          if (!low) initScrollProgressBar();
+          if (!low) initAutoHideHeader();
           initCardTilt();
           initHeroParallaxAndRainBoost();
         } catch(_) {}
+
+        try {
+          if (window.AOS && !low) {
+            window.AOS.init({
+              once: true,
+              duration: 600,
+              offset: 80,
+              easing: "ease-out-quart"
+            });
+          }
+        } catch(_) {}
+
+        try {
+          if (window.Lenis && !low) {
+            const lenis = new window.Lenis({
+              duration: 1.1,
+              smoothWheel: true,
+              smoothTouch: false
+            });
+            const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
+            requestAnimationFrame(raf);
+          }
+        } catch(_) {}
+
+        try {
+          if (window.Swiper && !low) {
+            const el = document.querySelector(".projects-swiper");
+            if (el) {
+              const pagination = el.querySelector(".swiper-pagination");
+              const next = el.querySelector(".swiper-button-next");
+              const prev = el.querySelector(".swiper-button-prev");
+              new window.Swiper(el, {
+                slidesPerView: 1.1,
+                spaceBetween: 14,
+                loop: false,
+                keyboard: { enabled: true },
+                pagination: pagination ? { el: pagination, clickable: true } : undefined,
+                navigation: next && prev ? { nextEl: next, prevEl: prev } : undefined,
+                breakpoints: {
+                  640: { slidesPerView: 1.2, spaceBetween: 16 },
+                  768: { slidesPerView: 2, spaceBetween: 16 },
+                  1024: { slidesPerView: 3, spaceBetween: 18 }
+                }
+              });
+            }
+          }
+        } catch(_) {}
+
         if (!low) {
           try { rain = initCodeRain(); } catch(_) {}
         }

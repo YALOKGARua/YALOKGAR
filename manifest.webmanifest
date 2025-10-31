@@ -1,0 +1,15 @@
+{
+  "name": "YALOKGAR",
+  "short_name": "YALOKGAR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#7ee787",
+  "lang": "ru",
+  "icons": [
+    { "src": "./assets/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "./photo_2025-05-15_16-53-42.jpg", "sizes": "192x192", "type": "image/jpeg" },
+    { "src": "./photo_2025-05-15_16-53-42.jpg", "sizes": "512x512", "type": "image/jpeg" }
+  ]
+}
