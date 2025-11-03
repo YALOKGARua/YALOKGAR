@@ -1,3 +1,9 @@
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www\.yalokgar\.com$ [NC,OR]
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://yalokgar.com%{REQUEST_URI} [L,R=301]
+RewriteRule ^index\.html$ / [L,R=301]
+
 # ------------------------------------------------------------
 # Hostinger/LiteSpeed .htaccess for yalokgar.com
 # Эквивалент Netlify конфигурации из netlify.toml
