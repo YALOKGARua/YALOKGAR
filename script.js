@@ -400,6 +400,245 @@
     set();
   }
 
+  function initLeetCodeStats() {
+    const card = document.querySelector("[data-leetcode-root]");
+    if (!card) return;
+    const username = (card.dataset.username || "").trim();
+    if (!username) return;
+    const number = new Intl.NumberFormat("ru-RU");
+    const percent = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2, minimumFractionDigits: 0 });
+    const toNumber = (value) => {
+      if (value === undefined || value === null || value === "") return Number.NaN;
+      if (typeof value === "number") return Number.isNaN(value) ? Number.NaN : value;
+      const cleaned = String(value).replace(/%/g, "").replace(/,/g, ".").replace(/\s+/g, "");
+      const parsed = Number(cleaned);
+      return Number.isNaN(parsed) ? Number.NaN : parsed;
+    };
+    const seed = {
+      contestRating: 1576,
+      globalRanking: 205833,
+      contestAttended: 2,
+      topPercent: 26.76,
+      solved: 1742,
+      total: 3735,
+      easySolved: 478,
+      easyTotal: 910,
+      mediumSolved: 937,
+      mediumTotal: 1944,
+      hardSolved: 327,
+      hardTotal: 881,
+      attempting: 56,
+      submissionsYear: 1327,
+      activeDays: 72,
+      maxStreak: 3,
+      badges: 7,
+      acceptance: 61.59
+    };
+    const assign = (field, value, mode) => {
+      const node = card.querySelector(`[data-lc-field="${field}"]`);
+      if (!node) return;
+      let next = value;
+      if (next === undefined || next === null || next === "") next = seed[field];
+      if (next === undefined || next === null || next === "") return;
+      if (mode === "percent") {
+        const raw = toNumber(next);
+        if (!Number.isNaN(raw)) {
+          node.textContent = percent.format(raw);
+          return;
+        }
+        node.textContent = String(next);
+        return;
+      }
+      if (typeof next === "number" && !Number.isNaN(next)) {
+        node.textContent = number.format(next);
+        return;
+      }
+      const parsed = toNumber(next);
+      if (!Number.isNaN(parsed)) node.textContent = number.format(parsed);
+      else node.textContent = String(next);
+    };
+    const setDifficulty = (key, snapshot) => {
+      const row = card.querySelector(`[data-lc-bar="${key}"]`);
+      if (!row) return;
+      const solvedNode = row.querySelector(`[data-lc-bar-solved="${key}"]`);
+      const totalNode = row.querySelector(`[data-lc-bar-total="${key}"]`);
+      const solvedVal = toNumber(snapshot[`${key}Solved`]);
+      const totalVal = toNumber(snapshot[`${key}Total`]);
+      if (solvedNode) solvedNode.textContent = number.format(Number.isNaN(solvedVal) ? 0 : Math.max(0, solvedVal));
+      if (totalNode) totalNode.textContent = number.format(Number.isNaN(totalVal) ? 0 : Math.max(0, totalVal));
+    };
+    const updateWheel = (snapshot) => {
+      const chart = card.querySelector("[data-lc-wheel-chart]");
+      if (!chart) return;
+      const solvedVal = toNumber(snapshot.solved);
+      const easyVal = toNumber(snapshot.easySolved);
+      const mediumVal = toNumber(snapshot.mediumSolved);
+      const hardVal = toNumber(snapshot.hardSolved);
+      let totalSolved = solvedVal;
+      if (!totalSolved || Number.isNaN(totalSolved) || totalSolved <= 0) {
+        let sum = 0;
+        if (!Number.isNaN(easyVal) && easyVal > 0) sum += easyVal;
+        if (!Number.isNaN(mediumVal) && mediumVal > 0) sum += mediumVal;
+        if (!Number.isNaN(hardVal) && hardVal > 0) sum += hardVal;
+        totalSolved = sum;
+      }
+      if (!totalSolved || Number.isNaN(totalSolved) || totalSolved <= 0) {
+        chart.style.setProperty("--easy", "0%");
+        chart.style.setProperty("--medium", "0%");
+        chart.style.setProperty("--hard", "0%");
+        return;
+      }
+      const ratio = (value) => {
+        if (Number.isNaN(value) || !Number.isFinite(value) || value <= 0) return 0;
+        return Math.max(0, value) / totalSolved;
+      };
+      const clamp = (value) => Math.max(0, Math.min(1, value));
+      const easyPortion = clamp(ratio(easyVal));
+      const mediumPortion = clamp(ratio(mediumVal));
+      const hardPortion = clamp(ratio(hardVal));
+      const cumulativeEasy = clamp(easyPortion);
+      const cumulativeMedium = clamp(cumulativeEasy + mediumPortion);
+      const cumulativeHard = clamp(cumulativeMedium + hardPortion);
+      chart.style.setProperty("--easy", `${(cumulativeEasy * 100).toFixed(2)}%`);
+      chart.style.setProperty("--medium", `${(cumulativeMedium * 100).toFixed(2)}%`);
+      chart.style.setProperty("--hard", `${(cumulativeHard * 100).toFixed(2)}%`);
+    };
+    const computeAcceptance = (snapshot) => {
+      const provided = toNumber(snapshot.acceptance);
+      if (!Number.isNaN(provided)) return provided;
+      const solvedVal = toNumber(snapshot.solved);
+      const totalVal = toNumber(snapshot.total);
+      if (Number.isNaN(solvedVal) || Number.isNaN(totalVal) || totalVal <= 0) return Number.NaN;
+      return (solvedVal / totalVal) * 100;
+    };
+    const applyAll = (data) => {
+      const snapshot = Object.assign({}, seed, data);
+      assign("contestRating", snapshot.contestRating);
+      assign("globalRanking", snapshot.globalRanking);
+      assign("contestAttended", snapshot.contestAttended);
+      assign("topPercent", snapshot.topPercent, "percent");
+      assign("solved", snapshot.solved);
+      assign("total", snapshot.total);
+      assign("attempting", snapshot.attempting);
+      assign("submissionsYear", snapshot.submissionsYear);
+      assign("activeDays", snapshot.activeDays);
+      assign("maxStreak", snapshot.maxStreak);
+      assign("badges", snapshot.badges);
+      const acceptanceValue = computeAcceptance(snapshot);
+      assign("acceptance", Number.isNaN(acceptanceValue) ? snapshot.acceptance : acceptanceValue, "percent");
+      setDifficulty("easy", snapshot);
+      setDifficulty("medium", snapshot);
+      setDifficulty("hard", snapshot);
+      updateWheel(snapshot);
+    };
+    const merge = (target, source) => {
+      if (!source) return;
+      Object.keys(source).forEach((key) => {
+        const val = source[key];
+        if (val === undefined || val === null || val === "") return;
+        if (typeof val === "number" && Number.isNaN(val)) return;
+        target[key] = val;
+      });
+    };
+    const fetchAlpha = () => {
+      const url = `https://alfa-leetcode-api.onrender.com/${encodeURIComponent(username)}`;
+      return fetch(url).then((res) => {
+        if (!res.ok) throw new Error("alpha");
+        return res.json();
+      }).then((json) => {
+        if (!json) return null;
+        const data = json.data || json.user || json;
+        if (!data || typeof data !== "object") return null;
+        const pool = [];
+        if (data.userContestRanking) pool.push(data.userContestRanking);
+        if (data.contestRanking) pool.push(data.contestRanking);
+        if (data.contest) pool.push(data.contest);
+        if (data.profile && data.profile.userContestRanking) pool.push(data.profile.userContestRanking);
+        if (data.profile && data.profile.contestRanking) pool.push(data.profile.contestRanking);
+        if (Array.isArray(data.contestRankingHistory) && data.contestRankingHistory.length) {
+          pool.push(data.contestRankingHistory[data.contestRankingHistory.length - 1]);
+        }
+        let info = null;
+        pool.forEach((item) => {
+          if (item && typeof item === "object") info = Object.assign({}, info || {}, item);
+        });
+        if (!info) return null;
+        const pick = (...keys) => {
+          for (const key of keys) {
+            if (info[key] !== undefined && info[key] !== null) return info[key];
+          }
+          return undefined;
+        };
+        const result = {};
+        const rating = pick("rating", "contestRating", "currentRating");
+        const top = pick("topPercentage", "topPercent", "percentile", "topPercentile");
+        const rank = pick("globalRanking", "ranking", "globalRank", "rank");
+        const attended = pick("attendedContestsCount", "contestAttended", "contestCount", "attended");
+        if (rating !== undefined) result.contestRating = Number(rating);
+        if (top !== undefined) result.topPercent = Number(top);
+        if (rank !== undefined) result.globalRanking = Number(rank);
+        if (attended !== undefined) result.contestAttended = Number(attended);
+        return Object.keys(result).length ? result : null;
+      }).catch(() => null);
+    };
+    const fetchStats = () => {
+      const url = `https://leetcode-stats-api.herokuapp.com/${encodeURIComponent(username)}`;
+      return fetch(url).then((res) => {
+        if (!res.ok) throw new Error("stats");
+        return res.json();
+      }).then((json) => {
+        if (!json || json.status !== "success") return null;
+        const result = {};
+        const parse = (value) => {
+          if (value === undefined || value === null || value === "") return undefined;
+          if (typeof value === "number") return Number.isNaN(value) ? undefined : value;
+          const num = Number(String(value).replace(/%/g, "").replace(/,/g, "").trim());
+          return Number.isNaN(num) ? undefined : num;
+        };
+        const set = (key, value) => {
+          const parsed = parse(value);
+          if (parsed !== undefined) result[key] = parsed;
+        };
+        set("solved", json.totalSolved);
+        set("total", json.totalQuestions);
+        set("easySolved", json.easySolved);
+        set("easyTotal", json.totalEasy);
+        set("mediumSolved", json.mediumSolved);
+        set("mediumTotal", json.totalMedium);
+        set("hardSolved", json.hardSolved);
+        set("hardTotal", json.totalHard);
+        set("globalRanking", json.ranking);
+        set("contestRating", json.contestRating);
+        set("contestAttended", json.contestAttended);
+        set("topPercent", json.topPercentile || json.topPercentage);
+        set("acceptance", json.acceptanceRate);
+        return Object.keys(result).length ? result : null;
+      }).catch(() => null);
+    };
+    applyAll(seed);
+    Promise.allSettled([fetchAlpha(), fetchStats()]).then((results) => {
+      const merged = Object.assign({}, seed);
+      results.forEach((res) => {
+        if (res.status === "fulfilled") merge(merged, res.value);
+      });
+      if (typeof merged.solved !== "number" || Number.isNaN(merged.solved)) {
+        const easy = typeof merged.easySolved === "number" ? merged.easySolved : undefined;
+        const medium = typeof merged.mediumSolved === "number" ? merged.mediumSolved : undefined;
+        const hard = typeof merged.hardSolved === "number" ? merged.hardSolved : undefined;
+        if (easy !== undefined && medium !== undefined && hard !== undefined) merged.solved = easy + medium + hard;
+      }
+      if (typeof merged.total !== "number" || Number.isNaN(merged.total)) {
+        const easyT = typeof merged.easyTotal === "number" ? merged.easyTotal : undefined;
+        const mediumT = typeof merged.mediumTotal === "number" ? merged.mediumTotal : undefined;
+        const hardT = typeof merged.hardTotal === "number" ? merged.hardTotal : undefined;
+        if (easyT !== undefined && mediumT !== undefined && hardT !== undefined) merged.total = easyT + mediumT + hardT;
+      }
+      const acceptanceValue = computeAcceptance(merged);
+      if (!Number.isNaN(acceptanceValue)) merged.acceptance = acceptanceValue;
+      applyAll(merged);
+    });
+  }
+
   // Add anchor links to section headings
   function initH2Anchors() {
     document.querySelectorAll("section[id]").forEach((sec) => {
@@ -852,6 +1091,7 @@
       initTypewriterVars();
       initH2Anchors();
       initContactCopyButtons();
+      initLeetCodeStats();
       initCursorRing();
       initButtonEffects();
     } catch(_) {}
