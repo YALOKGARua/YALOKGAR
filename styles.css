@@ -1072,22 +1072,71 @@ h2::after {
 }
 
 /* ===== Achievements: code-like bullets ===== */
-#achievements .card-body ul {
+#achievements .codingame-card .card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.codingame-intro {
+  margin: 0;
+  color: var(--text-muted);
+}
+.cert-list {
   list-style: none;
-  padding-left: 0;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
-#achievements .card-body li {
+.cert-item {
   position: relative;
-  padding-left: 18px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--glass-brd);
+  background: var(--glass-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent);
 }
-#achievements .card-body li::before {
-  content: ">";
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: var(--accent);
+.cert-item.legend {
+  border-color: color-mix(in srgb, #7c3aed 55%, var(--glass-brd));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #7c3aed 35%, transparent);
+}
+.cert-item.gold {
+  border-color: color-mix(in srgb, #fbbf24 55%, var(--glass-brd));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #fbbf24 35%, transparent);
+}
+.cert-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cert-category {
+  font-family: var(--font-mono);
   font-weight: 700;
-  opacity: .9;
+  font-size: 1rem;
+}
+.cert-level {
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+.cert-item.legend .cert-level {
+  background: linear-gradient(120deg, #a855f7, #6366f1);
+  color: #fff;
+}
+.cert-item.gold .cert-level {
+  background: linear-gradient(120deg, #facc15, #f97316);
+  color: #261c00;
+}
+.cert-desc {
+  margin: 10px 0 0 0;
+  color: var(--text-muted);
+  line-height: 1.5;
 }
 
 /* ===== Stats: subtle code window bar ===== */
@@ -1123,6 +1172,12 @@ h2::after {
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+.leetcode-heading {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
 }
 .leetcode-split {
   display: flex;
