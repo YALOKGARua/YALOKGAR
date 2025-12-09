@@ -191,17 +191,21 @@
     });
   }
 
-  // Rotate typed code lines in hero
   function initTypingRotation() {
     const el = document.querySelector(".code-line .typing");
     if (!el) return;
     const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const lines = [
-      "int main() { return 0; }",
-      "std::vector<int> v; v.reserve(1024);",
-      "auto sum = std::accumulate(v.begin(), v.end(), 0);",
-      "std::unique_ptr<QObject> obj = std::make_unique<QObject>();",
-      "for (auto& x : v) x += 1;"
+      "system.hack() // ACCESS GRANTED",
+      "kernel.exploit(0x41414141);",
+      "memcpy(shellcode, payload, 0x100);",
+      "decrypt(key, cipher) -> plaintext",
+      "buffer_overflow(target, sizeof(ret));",
+      "root@localhost:~$ sudo ./pwn",
+      "stack.smash() // ROP chain ready",
+      "firewall.bypass(port=443);",
+      "crypto::aes256_decrypt(data);",
+      "reverse_shell.connect(\"0.0.0.0\");"
     ];
     let i = 0;
 
@@ -294,25 +298,38 @@
     ring.className = "cursor-ring";
     (document.documentElement || document.body).appendChild(ring);
 
+    const trail = document.createElement("div");
+    trail.className = "cursor-trail";
+    trail.style.cssText = "position:fixed;left:0;top:0;width:8px;height:8px;background:rgba(0,255,65,0.6);border-radius:50%;pointer-events:none;z-index:9997;mix-blend-mode:screen;box-shadow:0 0 10px rgba(0,255,65,0.8);transition:opacity 0.3s;";
+    (document.documentElement || document.body).appendChild(trail);
+
     let x = window.innerWidth * 0.5;
     let y = window.innerHeight * 0.5;
     let tx = x, ty = y;
+    let trailX = x, trailY = y;
     let scale = 1, tScale = 1;
     let raf = 0;
 
     const update = () => {
-      x += (tx - x) * 0.18;
-      y += (ty - y) * 0.18;
+      x += (tx - x) * 0.15;
+      y += (ty - y) * 0.15;
+      trailX += (tx - trailX) * 0.08;
+      trailY += (ty - trailY) * 0.08;
       scale += (tScale - scale) * 0.2;
-      ring.style.transform = `translate3d(${(x - 10)}px, ${(y - 10)}px, 0) scale(${scale})`;
+      ring.style.transform = `translate3d(${(x - 12)}px, ${(y - 12)}px, 0) scale(${scale})`;
+      trail.style.transform = `translate3d(${(trailX - 4)}px, ${(trailY - 4)}px, 0)`;
       raf = requestAnimationFrame(update);
     };
 
-    const isInteractive = (el) => !!(el && el.closest('a, button, .btn, .menu-toggle, .theme-toggle, .fx-toggle, .nav a, .card, .copy-btn, .swiper-button-prev, .swiper-button-next'));
+    const isInteractive = (el) => !!(el && el.closest('a, button, .btn, .menu-toggle, .theme-toggle, .fx-toggle, .nav a, .card, .copy-btn, .swiper-button-prev, .swiper-button-next, .chip'));
     const move = (e) => { tx = e.clientX; ty = e.clientY; if (!raf) raf = requestAnimationFrame(update); };
-    const over = (e) => { tScale = isInteractive(e.target) ? 1.35 : 1.0; };
-    const down = () => { tScale = Math.max(0.85, tScale - 0.2); };
-    const up = () => { tScale = isInteractive(document.elementFromPoint(tx, ty)) ? 1.35 : 1.0; };
+    const over = (e) => { 
+      const interactive = isInteractive(e.target);
+      tScale = interactive ? 1.5 : 1.0;
+      ring.style.borderColor = interactive ? "#00f0ff" : "#00ff41";
+    };
+    const down = () => { tScale = Math.max(0.7, tScale - 0.3); };
+    const up = () => { tScale = isInteractive(document.elementFromPoint(tx, ty)) ? 1.5 : 1.0; };
 
     document.addEventListener("pointermove", move, { passive: true });
     document.addEventListener("mousemove", move, { passive: true });
@@ -324,13 +341,14 @@
     let scrollTimer = 0;
     const hideWhileScroll = () => {
       ring.style.opacity = "0";
+      trail.style.opacity = "0";
       if (scrollTimer) clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => { ring.style.opacity = "0.75"; }, 140);
+      scrollTimer = setTimeout(() => { ring.style.opacity = "0.8"; trail.style.opacity = "0.6"; }, 140);
     };
     window.addEventListener("scroll", hideWhileScroll, { passive: true });
     window.addEventListener("wheel", hideWhileScroll, { passive: true });
-    document.addEventListener("mouseleave", () => { ring.style.opacity = "0"; }, { passive: true });
-    document.addEventListener("mouseenter", () => { ring.style.opacity = "0.75"; }, { passive: true });
+    document.addEventListener("mouseleave", () => { ring.style.opacity = "0"; trail.style.opacity = "0"; }, { passive: true });
+    document.addEventListener("mouseenter", () => { ring.style.opacity = "0.8"; trail.style.opacity = "0.6"; }, { passive: true });
 
     if (!raf) raf = requestAnimationFrame(update);
   }
@@ -896,14 +914,15 @@
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
         this.opts = Object.assign({
-          fontSize: 14,
-          speed: 0.9,
-          backgroundAlpha: 0.04
+          fontSize: 16,
+          speed: 1.2,
+          backgroundAlpha: 0.05,
+          glowIntensity: 1
         }, options || {});
         let dpr = window.devicePixelRatio || 1;
         if (document.documentElement.dataset.lowperf === "1") dpr = 1;
         this.scale = Math.max(1, Math.min(2, dpr));
-        this.chars = ("01{}[]()<>;=+-*/%#&|^~!?$" + " C++QtλΣ→←·•").split("");
+        this.chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン{}[]()<>;=+-*/%#&|^~!?$@\\/:".split("");
         this.running = false;
         this.visible = true;
         this._tick = this._tick.bind(this);
@@ -917,20 +936,12 @@
         const mono = getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim() || "monospace";
         this.ctx.font = `${fs}px ${mono}`;
         this.ctx.textBaseline = "top";
-        const accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#0ea5e9";
-        const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() || "#0d1117";
-        const rgba = (hex, a = 1) => {
-          let h = hex.replace("#","").trim();
-          if (h.length === 3) h = h.split("").map(x=>x+x).join("");
-          const n = parseInt(h, 16);
-          const r = (n>>16)&255, g = (n>>8)&255, b = n&255;
-          return `rgba(${r}, ${g}, ${b}, ${a})`;
-        };
-        this.fadeColor = rgba(bg, this.opts.backgroundAlpha);
-        this.textColor = rgba(accent, this.low ? 0.6 : 0.75);
-        this.shadowColor = rgba(accent, 0.25);
-        this.shadowBlur = this.low ? 0 : 4;
-        this.step = this.low ? 3 : 2;
+        this.fadeColor = "rgba(10, 10, 15, " + this.opts.backgroundAlpha + ")";
+        this.primaryColor = "#00ff41";
+        this.secondaryColor = "#00f0ff";
+        this.brightColor = "#ffffff";
+        this.shadowBlur = this.low ? 0 : 8;
+        this.step = this.low ? 2 : 1;
       }
       _resize(sizeEl) {
         const rect = (sizeEl || this.canvas).getBoundingClientRect();
@@ -944,7 +955,11 @@
         this.ctx.scale(this.scale, this.scale);
         const fs = this.opts.fontSize;
         this.columns = Math.max(1, Math.floor(w / fs));
-        this.drops = Array.from({length: this.columns}, () => -Math.random() * 20);
+        this.drops = Array.from({length: this.columns}, () => ({
+          y: -Math.random() * 40,
+          speed: 0.5 + Math.random() * 1.5,
+          brightness: Math.random()
+        }));
       }
       start() {
         if (this.running) return;
@@ -973,22 +988,39 @@
         const w = this.canvas.width / this.scale;
         const h = this.canvas.height / this.scale;
 
-        // Fade trail
         ctx.fillStyle = this.fadeColor;
         ctx.fillRect(0, 0, w, h);
 
-        ctx.fillStyle = this.textColor;
-        ctx.shadowColor = this.shadowColor;
-        ctx.shadowBlur = this.shadowBlur;
-
         for (let i = 0; i < this.columns; i += this.step) {
+          const drop = this.drops[i];
           const ch = this.chars[(Math.random() * this.chars.length) | 0];
           const x = i * fontSize;
-          const y = this.drops[i] * fontSize;
+          const y = drop.y * fontSize;
+          
+          const isHead = Math.random() > 0.7;
+          if (isHead) {
+            ctx.fillStyle = this.brightColor;
+            ctx.shadowColor = this.primaryColor;
+            ctx.shadowBlur = this.shadowBlur * 2;
+          } else {
+            const alpha = 0.3 + drop.brightness * 0.7;
+            ctx.fillStyle = `rgba(0, 255, 65, ${alpha})`;
+            ctx.shadowColor = this.primaryColor;
+            ctx.shadowBlur = this.shadowBlur;
+          }
+          
           ctx.fillText(ch, x, y);
-          if (y > h && Math.random() > 0.975) this.drops[i] = -Math.random() * 20;
-          else this.drops[i] += (Math.random() * 0.5 + speed);
+          
+          if (y > h && Math.random() > 0.98) {
+            drop.y = -Math.random() * 20;
+            drop.speed = 0.5 + Math.random() * 1.5;
+            drop.brightness = Math.random();
+          } else {
+            drop.y += drop.speed * speed;
+          }
         }
+        
+        ctx.shadowBlur = 0;
         this.raf = requestAnimationFrame(this._tick);
       }
       dispose() { this.stop(); }
@@ -1008,7 +1040,7 @@
 
       const create = () => {
         if (heroRain) return;
-        heroRain = new CodeRain(heroCanvas, { fontSize: low ? 16 : 14, speed: low ? 0.6 : 0.9, backgroundAlpha: low ? 0.05 : 0.06 });
+        heroRain = new CodeRain(heroCanvas, { fontSize: low ? 18 : 16, speed: low ? 0.8 : 1.2, backgroundAlpha: low ? 0.06 : 0.05 });
         heroCanvas._rain = heroRain;
 
         const onResize = () => heroRain._resize(hero || heroCanvas);

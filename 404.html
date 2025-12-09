@@ -1,23 +1,22 @@
 <!doctype html>
-<html lang="ru" data-lowperf="1">
+<html lang="ru" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Страница не найдена — YALOKGAR</title>
+  <title>[ ERROR 404 ] — YALOKGAR</title>
   <meta name="robots" content="noindex" />
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" sizes="any" />
   <link rel="shortcut icon" href="./photo_2025-05-15_16-53-42.jpg" type="image/jpeg" />
   <link rel="apple-touch-icon" href="./photo_2025-05-15_16-53-42.jpg" />
-  <link rel="mask-icon" href="./assets/favicon.svg" color="#0ea5e9" />
+  <link rel="mask-icon" href="./assets/favicon.svg" color="#00ff41" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize/modern-normalize.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" />
   
-  <link rel="stylesheet" href="./styles.css?v=20251103-1" />
-  <meta name="color-scheme" content="dark light" />
+  <link rel="stylesheet" href="./styles.css?v=20251209-1" />
+  <meta name="color-scheme" content="dark" />
   <style>
     .not-found {
       min-height: calc(100dvh - var(--header-h) - 120px);
@@ -25,33 +24,114 @@
       place-items: center;
       text-align: center;
       padding: 48px 16px;
+      position: relative;
     }
     .not-found .code {
-      font-size: clamp(56px, 10vw, 108px);
-      font-weight: 800;
-      letter-spacing: 2px;
+      font-size: clamp(72px, 15vw, 140px);
+      font-weight: 900;
+      letter-spacing: 8px;
       line-height: 1;
-      margin: 0 0 12px 0;
-      background: linear-gradient(90deg, var(--accent), color-mix(in srgb, #a78bfa 40%, var(--accent)));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 8px 30px color-mix(in srgb, var(--accent) 28%, transparent);
+      margin: 0 0 20px 0;
+      font-family: var(--font-display);
+      color: var(--neon-green);
+      text-shadow: 
+        0 0 20px var(--neon-green),
+        0 0 40px var(--neon-green),
+        0 0 80px rgba(0, 255, 65, 0.5);
+      animation: error-glitch 2s ease-in-out infinite;
+    }
+    @keyframes error-glitch {
+      0%, 100% { 
+        text-shadow: 
+          0 0 20px var(--neon-green),
+          0 0 40px var(--neon-green),
+          0 0 80px rgba(0, 255, 65, 0.5);
+        transform: translate(0);
+      }
+      5% {
+        text-shadow: 
+          -3px 0 var(--neon-pink),
+          3px 0 var(--neon-cyan);
+        transform: translate(-3px, 0);
+      }
+      10% {
+        text-shadow: 
+          0 0 20px var(--neon-green),
+          0 0 40px var(--neon-green);
+        transform: translate(0);
+      }
+      50% {
+        text-shadow: 
+          0 0 20px var(--neon-green),
+          0 0 40px var(--neon-green);
+        transform: translate(0);
+      }
+      55% {
+        text-shadow: 
+          3px 0 var(--neon-pink),
+          -3px 0 var(--neon-cyan);
+        transform: translate(2px, 0);
+      }
+      60% {
+        text-shadow: 
+          0 0 20px var(--neon-green),
+          0 0 40px var(--neon-green);
+        transform: translate(0);
+      }
+    }
+    .not-found h1 {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin: 0 0 16px 0;
+      color: var(--neon-red);
+      text-shadow: 0 0 20px rgba(255, 0, 64, 0.5);
     }
     .not-found p {
-      margin: 0 0 20px 0;
+      margin: 0 0 24px 0;
       color: var(--text-muted);
-      font-size: 1.05rem;
+      font-size: 1rem;
+    }
+    .not-found .card {
+      background: rgba(13, 13, 21, 0.9);
+      border-color: var(--neon-green);
+      box-shadow: 
+        0 0 40px rgba(0, 255, 65, 0.2),
+        inset 0 0 60px rgba(0, 255, 65, 0.05);
+    }
+    .not-found .cta {
+      justify-content: center;
+    }
+    .not-found nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .terminal-line {
+      font-family: var(--font-mono);
+      color: var(--neon-green);
+      margin: 20px 0;
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border-left: 3px solid var(--neon-red);
+      text-align: left;
+      display: inline-block;
+    }
+    .terminal-line::before {
+      content: "$ ";
+      color: var(--neon-cyan);
     }
   </style>
 </head>
 <body id="top">
+  <div class="grid-bg" aria-hidden="true"></div>
   <div class="scroll-progress" aria-hidden="true"></div>
   <canvas id="code-rain-404" aria-hidden="true"></canvas>
   <header class="site-header">
     <div class="container header-inner">
       <a href="/" class="brand" aria-label="На главную">YALOKGAR</a>
-      <button class="theme-toggle" aria-label="Сменить тему" title="Тема: системная"><i class="ri-computer-line" aria-hidden="true"></i></button>
+      <button class="theme-toggle" aria-label="Сменить тему" title="Тема: тёмная"><i class="ri-moon-line" aria-hidden="true"></i></button>
     </div>
   </header>
 
@@ -59,37 +139,32 @@
     <article class="card reveal">
       <div class="card-body">
         <div class="code">404</div>
-        <h1>Страница не найдена</h1>
-        <p>Возможно, страница была перемещена или адрес введён с ошибкой.</p>
+        <h1>[ ACCESS DENIED ]</h1>
+        <div class="terminal-line">page_not_found --error=0x404</div>
+        <p>// Запрашиваемый ресурс не существует или был перемещён</p>
         <div class="cta">
-          <a class="btn primary" href="/"><i class="ri-home-5-line" aria-hidden="true"></i>На главную</a>
-          <a class="btn outline" href="mailto:yalokgar@gmail.com"><i class="ri-mail-line" aria-hidden="true"></i>Сообщить о проблеме</a>
+          <a class="btn primary" href="/"><i class="ri-home-5-line" aria-hidden="true"></i>root.home()</a>
+          <a class="btn outline" href="mailto:yalokgar@gmail.com"><i class="ri-bug-line" aria-hidden="true"></i>report.bug()</a>
         </div>
-        <nav aria-label="Популярные разделы" style="margin-top:14px">
-          <a class="btn small" href="/#about">Обо мне</a>
-          <a class="btn small" href="/#projects">Проекты</a>
-          <a class="btn small" href="/#product">Продукт</a>
-          <a class="btn small" href="/#faq">FAQ</a>
-          <a class="btn small" href="/#contact">Контакты</a>
-          <a class="btn small" href="/sitemap.xml">Карта сайта</a>
+        <nav aria-label="Популярные разделы" style="margin-top:20px">
+          <a class="btn small" href="/#about">about</a>
+          <a class="btn small" href="/#projects">projects</a>
+          <a class="btn small" href="/#product">product</a>
+          <a class="btn small" href="/#faq">faq</a>
+          <a class="btn small" href="/#contact">contact</a>
         </nav>
       </div>
     </article>
   </main>
-  <div class="section-divider" aria-hidden="true">
-    <svg class="wave" viewBox="0 0 1440 100" preserveAspectRatio="none">
-      <path d="M0,64 C240,120 480,8 720,48 C960,88 1200,88 1440,32 L1440,100 L0,100 Z"></path>
-    </svg>
-  </div>
+  <div class="section-divider" aria-hidden="true"></div>
 
   <footer class="site-footer">
     <div class="container">
-      <p>© <span id="year">2025</span> YALOKGAR.</p>
+      <p>[ <span id="year">2025</span> ] :: YALOKGAR :: system.error</p>
     </div>
   </footer>
 
-  
-  <script defer src="./script.js?v=20251103-1"></script>
+  <script defer src="./script.js?v=20251209-1"></script>
   <a href="#top" class="to-top" aria-label="Наверх"><i class="ri-arrow-up-line" aria-hidden="true"></i></a>
   <noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>
 </body>
