@@ -1040,7 +1040,7 @@
 
       const create = () => {
         if (heroRain) return;
-        heroRain = new CodeRain(heroCanvas, { fontSize: low ? 18 : 16, speed: low ? 0.8 : 1.2, backgroundAlpha: low ? 0.06 : 0.05 });
+        heroRain = new CodeRain(heroCanvas, { fontSize: low ? 20 : 18, speed: low ? 0.5 : 0.7, backgroundAlpha: low ? 0.08 : 0.06 });
         heroCanvas._rain = heroRain;
 
         const onResize = () => heroRain._resize(hero || heroCanvas);
