@@ -633,12 +633,37 @@
         return Object.keys(result).length ? result : null;
       }).catch(() => null);
     };
+    const CACHE_KEY = "leetcode_stats_cache";
+    const CACHE_TTL = 30 * 60 * 1000;
+    const loadCache = () => {
+      try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const { data, timestamp } = JSON.parse(raw);
+        if (Date.now() - timestamp > CACHE_TTL) {
+          localStorage.removeItem(CACHE_KEY);
+          return null;
+        }
+        return data;
+      } catch { return null; }
+    };
+    const saveCache = (data) => {
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+      } catch {}
+    };
+    const cached = loadCache();
+    if (cached) {
+      applyAll(cached);
+      return;
+    }
     applyAll(seed);
     Promise.allSettled([fetchAlpha(), fetchStats()]).then((results) => {
       const merged = Object.assign({}, seed);
       results.forEach((res) => {
         if (res.status === "fulfilled") merge(merged, res.value);
       });
+      saveCache(merged);
       if (typeof merged.solved !== "number" || Number.isNaN(merged.solved)) {
         const easy = typeof merged.easySolved === "number" ? merged.easySolved : undefined;
         const medium = typeof merged.mediumSolved === "number" ? merged.mediumSolved : undefined;
