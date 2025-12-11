@@ -1756,6 +1756,8 @@ html[data-lowperf="1"] .site-header {
   display: block;
   width: 100% !important;
   height: 100% !important;
+  position: relative;
+  z-index: 2;
 }
 
 .workspace-canvas::before {
@@ -1782,6 +1784,11 @@ html[data-lowperf="1"] .site-header {
   text-transform: uppercase;
   z-index: 0;
   animation: pulse-loading 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.workspace-canvas.loaded::after {
+  display: none;
 }
 
 .workspace-canvas:has(canvas)::after {

@@ -11,19 +11,19 @@
   };
 
   const C = {
-    bg: 0x080810,
-    deskWood: 0x1e1e2a,
+    bg: 0x0a0a12,
+    deskWood: 0x2a2a3a,
     deskEdge: 0x00ff41,
-    metal: 0x2a2a3a,
-    metalDark: 0x1a1a28,
-    pcCase: 0x0f0f18,
-    pcGlass: 0x1a1a2a,
-    monitor: 0x0a0a12,
+    metal: 0x4a4a5a,
+    metalDark: 0x3a3a4a,
+    pcCase: 0x1a1a2a,
+    pcGlass: 0x2a3a4a,
+    monitor: 0x1a1a2a,
     screen: 0x0a0a0f,
-    keyboard: 0x15151f,
-    mouse: 0x1a1a28,
-    mug: 0x2d2d3d,
-    coffee: 0x1a0f08,
+    keyboard: 0x252535,
+    mouse: 0x2a2a3a,
+    mug: 0x4a4a5a,
+    coffee: 0x3a2010,
     neonGreen: 0x00ff41,
     neonCyan: 0x00f0ff,
     neonPink: 0xff00ff,
@@ -424,9 +424,9 @@
   }
 
   function setupLights() {
-    scene.add(new THREE.AmbientLight(0x101020, 0.5));
+    scene.add(new THREE.AmbientLight(0x404060, 1.2));
 
-    const main = new THREE.DirectionalLight(0xffffff, 0.7);
+    const main = new THREE.DirectionalLight(0xffffff, 1.5);
     main.position.set(3, 5, 4);
     main.castShadow = true;
     main.shadow.mapSize.set(1024, 1024);
@@ -438,24 +438,28 @@
     main.shadow.camera.bottom = -2;
     scene.add(main);
 
-    const fill = new THREE.DirectionalLight(0x8888ff, 0.2);
+    const fill = new THREE.DirectionalLight(0x8888ff, 0.6);
     fill.position.set(-3, 2, 2);
     scene.add(fill);
 
-    const monitorLight = new THREE.PointLight(C.neonGreen, 0.4, 2.5);
-    monitorLight.position.set(-0.2, 1.5, 0.2);
+    const back = new THREE.DirectionalLight(0xffffff, 0.5);
+    back.position.set(0, 3, -3);
+    scene.add(back);
+
+    const monitorLight = new THREE.PointLight(C.neonGreen, 1.0, 4);
+    monitorLight.position.set(-0.2, 1.5, 0.5);
     scene.add(monitorLight);
 
-    const pcLight = new THREE.PointLight(C.neonCyan, 0.5, 2);
-    pcLight.position.set(1.1, 1.1, -0.2);
+    const pcLight = new THREE.PointLight(C.neonCyan, 1.2, 3);
+    pcLight.position.set(1.1, 1.1, 0);
     scene.add(pcLight);
 
-    const mugLight = new THREE.PointLight(C.neonCyan, 0.3, 1.5);
+    const mugLight = new THREE.PointLight(C.neonCyan, 0.8, 2);
     mugLight.position.set(-0.9, 1, 0.3);
     scene.add(mugLight);
 
-    const accent = new THREE.PointLight(C.neonPurple, 0.25, 3);
-    accent.position.set(0, 0.5, 1.5);
+    const accent = new THREE.PointLight(C.neonPurple, 0.6, 4);
+    accent.position.set(0, 0.5, 2);
     scene.add(accent);
   }
 
@@ -509,10 +513,13 @@
 
   let codeScroll = 0;
   let fanAngle = 0;
+  let frameCount = 0;
 
   function animate() {
     animId = requestAnimationFrame(animate);
     const dt = clock.getDelta();
+    frameCount++;
+    if (frameCount === 1) console.log('[Workspace3D] First frame rendered, canvas:', renderer.domElement.width, 'x', renderer.domElement.height);
     const t = clock.getElapsedTime();
 
     const f = Math.min(1, dt * 3.5);
@@ -572,30 +579,41 @@
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(C.bg);
-    scene.fog = new THREE.FogExp2(C.bg, 0.08);
+    scene.fog = new THREE.FogExp2(C.bg, 0.03);
 
-    camera = new THREE.PerspectiveCamera(CONFIG.camera.fov, container.clientWidth / container.clientHeight, 0.1, 50);
+    camera = new THREE.PerspectiveCamera(CONFIG.camera.fov, (container.clientWidth || 800) / (container.clientHeight || 500), 0.1, 50);
     camera.position.set(CONFIG.camera.position.x, CONFIG.camera.position.y, CONFIG.camera.position.z);
     targetCamPos = { ...CONFIG.camera.position };
     targetLookAt = { ...CONFIG.camera.lookAt };
     currentLookAt = { ...CONFIG.camera.lookAt };
     camera.lookAt(currentLookAt.x, currentLookAt.y, currentLookAt.z);
 
+    const cw = container.clientWidth || 800;
+    const ch = container.clientHeight || 500;
+    console.log('[Workspace3D] Container size:', cw, 'x', ch);
+    
     renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(cw, ch);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.8;
     container.appendChild(renderer.domElement);
 
     const floorGeo = new THREE.PlaneGeometry(10, 10);
-    const floorMat = new THREE.MeshStandardMaterial({ color: 0x080810, roughness: 0.9 });
+    const floorMat = new THREE.MeshStandardMaterial({ color: 0x101020, roughness: 0.9 });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     scene.add(floor);
+
+    const testGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    const testMat = new THREE.MeshBasicMaterial({ color: 0x00ff41 });
+    const testCube = new THREE.Mesh(testGeo, testMat);
+    testCube.position.set(0, 1.5, 0);
+    scene.add(testCube);
+    console.log('[Workspace3D] Test cube added at (0, 1.5, 0)');
 
     desk = createDesk();
     scene.add(desk);
@@ -627,6 +645,7 @@
     window.addEventListener('resize', onResize);
 
     container.style.cursor = 'grab';
+    container.classList.add('loaded');
     isInit = true;
     animate();
   }
@@ -640,28 +659,40 @@
     isInit = false;
   }
 
-  function loadThree() {
-    return new Promise((res, rej) => {
-      if (window.THREE) return res();
-      const s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js';
-      s.onload = res;
-      s.onerror = rej;
-      document.head.appendChild(s);
-    });
+  function showError(msg) {
+    const c = document.getElementById(CONFIG.containerId);
+    if (c) c.innerHTML = `<div class="workspace-fallback"><span>${msg}</span></div>`;
   }
 
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting && !isInit) loadThree().then(init).catch(console.error);
-    });
-  }, { rootMargin: '200px' });
-
-  document.addEventListener('DOMContentLoaded', () => {
+  function boot() {
+    console.log('[Workspace3D] boot called');
     const c = document.getElementById(CONFIG.containerId);
-    if (c) io.observe(c);
-  });
+    console.log('[Workspace3D] container:', c);
+    if (!c) { console.log('[Workspace3D] no container'); return; }
+    if (isInit) { console.log('[Workspace3D] already init'); return; }
+    
+    if (typeof THREE === 'undefined') {
+      console.error('[Workspace3D] THREE is undefined');
+      showError('Three.js не загружен');
+      return;
+    }
+    console.log('[Workspace3D] THREE version:', THREE.REVISION);
+    
+    try {
+      init();
+      console.log('[Workspace3D] init success');
+    } catch (err) {
+      console.error('[Workspace3D] init error:', err);
+      showError('Ошибка: ' + err.message);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 
   window.addEventListener('pagehide', dispose);
-  window.Workspace3D = { init, dispose };
+  window.Workspace3D = { init, dispose, boot };
 })();
