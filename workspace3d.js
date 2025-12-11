@@ -608,13 +608,6 @@
     floor.receiveShadow = true;
     scene.add(floor);
 
-    const testGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-    const testMat = new THREE.MeshBasicMaterial({ color: 0x00ff41 });
-    const testCube = new THREE.Mesh(testGeo, testMat);
-    testCube.position.set(0, 1.5, 0);
-    scene.add(testCube);
-    console.log('[Workspace3D] Test cube added at (0, 1.5, 0)');
-
     desk = createDesk();
     scene.add(desk);
 
