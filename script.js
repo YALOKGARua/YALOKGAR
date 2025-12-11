@@ -23,10 +23,9 @@
     const drops = Array(columns).fill(1);
     
     const draw = () => {
-      ctx.fillStyle = "rgba(10, 10, 15, 0.05)";
+      ctx.fillStyle = "rgba(10, 10, 15, 0.04)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      ctx.fillStyle = "#00ff41";
       ctx.font = `${fontSize}px "JetBrains Mono", monospace`;
       
       for (let i = 0; i < drops.length; i++) {
@@ -35,17 +34,27 @@
         const y = drops[i] * fontSize;
         
         const brightness = Math.random();
-        if (brightness > 0.95) {
+        if (brightness > 0.97) {
           ctx.fillStyle = "#ffffff";
-        } else if (brightness > 0.8) {
+          ctx.shadowColor = "#00ff41";
+          ctx.shadowBlur = 20;
+        } else if (brightness > 0.85) {
           ctx.fillStyle = "#00ff41";
-      } else {
-          ctx.fillStyle = `rgba(0, 255, 65, ${0.3 + brightness * 0.5})`;
+          ctx.shadowColor = "#00ff41";
+          ctx.shadowBlur = 15;
+        } else if (brightness > 0.6) {
+          ctx.fillStyle = `rgba(0, 255, 65, ${0.6 + brightness * 0.4})`;
+          ctx.shadowColor = "#00ff41";
+          ctx.shadowBlur = 10;
+        } else {
+          ctx.fillStyle = `rgba(0, 255, 65, ${0.2 + brightness * 0.4})`;
+          ctx.shadowBlur = 0;
         }
         
         ctx.fillText(char, x, y);
+        ctx.shadowBlur = 0;
         
-        if (y > canvas.height && Math.random() > 0.975) {
+        if (y > canvas.height && Math.random() > 0.98) {
           drops[i] = 0;
         }
         
@@ -53,7 +62,7 @@
       }
     };
     
-    setInterval(draw, 50);
+    setInterval(draw, 40);
   };
   
   const initCursorGlow = () => {
