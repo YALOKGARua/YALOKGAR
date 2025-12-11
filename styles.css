@@ -1713,3 +1713,159 @@ html[data-lowperf="1"] .site-header {
 :where(body, body *):not(input):not(textarea):not([contenteditable]) {
   caret-color: transparent;
 }
+
+.workspace-panel {
+  padding-bottom: 40px;
+}
+
+.workspace-intro {
+  margin: 20px 0 30px;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.workspace-intro .highlight-monitor {
+  color: var(--neon-green);
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+}
+
+.workspace-intro .highlight-mug {
+  color: var(--neon-cyan);
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.workspace-canvas {
+  width: 100%;
+  height: 500px;
+  min-height: 400px;
+  max-height: 70vh;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 
+    inset 0 0 60px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(0, 255, 65, 0.1);
+}
+
+.workspace-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.workspace-canvas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: var(--radius);
+  box-shadow: 
+    inset 0 0 100px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(0, 255, 65, 0.1);
+}
+
+.workspace-canvas::after {
+  content: "Загрузка 3D сцены...";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  z-index: 0;
+  animation: pulse-loading 2s ease-in-out infinite;
+}
+
+.workspace-canvas:has(canvas)::after {
+  display: none;
+}
+
+@keyframes pulse-loading {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+.workspace-hints {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.workspace-hints span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.workspace-hints span:hover {
+  border-color: var(--neon-green);
+  color: var(--text);
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+}
+
+.workspace-hints span i {
+  font-size: 1.1rem;
+}
+
+.workspace-hints span:first-child i {
+  color: var(--neon-green);
+  text-shadow: 0 0 10px var(--neon-green);
+}
+
+.workspace-hints span:last-child i {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.workspace-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 40px;
+}
+
+@media (max-width: 768px) {
+  .workspace-canvas {
+    height: 350px;
+    min-height: 300px;
+  }
+  
+  .workspace-hints {
+    gap: 16px;
+    flex-direction: column;
+  }
+  
+  .workspace-hints span {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .workspace-canvas {
+    height: 280px;
+    min-height: 250px;
+  }
+}

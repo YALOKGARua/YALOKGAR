@@ -159,6 +159,7 @@
     <div class="container header-inner">
       <a href="#top" class="brand" aria-label="На главную">YALOKGAR</a>
       <nav id="site-nav" class="nav" aria-label="Основная навигация">
+        <a href="#workspace">3D Рабочее место</a>
         <a href="#about">Обо мне</a>
         <a href="#skills">Навыки</a>
         <a href="#projects">Проекты</a>
@@ -229,6 +230,20 @@
       </div>
     </section>
     <div class="section-divider" aria-hidden="true"></div>
+
+    <section id="workspace" class="section">
+      <div class="container reveal" data-aos="fade-up">
+        <div class="code-panel workspace-panel">
+          <h2>workspace.render()</h2>
+          <p class="workspace-intro">Интерактивное 3D рабочее место. Наведите на <span class="highlight-monitor">монитор</span> для зума к коду или на <span class="highlight-mug">кружку</span> — появится пар.</p>
+          <div id="workspace-3d" class="workspace-canvas"></div>
+          <div class="workspace-hints">
+            <span><i class="ri-computer-line"></i> Монитор → зум к коду</span>
+            <span><i class="ri-goblet-line"></i> Кружка → эффект пара</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section id="about" class="section alt">
       <div class="container reveal" data-aos="fade-up">
@@ -667,6 +682,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.31/bundled/lenis.min.js"></script>
   <script defer src="./script.js?v=20251209-1"></script>
+  <script defer src="./workspace3d.js?v=20251211-1"></script>
   <a href="#top" class="to-top" aria-label="Наверх"><i class="ri-arrow-up-line" aria-hidden="true"></i></a>
   <noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>
   <noscript>Для полноценной работы сайта включите JavaScript.</noscript>
