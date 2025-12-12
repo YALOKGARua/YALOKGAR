@@ -1,10 +1,10 @@
-const CACHE_NAME = "yalokgar-v20251103-1";
+const CACHE_NAME = "yalokgar-v20241212-2";
 const APP_SHELL = [
   "/",
   "/index.html",
   "/404.html",
-  "/styles.css?v=20251103-1",
-  "/script.js?v=20251103-1",
+  "/styles.css?v=20241212",
+  "/script.js?v=20241212",
   "/manifest.webmanifest",
   "/assets/favicon.svg",
   "/assets/images/profile.jpg"
