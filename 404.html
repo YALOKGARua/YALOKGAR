@@ -2,170 +2,380 @@
 <html lang="ru" data-theme="dark">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>[ ERROR 404 ] — YALOKGAR</title>
-  <meta name="robots" content="noindex" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="color-scheme" content="dark" />
+  
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" sizes="any" />
-  <link rel="shortcut icon" href="./photo_2025-05-15_16-53-42.jpg" type="image/jpeg" />
   <link rel="apple-touch-icon" href="./photo_2025-05-15_16-53-42.jpg" />
-  <link rel="mask-icon" href="./assets/favicon.svg" color="#00ff41" />
+  
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize/modern-normalize.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" />
   
-  <link rel="stylesheet" href="./styles.css?v=20251209-1" />
-  <meta name="color-scheme" content="dark" />
   <style>
-    .not-found {
-      min-height: calc(100dvh - var(--header-h) - 120px);
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 48px 16px;
-      position: relative;
+    :root {
+      --color-bg: #0a0a0f;
+      --color-surface: #111118;
+      --color-text: #e8e8e8;
+      --color-text-muted: #6b7280;
+      --color-border: #1f1f2e;
+      --neon-green: #00ff41;
+      --neon-cyan: #00f0ff;
+      --neon-pink: #ff00ff;
+      --neon-red: #ff0040;
+      --font-display: "Instrument Serif", Georgia, serif;
+      --font-sans: "Space Grotesk", sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
     }
-    .not-found .code {
-      font-size: clamp(72px, 15vw, 140px);
-      font-weight: 900;
-      letter-spacing: 8px;
+    
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    
+    .scan-line {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 255, 65, 0.02) 2px,
+        rgba(0, 255, 65, 0.02) 4px
+      );
+    }
+    
+    .scan-line::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: linear-gradient(to bottom, rgba(0, 255, 65, 0.08), transparent);
+      animation: scan 8s linear infinite;
+    }
+    
+    @keyframes scan {
+      0% { top: -100px; }
+      100% { top: 100%; }
+    }
+    
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 20px clamp(20px, 5vw, 80px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+    }
+    
+    .logo {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--neon-green);
+      text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+      text-decoration: none;
+    }
+    
+    .main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 20px 80px;
+    }
+    
+    .error-card {
+      max-width: 600px;
+      background: rgba(17, 17, 24, 0.9);
+      border: 1px solid var(--neon-green);
+      border-radius: 12px;
+      padding: 48px;
+      text-align: center;
+      box-shadow: 
+        0 0 40px rgba(0, 255, 65, 0.2),
+        inset 0 0 60px rgba(0, 255, 65, 0.05);
+      animation: card-glow 2s ease-in-out infinite;
+    }
+    
+    @keyframes card-glow {
+      0%, 100% { box-shadow: 0 0 40px rgba(0, 255, 65, 0.2), inset 0 0 60px rgba(0, 255, 65, 0.05); }
+      50% { box-shadow: 0 0 60px rgba(0, 255, 65, 0.3), inset 0 0 80px rgba(0, 255, 65, 0.08); }
+    }
+    
+    .error-code {
+      font-family: var(--font-mono);
+      font-size: clamp(80px, 20vw, 160px);
+      font-weight: 700;
       line-height: 1;
-      margin: 0 0 20px 0;
-      font-family: var(--font-display);
       color: var(--neon-green);
       text-shadow: 
         0 0 20px var(--neon-green),
         0 0 40px var(--neon-green),
         0 0 80px rgba(0, 255, 65, 0.5);
-      animation: error-glitch 2s ease-in-out infinite;
+      margin-bottom: 16px;
+      animation: error-glitch 3s ease-in-out infinite;
     }
+    
     @keyframes error-glitch {
-      0%, 100% { 
+      0%, 90%, 100% { 
         text-shadow: 
           0 0 20px var(--neon-green),
           0 0 40px var(--neon-green),
           0 0 80px rgba(0, 255, 65, 0.5);
         transform: translate(0);
       }
-      5% {
+      92% {
         text-shadow: 
-          -3px 0 var(--neon-pink),
-          3px 0 var(--neon-cyan);
+          -4px 0 var(--neon-pink),
+          4px 0 var(--neon-cyan);
         transform: translate(-3px, 0);
       }
-      10% {
+      94% {
         text-shadow: 
-          0 0 20px var(--neon-green),
-          0 0 40px var(--neon-green);
-        transform: translate(0);
+          4px 0 var(--neon-pink),
+          -4px 0 var(--neon-cyan);
+        transform: translate(3px, 0);
       }
-      50% {
-        text-shadow: 
-          0 0 20px var(--neon-green),
-          0 0 40px var(--neon-green);
-        transform: translate(0);
-      }
-      55% {
-        text-shadow: 
-          3px 0 var(--neon-pink),
-          -3px 0 var(--neon-cyan);
-        transform: translate(2px, 0);
-      }
-      60% {
+      96% {
         text-shadow: 
           0 0 20px var(--neon-green),
           0 0 40px var(--neon-green);
         transform: translate(0);
       }
     }
-    .not-found h1 {
-      font-family: var(--font-display);
+    
+    .error-title {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      letter-spacing: 4px;
-      margin: 0 0 16px 0;
       color: var(--neon-red);
-      text-shadow: 0 0 20px rgba(255, 0, 64, 0.5);
+      text-shadow: 0 0 10px rgba(255, 0, 64, 0.5);
+      margin-bottom: 24px;
     }
-    .not-found p {
-      margin: 0 0 24px 0;
-      color: var(--text-muted);
-      font-size: 1rem;
-    }
-    .not-found .card {
-      background: rgba(13, 13, 21, 0.9);
-      border-color: var(--neon-green);
-      box-shadow: 
-        0 0 40px rgba(0, 255, 65, 0.2),
-        inset 0 0 60px rgba(0, 255, 65, 0.05);
-    }
-    .not-found .cta {
-      justify-content: center;
-    }
-    .not-found nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: center;
-    }
+    
     .terminal-line {
       font-family: var(--font-mono);
+      font-size: 0.9rem;
       color: var(--neon-green);
-      margin: 20px 0;
       padding: 12px 20px;
       background: rgba(0, 0, 0, 0.4);
       border-left: 3px solid var(--neon-red);
       text-align: left;
-      display: inline-block;
+      margin-bottom: 24px;
+      border-radius: 0 4px 4px 0;
     }
+    
     .terminal-line::before {
       content: "$ ";
       color: var(--neon-cyan);
     }
+    
+    .error-desc {
+      color: var(--color-text-muted);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    
+    .error-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background: rgba(0, 255, 65, 0.1);
+      border: 2px solid var(--neon-green);
+      color: var(--neon-green);
+      text-shadow: 0 0 10px var(--neon-green);
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    }
+    
+    .btn-primary:hover {
+      background: var(--neon-green);
+      color: var(--color-bg);
+      text-shadow: none;
+      box-shadow: 0 0 40px var(--neon-green);
+      transform: translateY(-2px);
+    }
+    
+    .btn-ghost {
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+    }
+    
+    .btn-ghost:hover {
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+    }
+    
+    .quick-links {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .quick-link {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 8px 16px;
+      background: rgba(0, 255, 65, 0.05);
+      border: 1px solid var(--color-border);
+      border-radius: 100px;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .quick-link:hover {
+      border-color: var(--neon-green);
+      color: var(--neon-green);
+      background: rgba(0, 255, 65, 0.1);
+    }
+    
+    .footer {
+      padding: 24px clamp(20px, 5vw, 80px);
+      border-top: 1px solid var(--color-border);
+      text-align: center;
+    }
+    
+    .footer p {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+    
+    .footer span {
+      color: var(--neon-green);
+    }
+    
+    @media (max-width: 600px) {
+      .error-card {
+        padding: 32px 24px;
+      }
+      
+      .error-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
   </style>
 </head>
-<body id="top">
-  <div class="grid-bg" aria-hidden="true"></div>
-  <div class="scroll-progress" aria-hidden="true"></div>
-  <canvas id="code-rain-404" aria-hidden="true"></canvas>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a href="/" class="brand" aria-label="На главную">YALOKGAR</a>
-      <button class="theme-toggle" aria-label="Сменить тему" title="Тема: тёмная"><i class="ri-moon-line" aria-hidden="true"></i></button>
-    </div>
+<body>
+  <div class="scan-line" aria-hidden="true"></div>
+  
+  <header class="header">
+    <a href="/" class="logo" aria-label="YALOKGAR - На главную">[YG]</a>
   </header>
-
-  <main class="not-found">
-    <article class="card reveal">
-      <div class="card-body">
-        <div class="code">404</div>
-        <h1>[ ACCESS DENIED ]</h1>
-        <div class="terminal-line">page_not_found --error=0x404</div>
-        <p>// Запрашиваемый ресурс не существует или был перемещён</p>
-        <div class="cta">
-          <a class="btn primary" href="/"><i class="ri-home-5-line" aria-hidden="true"></i>root.home()</a>
-          <a class="btn outline" href="mailto:yalokgar@gmail.com"><i class="ri-bug-line" aria-hidden="true"></i>report.bug()</a>
-        </div>
-        <nav aria-label="Популярные разделы" style="margin-top:20px">
-          <a class="btn small" href="/#about">about</a>
-          <a class="btn small" href="/#projects">projects</a>
-          <a class="btn small" href="/#product">product</a>
-          <a class="btn small" href="/#faq">faq</a>
-          <a class="btn small" href="/#contact">contact</a>
-        </nav>
+  
+  <main class="main">
+    <article class="error-card">
+      <div class="error-code" aria-hidden="true">404</div>
+      <h1 class="error-title">[ ACCESS DENIED ]</h1>
+      <div class="terminal-line" aria-hidden="true">page_not_found --error=0x404</div>
+      <p class="error-desc">
+        Запрашиваемый ресурс не существует или был перемещён.<br>
+        Возможно, вы ввели неверный адрес или страница была удалена.
+      </p>
+      <div class="error-actions">
+        <a href="/" class="btn btn-primary">
+          <i class="ri-home-5-line" aria-hidden="true"></i>
+          На главную
+        </a>
+        <a href="mailto:yalokgar@gmail.com" class="btn btn-ghost">
+          <i class="ri-bug-line" aria-hidden="true"></i>
+          Сообщить об ошибке
+        </a>
       </div>
+      <nav class="quick-links" aria-label="Быстрые ссылки">
+        <a href="/#about" class="quick-link">about</a>
+        <a href="/#projects" class="quick-link">projects</a>
+        <a href="/#product" class="quick-link">product</a>
+        <a href="/#faq" class="quick-link">faq</a>
+        <a href="/#contact" class="quick-link">contact</a>
+      </nav>
     </article>
   </main>
-  <div class="section-divider" aria-hidden="true"></div>
-
-  <footer class="site-footer">
-    <div class="container">
-      <p>[ <span id="year">2025</span> ] :: YALOKGAR :: system.error</p>
-    </div>
+  
+  <footer class="footer">
+    <p>[ <span>2025</span> ] :: YALOKGAR :: system.error</p>
   </footer>
-
-  <script defer src="./script.js?v=20251209-1"></script>
-  <a href="#top" class="to-top" aria-label="Наверх"><i class="ri-arrow-up-line" aria-hidden="true"></i></a>
-  <noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>
+  
+  <noscript>
+    <style>
+      .scan-line::after { animation: none !important; }
+      .error-code { animation: none !important; }
+      .error-card { animation: none !important; }
+    </style>
+  </noscript>
 </body>
 </html>

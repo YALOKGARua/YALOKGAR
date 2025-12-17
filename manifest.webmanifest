@@ -1,15 +1,34 @@
 {
-  "name": "YALOKGAR",
+  "name": "YALOKGAR — C/C++ Developer",
   "short_name": "YALOKGAR",
+  "description": "C/C++ разработчик (Qt, системное программирование, оптимизация производительности)",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#0a0a0f",
   "theme_color": "#00ff41",
   "lang": "ru",
+  "dir": "ltr",
+  "categories": ["developer", "portfolio", "programming"],
   "icons": [
-    { "src": "./assets/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
-    { "src": "./photo_2025-05-15_16-53-42.jpg", "sizes": "192x192", "type": "image/jpeg" },
-    { "src": "./photo_2025-05-15_16-53-42.jpg", "sizes": "512x512", "type": "image/jpeg" }
-  ]
+    {
+      "src": "./assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./photo_2025-05-15_16-53-42.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "./photo_2025-05-15_16-53-42.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
 }

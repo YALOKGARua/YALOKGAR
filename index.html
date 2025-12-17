@@ -2,9 +2,12 @@
 <html lang="ru" data-theme="dark">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>YALOKGAR — C/C++ разработчик (Qt, системное программирование, оптимизация)</title>
   <meta name="description" content="C/C++ разработчик (Qt, системное программирование, оптимизация производительности). Разработка на заказ, аудит и профилирование, Киев/Украина." />
+  <meta name="keywords" content="C++, C, Qt, QML, разработчик, программист, системное программирование, оптимизация, Киев, Украина, YALOKGAR" />
+  <meta name="author" content="YALOKGAR" />
+  <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://yalokgar.com/" />
   <link rel="me" href="https://github.com/YALOKGARua" />
   <link rel="me" href="https://t.me/YALOKGAR" />
@@ -14,15 +17,24 @@
   <meta property="og:title" content="YALOKGAR — C/C++ разработчик" />
   <meta property="og:description" content="C/C++ разработчик (Qt, системное программирование, оптимизация производительности)." />
   <meta property="og:image" content="https://yalokgar.com/assets/images/og-image.jpg" />
+  <meta property="og:site_name" content="YALOKGAR" />
+  <meta property="og:locale" content="ru_RU" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="YALOKGAR — C/C++ разработчик" />
+  <meta name="twitter:description" content="C/C++ разработчик (Qt, системное программирование, оптимизация производительности)." />
+  <meta name="twitter:image" content="https://yalokgar.com/assets/images/og-image.jpg" />
 
   <meta name="theme-color" content="#0a0a0f" />
   <meta name="color-scheme" content="dark" />
+  <meta name="msapplication-TileColor" content="#0a0a0f" />
 
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" sizes="any" />
   <link rel="apple-touch-icon" href="./photo_2025-05-15_16-53-42.jpg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" as="style" />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" />
 
@@ -37,7 +49,21 @@
     "url": "https://yalokgar.com/",
     "image": "https://yalokgar.com/assets/images/profile.jpg",
     "jobTitle": "C/C++ разработчик",
-    "sameAs": ["https://github.com/YALOKGARua", "https://t.me/YALOKGAR"]
+    "worksFor": {
+      "@type": "Organization",
+      "name": "BNB Solution"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kyiv",
+      "addressCountry": "UA"
+    },
+    "sameAs": [
+      "https://github.com/YALOKGARua",
+      "https://t.me/YALOKGAR",
+      "https://orcid.org/0009-0003-2879-2740"
+    ],
+    "knowsAbout": ["C++", "C", "Qt", "QML", "System Programming", "Performance Optimization"]
   }
   </script>
 </head>
@@ -46,13 +72,13 @@
   <div class="scan-line" aria-hidden="true"></div>
   <div class="cursor-glow" aria-hidden="true"></div>
 
-  <header class="header">
-    <a href="#" class="logo">
+  <header class="header" role="banner">
+    <a href="#" class="logo" aria-label="YALOKGAR - На главную">
       <span class="logo-bracket">[</span>
       <span class="logo-text">YG</span>
       <span class="logo-bracket">]</span>
     </a>
-    <nav class="nav" id="nav">
+    <nav class="nav" id="nav" role="navigation" aria-label="Основная навигация">
       <a href="#about" class="nav-link">About</a>
       <a href="#skills" class="nav-link">Skills</a>
       <a href="#projects" class="nav-link">Projects</a>
@@ -61,21 +87,21 @@
       <a href="#product" class="nav-link">Product</a>
       <a href="#faq" class="nav-link">FAQ</a>
       <a href="#contact" class="nav-link">Contact</a>
-      </nav>
-    <button class="menu-btn" aria-label="Меню">
+    </nav>
+    <button class="menu-btn" aria-label="Открыть меню навигации" aria-expanded="false" aria-controls="nav">
       <span></span>
       <span></span>
     </button>
   </header>
 
-  <main>
-    <section class="hero" id="hero">
+  <main role="main">
+    <section class="hero" id="hero" aria-labelledby="hero-title">
       <div class="hero-content">
         <div class="terminal-line" data-animate="fade-up">
           <span class="prompt">root@yalokgar:~$</span>
           <span class="command typing">./init_developer.sh</span>
         </div>
-        <h1 class="hero-title" data-animate="fade-up" data-delay="1">
+        <h1 id="hero-title" class="hero-title" data-animate="fade-up" data-delay="1">
           <span class="line">Привет, я</span>
           <span class="line glitch" data-text="YALOKGAR">YALOKGAR</span>
         </h1>
@@ -86,26 +112,26 @@
         <div class="hero-cta" data-animate="fade-up" data-delay="3">
           <a href="#projects" class="btn btn-neon">
             <span>Смотреть работы</span>
-            <i class="ri-arrow-down-line"></i>
+            <i class="ri-arrow-down-line" aria-hidden="true"></i>
           </a>
           <a href="#contact" class="btn btn-ghost">
-            <i class="ri-terminal-line"></i>
+            <i class="ri-terminal-line" aria-hidden="true"></i>
             <span>Контакт</span>
           </a>
-          <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener" class="btn btn-ghost">
-            <i class="ri-github-line"></i>
+          <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
+            <i class="ri-github-line" aria-hidden="true"></i>
             <span>GitHub</span>
           </a>
-              </div>
-            </div>
+        </div>
+      </div>
       <div class="hero-visual" data-animate="scale">
         <div class="hero-image-wrap">
-          <img src="./assets/images/profile.jpg" alt="YALOKGAR" class="hero-image" />
-          <div class="hero-ring ring-1"></div>
-          <div class="hero-ring ring-2"></div>
-          <div class="hero-ring ring-3"></div>
+          <img src="./assets/images/profile.jpg" alt="YALOKGAR - C/C++ разработчик" class="hero-image" width="300" height="300" loading="eager" />
+          <div class="hero-ring ring-1"><div class="ring-dot"></div></div>
+          <div class="hero-ring ring-2"><div class="ring-dot"></div></div>
+          <div class="hero-ring ring-3"><div class="ring-dot"></div></div>
         </div>
-        <div class="code-window">
+        <div class="code-window" aria-hidden="true">
           <div class="code-header">
             <span class="dot red"></span>
             <span class="dot yellow"></span>
@@ -113,42 +139,43 @@
             <span class="code-title">main.cpp</span>
           </div>
           <pre class="code-body"><code><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;memory&gt;</span>
 
 <span class="kw">class</span> <span class="ty">Developer</span> {
 <span class="kw">public</span>:
-  <span class="fn">Developer</span>(<span class="ty">std</span>::string n) 
-    : name(<span class="kw">std</span>::move(n)) {}
+  <span class="kw">explicit</span> <span class="fn">Developer</span>(<span class="ty">std</span>::string n) 
+    : name_(<span class="kw">std</span>::move(n)) {}
 
-  <span class="ty">void</span> <span class="fn">hack</span>() {
+  <span class="ty">void</span> <span class="fn">execute</span>() <span class="kw">const</span> {
     <span class="kw">std</span>::cout << <span class="str">"[ACCESS GRANTED]"</span>;
   }
 <span class="kw">private</span>:
-  <span class="ty">std</span>::string name;
+  <span class="ty">std</span>::string name_;
 };
 
 <span class="ty">int</span> <span class="fn">main</span>() {
-  <span class="ty">Developer</span> yg(<span class="str">"YALOKGAR"</span>);
-  yg.<span class="fn">hack</span>();
+  <span class="kw">auto</span> dev = <span class="kw">std</span>::make_unique&lt;<span class="ty">Developer</span>&gt;(
+    <span class="str">"YALOKGAR"</span>);
+  dev-><span class="fn">execute</span>();
   <span class="kw">return</span> <span class="num">0</span>;
 }</code></pre>
-            </div>
-        <div class="floating-badge badge-1" data-float>
+        </div>
+        <div class="floating-badge badge-1" data-float aria-hidden="true">
           <span class="badge-icon">⚡</span>
           <span class="badge-text">C++20/23</span>
-          </div>
-        <div class="floating-badge badge-2" data-float>
+        </div>
+        <div class="floating-badge badge-2" data-float aria-hidden="true">
           <span class="badge-icon">🔧</span>
           <span class="badge-text">Qt/QML</span>
         </div>
       </div>
-      <div class="scroll-indicator" data-animate="fade-up" data-delay="4">
+      <div class="scroll-indicator" data-animate="fade-up" data-delay="4" aria-hidden="true">
         <span>Scroll</span>
         <div class="scroll-line"></div>
       </div>
     </section>
 
-    <section class="marquee-section">
+    <section class="marquee-section" aria-hidden="true">
       <div class="marquee">
         <div class="marquee-content">
           <span>C++ Development</span>
@@ -167,11 +194,11 @@
       </div>
     </section>
 
-    <section class="about" id="about">
+    <section class="about" id="about" aria-labelledby="about-title">
       <div class="container">
         <div class="section-header">
           <span class="section-tag" data-animate="fade-up">&lt;about&gt;</span>
-          <h2 class="section-title" data-animate="fade-up" data-delay="1">
+          <h2 id="about-title" class="section-title" data-animate="fade-up" data-delay="1">
             <span class="title-line">Немного</span>
             <span class="title-line neon-gradient">обо мне</span>
           </h2>
@@ -181,20 +208,20 @@
             <p class="lead">
               C/C++ разработчик с фокусом на кроссплатформенные desktop‑приложения, 
               системное программирование и оптимизацию производительности.
-        </p>
-        <p>
+            </p>
+            <p>
               Использую современные практики C++20/23, RAII, шаблоны, профилирование и отладку. 
               Текущий фокус: Qt6 и QML, эффективность алгоритмов и структур данных, 
               безопасность памяти и конкурентность.
-        </p>
-            <ul class="about-list">
-              <li><span class="list-marker">></span> Modern C++ (C++20/23, STL, RAII, move semantics)</li>
-              <li><span class="list-marker">></span> Кроссплатформенная разработка (Qt, CMake; Linux/Windows/macOS)</li>
-              <li><span class="list-marker">></span> Оптимизация производительности (GDB, Valgrind, Clang)</li>
-              <li><span class="list-marker">></span> Системное программирование: сети, файловые системы</li>
-        </ul>
+            </p>
+            <ul class="about-list" role="list">
+              <li><span class="list-marker" aria-hidden="true">></span> Modern C++ (C++20/23, STL, RAII, move semantics)</li>
+              <li><span class="list-marker" aria-hidden="true">></span> Кроссплатформенная разработка (Qt, CMake; Linux/Windows/macOS)</li>
+              <li><span class="list-marker" aria-hidden="true">></span> Оптимизация производительности (GDB, Valgrind, Clang)</li>
+              <li><span class="list-marker" aria-hidden="true">></span> Системное программирование: сети, файловые системы</li>
+            </ul>
           </div>
-          <div class="about-terminal" data-animate="fade-up" data-delay="3">
+          <div class="about-terminal" data-animate="fade-up" data-delay="3" aria-hidden="true">
             <div class="terminal-header">
               <span class="dot red"></span>
               <span class="dot yellow"></span>
@@ -211,25 +238,25 @@
                 <div>Status: <span class="neon-green">[ ONLINE ]</span></div>
               </div>
               <div class="term-line"><span class="prompt">$</span> <span class="cursor-blink">_</span></div>
-        </div>
-      </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="skills" id="skills">
+    <section class="skills" id="skills" aria-labelledby="skills-title">
       <div class="container">
         <div class="section-header">
           <span class="section-tag" data-animate="fade-up">&lt;skills&gt;</span>
-          <h2 class="section-title" data-animate="fade-up" data-delay="1">
+          <h2 id="skills-title" class="section-title" data-animate="fade-up" data-delay="1">
             <span class="title-line">Технологии &</span>
             <span class="title-line neon-gradient">навыки</span>
           </h2>
-                  </div>
+        </div>
         <div class="skills-grid" data-animate="fade-up" data-delay="2">
-          <div class="skill-category">
+          <article class="skill-category">
             <h3 class="skill-category-title">
-              <i class="ri-code-s-slash-line"></i>
+              <i class="ri-code-s-slash-line" aria-hidden="true"></i>
               Languages
             </h3>
             <div class="skill-items">
@@ -240,23 +267,23 @@
               <span class="skill-chip" data-level="intermediate">Go</span>
               <span class="skill-chip" data-level="intermediate">JavaScript</span>
             </div>
-                  </div>
-          <div class="skill-category">
+          </article>
+          <article class="skill-category">
             <h3 class="skill-category-title">
-              <i class="ri-stack-line"></i>
+              <i class="ri-stack-line" aria-hidden="true"></i>
               Frameworks
             </h3>
             <div class="skill-items">
-              <span class="skill-chip" data-level="expert">Qt</span>
+              <span class="skill-chip" data-level="expert">Qt6</span>
               <span class="skill-chip" data-level="expert">STL</span>
               <span class="skill-chip" data-level="advanced">Boost</span>
               <span class="skill-chip" data-level="advanced">POCO</span>
               <span class="skill-chip" data-level="intermediate">Electron</span>
             </div>
-                  </div>
-          <div class="skill-category">
+          </article>
+          <article class="skill-category">
             <h3 class="skill-category-title">
-              <i class="ri-tools-line"></i>
+              <i class="ri-tools-line" aria-hidden="true"></i>
               Tools
             </h3>
             <div class="skill-items">
@@ -265,11 +292,12 @@
               <span class="skill-chip" data-level="advanced">Valgrind</span>
               <span class="skill-chip" data-level="advanced">Clang</span>
               <span class="skill-chip" data-level="expert">Git</span>
+              <span class="skill-chip" data-level="intermediate">Docker</span>
             </div>
-                  </div>
-          <div class="skill-category">
+          </article>
+          <article class="skill-category">
             <h3 class="skill-category-title">
-              <i class="ri-database-2-line"></i>
+              <i class="ri-database-2-line" aria-hidden="true"></i>
               Databases
             </h3>
             <div class="skill-items">
@@ -277,10 +305,10 @@
               <span class="skill-chip" data-level="advanced">SQLite</span>
               <span class="skill-chip" data-level="intermediate">Redis</span>
             </div>
-                  </div>
-          <div class="skill-category">
+          </article>
+          <article class="skill-category">
             <h3 class="skill-category-title">
-              <i class="ri-computer-line"></i>
+              <i class="ri-computer-line" aria-hidden="true"></i>
               Platforms
             </h3>
             <div class="skill-items">
@@ -288,20 +316,20 @@
               <span class="skill-chip" data-level="expert">Windows</span>
               <span class="skill-chip" data-level="advanced">macOS</span>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="projects" id="projects">
+    <section class="projects" id="projects" aria-labelledby="projects-title">
       <div class="container">
         <div class="section-header">
           <span class="section-tag" data-animate="fade-up">&lt;projects&gt;</span>
-          <h2 class="section-title" data-animate="fade-up" data-delay="1">
+          <h2 id="projects-title" class="section-title" data-animate="fade-up" data-delay="1">
             <span class="title-line">Избранные</span>
             <span class="title-line neon-gradient">проекты</span>
           </h2>
-                  </div>
+        </div>
         
         <div class="projects-list">
           <article class="project-card" data-animate="fade-up">
@@ -317,11 +345,11 @@
                 <span>Electron</span>
                 <span>React</span>
                 <span>Image Processing</span>
-                  </div>
+              </div>
             </div>
-            <a href="https://github.com/YALOKGARua/YG-Unikalizer" target="_blank" rel="noopener" class="project-link">
+            <a href="https://github.com/YALOKGARua/YG-Unikalizer" target="_blank" rel="noopener noreferrer" class="project-link">
               <span>GitHub</span>
-              <i class="ri-arrow-right-up-line"></i>
+              <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
             </a>
           </article>
 
@@ -338,11 +366,11 @@
                 <span>Assembly</span>
                 <span>Security</span>
                 <span>Kernel</span>
-          </div>
-        </div>
-            <a href="https://github.com/YALOKGARua/AntiCheatYALOKGAR" target="_blank" rel="noopener" class="project-link">
+              </div>
+            </div>
+            <a href="https://github.com/YALOKGARua/AntiCheatYALOKGAR" target="_blank" rel="noopener noreferrer" class="project-link">
               <span>GitHub</span>
-              <i class="ri-arrow-right-up-line"></i>
+              <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
             </a>
           </article>
 
@@ -360,9 +388,9 @@
                 <span>Low-Level</span>
               </div>
             </div>
-            <a href="https://github.com/YALOKGARua/VirtuProcessor" target="_blank" rel="noopener" class="project-link">
+            <a href="https://github.com/YALOKGARua/VirtuProcessor" target="_blank" rel="noopener noreferrer" class="project-link">
               <span>GitHub</span>
-              <i class="ri-arrow-right-up-line"></i>
+              <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
             </a>
           </article>
 
@@ -379,9 +407,9 @@
                 <span>Security</span>
               </div>
             </div>
-            <a href="https://github.com/YALOKGARua/CryptoMaster-" target="_blank" rel="noopener" class="project-link">
+            <a href="https://github.com/YALOKGARua/CryptoMaster-" target="_blank" rel="noopener noreferrer" class="project-link">
               <span>GitHub</span>
-              <i class="ri-arrow-right-up-line"></i>
+              <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
             </a>
           </article>
 
@@ -396,11 +424,11 @@
                 <span>C++</span>
                 <span>Database</span>
                 <span>SQL</span>
-                      </div>
-                    </div>
-            <a href="https://github.com/YALOKGARua/DBManager" target="_blank" rel="noopener" class="project-link">
+              </div>
+            </div>
+            <a href="https://github.com/YALOKGARua/DBManager" target="_blank" rel="noopener noreferrer" class="project-link">
               <span>GitHub</span>
-              <i class="ri-arrow-right-up-line"></i>
+              <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
             </a>
           </article>
 
@@ -415,49 +443,49 @@
                 <span>C++</span>
                 <span>Trading</span>
                 <span>Algorithms</span>
-                    </div>
-                  </div>
-            <a href="https://github.com/YALOKGARua/TradingStrategy" target="_blank" rel="noopener" class="project-link">
+              </div>
+            </div>
+            <a href="https://github.com/YALOKGARua/TradingStrategy" target="_blank" rel="noopener noreferrer" class="project-link">
               <span>GitHub</span>
-              <i class="ri-arrow-right-up-line"></i>
+              <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
             </a>
           </article>
-                    </div>
+        </div>
 
-        <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener" class="view-all" data-animate="fade-up">
+        <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer" class="view-all" data-animate="fade-up">
           <span>Все проекты на GitHub</span>
-          <i class="ri-arrow-right-up-line"></i>
+          <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
         </a>
-                    </div>
+      </div>
     </section>
 
-    <section class="stats" id="stats">
+    <section class="stats" id="stats" aria-labelledby="stats-title">
       <div class="container">
         <div class="section-header">
           <span class="section-tag" data-animate="fade-up">&lt;stats&gt;</span>
-          <h2 class="section-title" data-animate="fade-up" data-delay="1">
+          <h2 id="stats-title" class="section-title" data-animate="fade-up" data-delay="1">
             <span class="title-line">GitHub &</span>
             <span class="title-line neon-gradient">LeetCode</span>
           </h2>
-                    </div>
+        </div>
 
         <div class="stats-grid">
-          <div class="stat-card github-card" data-animate="fade-up">
+          <article class="stat-card github-card" data-animate="fade-up">
             <div class="stat-card-header">
-              <i class="ri-github-fill"></i>
+              <i class="ri-github-fill" aria-hidden="true"></i>
               <span>GitHub Stats</span>
-                  </div>
-            <img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=YALOKGARua&theme=github_dark" alt="GitHub Profile" loading="lazy" />
-            <img src="https://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=YALOKGARua&theme=github_dark" alt="Top Languages" loading="lazy" />
-                </div>
+            </div>
+            <img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=YALOKGARua&theme=github_dark" alt="GitHub профиль YALOKGAR - статистика активности" loading="lazy" width="100%" height="auto" />
+            <img src="https://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=YALOKGARua&theme=github_dark" alt="Распределение языков программирования в репозиториях" loading="lazy" width="100%" height="auto" />
+          </article>
 
-          <div class="stat-card leetcode-card" data-animate="fade-up" data-delay="1">
+          <article class="stat-card leetcode-card" data-animate="fade-up" data-delay="1">
             <div class="stat-card-header">
-              <i class="ri-code-box-fill"></i>
+              <i class="ri-code-box-fill" aria-hidden="true"></i>
               <span>LeetCode Stats</span>
-                    </div>
+            </div>
             <div class="leetcode-stats">
-              <div class="leetcode-wheel">
+              <div class="leetcode-wheel" aria-label="Всего решено 1742 задачи">
                 <div class="wheel-ring"></div>
                 <div class="wheel-center">
                   <span class="wheel-number">1742</span>
@@ -481,94 +509,94 @@
                   <span class="diff-count">327/881</span>
                 </div>
               </div>
-                </div>
+            </div>
             <div class="leetcode-metrics">
-                <div class="metric">
+              <div class="metric">
                 <span class="metric-value">1576</span>
                 <span class="metric-label">Contest Rating</span>
-                </div>
-                <div class="metric">
+              </div>
+              <div class="metric">
                 <span class="metric-value">205K</span>
                 <span class="metric-label">Global Rank</span>
-                </div>
-                <div class="metric">
+              </div>
+              <div class="metric">
                 <span class="metric-value">26.76%</span>
                 <span class="metric-label">Top Percentile</span>
-                </div>
-                <div class="metric">
+              </div>
+              <div class="metric">
                 <span class="metric-value">72</span>
                 <span class="metric-label">Active Days</span>
               </div>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="achievements" id="achievements">
+    <section class="achievements" id="achievements" aria-labelledby="achievements-title">
       <div class="container">
         <div class="section-header">
           <span class="section-tag" data-animate="fade-up">&lt;achievements&gt;</span>
-          <h2 class="section-title" data-animate="fade-up" data-delay="1">
+          <h2 id="achievements-title" class="section-title" data-animate="fade-up" data-delay="1">
             <span class="title-line">CodinGame</span>
             <span class="title-line neon-gradient">Certifications</span>
           </h2>
         </div>
 
         <div class="achievements-grid">
-          <div class="achievement-card legend" data-animate="fade-up">
+          <article class="achievement-card legend" data-animate="fade-up">
             <div class="achievement-rank">LEGEND</div>
-            <div class="achievement-icon">CS</div>
+            <div class="achievement-icon" aria-hidden="true">CS</div>
             <div class="achievement-content">
               <h3>Coding Speed</h3>
               <p>Молниеносное решение сложных задач, глубокое знание языков и окружений.</p>
             </div>
-          </div>
+          </article>
 
-          <div class="achievement-card legend" data-animate="fade-up">
+          <article class="achievement-card legend" data-animate="fade-up">
             <div class="achievement-rank">LEGEND</div>
-            <div class="achievement-icon">ALG</div>
+            <div class="achievement-icon" aria-hidden="true">ALG</div>
             <div class="achievement-content">
               <h3>Algorithms</h3>
               <p>Графы, динамическое программирование, обработка изображений и криптография.</p>
             </div>
-                  </div>
+          </article>
 
-          <div class="achievement-card legend" data-animate="fade-up">
+          <article class="achievement-card legend" data-animate="fade-up">
             <div class="achievement-rank">LEGEND</div>
-            <div class="achievement-icon">COL</div>
+            <div class="achievement-icon" aria-hidden="true">COL</div>
             <div class="achievement-content">
               <h3>Collaboration</h3>
               <p>Командная работа, менторство и вклад в сообщества на высшем уровне.</p>
-                  </div>
-                  </div>
+            </div>
+          </article>
 
-          <div class="achievement-card legend" data-animate="fade-up">
+          <article class="achievement-card legend" data-animate="fade-up">
             <div class="achievement-rank">LEGEND</div>
-            <div class="achievement-icon">OPT</div>
+            <div class="achievement-icon" aria-hidden="true">OPT</div>
             <div class="achievement-content">
               <h3>Optimization</h3>
               <p>Максимальная эффективность по CPU и памяти для embedded-систем.</p>
-                  </div>
-                  </div>
+            </div>
+          </article>
 
-          <div class="achievement-card gold" data-animate="fade-up">
+          <article class="achievement-card gold" data-animate="fade-up">
             <div class="achievement-rank">GOLD</div>
-            <div class="achievement-icon">AI</div>
+            <div class="achievement-icon" aria-hidden="true">AI</div>
             <div class="achievement-content">
               <h3>Artificial Intelligence</h3>
               <p>Разработка стратегических AI-ботов, адаптирующихся к контексту.</p>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="product" id="product">
+    <section class="product" id="product" aria-labelledby="product-title">
       <div class="container">
         <div class="section-header">
           <span class="section-tag" data-animate="fade-up">&lt;product&gt;</span>
-          <h2 class="section-title" data-animate="fade-up" data-delay="1">
+          <h2 id="product-title" class="section-title" data-animate="fade-up" data-delay="1">
             <span class="title-line">Мой</span>
             <span class="title-line neon-gradient">продукт</span>
           </h2>
@@ -576,8 +604,8 @@
 
         <div class="product-showcase" data-animate="fade-up" data-delay="2">
           <div class="product-visual">
-            <img src="https://raw.githubusercontent.com/YALOKGARua/YG-Unikalizer/main/docs/hero.svg" alt="YG Unikalizer" />
-            <div class="product-glow"></div>
+            <img src="https://raw.githubusercontent.com/YALOKGARua/YG-Unikalizer/main/docs/hero.svg" alt="YG Unikalizer - интерфейс приложения" loading="lazy" width="100%" height="auto" />
+            <div class="product-glow" aria-hidden="true"></div>
           </div>
           <div class="product-info">
             <h3 class="product-name">YG Unikalizer</h3>
@@ -585,24 +613,24 @@
               Мощный инструмент для уникализации фото с нативным ускорением на C++, 
               современным UI на Electron + React 19 и продвинутым поиском дубликатов.
             </p>
-            <ul class="product-features">
-              <li><i class="ri-check-line"></i> Форматы: JPG, PNG, WebP, AVIF, HEIC</li>
-              <li><i class="ri-check-line"></i> Очистка/подмена EXIF, защита приватности</li>
-              <li><i class="ri-check-line"></i> Поиск дубликатов по перцепционным хешам (a/d/pHash)</li>
-              <li><i class="ri-check-line"></i> Стабильные сборки для Windows</li>
-              <li><i class="ri-check-line"></i> Многоязычность: RU, UK, EN, AR, ZH</li>
-              </ul>
+            <ul class="product-features" role="list">
+              <li><i class="ri-check-line" aria-hidden="true"></i> Форматы: JPG, PNG, WebP, AVIF, HEIC</li>
+              <li><i class="ri-check-line" aria-hidden="true"></i> Очистка/подмена EXIF, защита приватности</li>
+              <li><i class="ri-check-line" aria-hidden="true"></i> Поиск дубликатов по перцепционным хешам (a/d/pHash)</li>
+              <li><i class="ri-check-line" aria-hidden="true"></i> Стабильные сборки для Windows</li>
+              <li><i class="ri-check-line" aria-hidden="true"></i> Многоязычность: RU, UK, EN, AR, ZH</li>
+            </ul>
             <div class="product-price">
               <span class="price-label">Цена:</span>
               <span class="price-value">по запросу</span>
-              </div>
+            </div>
             <div class="product-actions">
-              <a href="https://t.me/YALOKGAR" target="_blank" rel="noopener" class="btn btn-neon">
-                <i class="ri-telegram-line"></i>
+              <a href="https://t.me/YALOKGAR" target="_blank" rel="noopener noreferrer" class="btn btn-neon">
+                <i class="ri-telegram-line" aria-hidden="true"></i>
                 <span>Купить в Telegram</span>
               </a>
-              <a href="https://github.com/YALOKGARua/YG-Unikalizer" target="_blank" rel="noopener" class="btn btn-ghost">
-                <i class="ri-github-line"></i>
+              <a href="https://github.com/YALOKGARua/YG-Unikalizer" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
+                <i class="ri-github-line" aria-hidden="true"></i>
                 <span>GitHub</span>
               </a>
             </div>
@@ -611,81 +639,81 @@
       </div>
     </section>
 
-    <section class="faq" id="faq">
+    <section class="faq" id="faq" aria-labelledby="faq-title">
       <div class="container">
         <div class="section-header">
           <span class="section-tag" data-animate="fade-up">&lt;faq&gt;</span>
-          <h2 class="section-title" data-animate="fade-up" data-delay="1">
+          <h2 id="faq-title" class="section-title" data-animate="fade-up" data-delay="1">
             <span class="title-line">Часто задаваемые</span>
             <span class="title-line neon-gradient">вопросы</span>
           </h2>
         </div>
 
-        <div class="faq-list">
-          <div class="faq-item" data-animate="fade-up">
-            <button class="faq-question">
+        <div class="faq-list" role="list">
+          <article class="faq-item" data-animate="fade-up">
+            <button class="faq-question" aria-expanded="false">
               <span>Какие услуги вы предоставляете как C/C++ разработчик?</span>
-              <i class="ri-add-line"></i>
+              <i class="ri-add-line" aria-hidden="true"></i>
             </button>
             <div class="faq-answer">
               <p>Разработка кроссплатформенных desktop‑приложений (Qt/QML), системное программирование, оптимизация производительности, аудит и профилирование, рефакторинг, консультации.</p>
             </div>
-          </div>
+          </article>
 
-          <div class="faq-item" data-animate="fade-up">
-            <button class="faq-question">
+          <article class="faq-item" data-animate="fade-up">
+            <button class="faq-question" aria-expanded="false">
               <span>Работаете ли вы с Qt и QML?</span>
-              <i class="ri-add-line"></i>
+              <i class="ri-add-line" aria-hidden="true"></i>
             </button>
             <div class="faq-answer">
               <p>Да. Qt6/QML, кроссплатформенные GUI, интеграция с CMake, подготовка стабильных сборок для Windows/Linux/macOS.</p>
             </div>
-          </div>
+          </article>
 
-          <div class="faq-item" data-animate="fade-up">
-            <button class="faq-question">
+          <article class="faq-item" data-animate="fade-up">
+            <button class="faq-question" aria-expanded="false">
               <span>Помогаете ли с оптимизацией C/C++ приложений?</span>
-              <i class="ri-add-line"></i>
+              <i class="ri-add-line" aria-hidden="true"></i>
             </button>
             <div class="faq-answer">
               <p>Да. Профилирование, устранение узких мест, оптимизация алгоритмов и структур данных, безопасная конкурентность, снижение потребления памяти и CPU.</p>
             </div>
-          </div>
+          </article>
 
-          <div class="faq-item" data-animate="fade-up">
-            <button class="faq-question">
+          <article class="faq-item" data-animate="fade-up">
+            <button class="faq-question" aria-expanded="false">
               <span>Можно ли заказать аудит или рефакторинг существующего кода?</span>
-              <i class="ri-add-line"></i>
+              <i class="ri-add-line" aria-hidden="true"></i>
             </button>
             <div class="faq-answer">
               <p>Да. Провожу аудит качества, безопасности и производительности, предлагаю план улучшений и постепенно реализую изменения.</p>
             </div>
-          </div>
+          </article>
 
-          <div class="faq-item" data-animate="fade-up">
-            <button class="faq-question">
+          <article class="faq-item" data-animate="fade-up">
+            <button class="faq-question" aria-expanded="false">
               <span>Что такое YG Unikalizer?</span>
-              <i class="ri-add-line"></i>
+              <i class="ri-add-line" aria-hidden="true"></i>
             </button>
             <div class="faq-answer">
               <p>Инструмент для уникализации фото с нативным ускорением на C++, поддержкой a/d/pHash поиска дубликатов и управлением EXIF. Доступен в релизах GitHub и по запросу.</p>
             </div>
-          </div>
+          </article>
 
-          <div class="faq-item" data-animate="fade-up">
-            <button class="faq-question">
+          <article class="faq-item" data-animate="fade-up">
+            <button class="faq-question" aria-expanded="false">
               <span>Как связаться и обсудить проект?</span>
-              <i class="ri-add-line"></i>
+              <i class="ri-add-line" aria-hidden="true"></i>
             </button>
             <div class="faq-answer">
               <p>Напишите в Telegram @YALOKGAR или на email yalokgar@gmail.com. Отвечаю в течение 24 часов.</p>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="marquee-section marquee-reverse">
+    <section class="marquee-section marquee-reverse" aria-hidden="true">
       <div class="marquee" data-direction="reverse">
         <div class="marquee-content">
           <span>Let's Work Together</span>
@@ -700,12 +728,12 @@
       </div>
     </section>
 
-    <section class="contact" id="contact">
+    <section class="contact" id="contact" aria-labelledby="contact-title">
       <div class="container">
         <div class="contact-wrap">
           <div class="contact-info" data-animate="fade-up">
             <span class="section-tag">&lt;contact&gt;</span>
-            <h2 class="contact-title">
+            <h2 id="contact-title" class="contact-title">
               Давайте создадим<br>
               <span class="neon-gradient">что-то крутое</span>
             </h2>
@@ -714,80 +742,80 @@
               Свяжитесь любым удобным способом.
             </p>
           </div>
-          <div class="contact-links" data-animate="fade-up" data-delay="1">
+          <address class="contact-links" data-animate="fade-up" data-delay="1">
             <a href="mailto:yalokgar@gmail.com" class="contact-link-item">
-              <i class="ri-mail-line"></i>
+              <i class="ri-mail-line" aria-hidden="true"></i>
               <div class="contact-link-text">
                 <span class="contact-link-label">Email</span>
                 <span class="contact-link-value">yalokgar@gmail.com</span>
               </div>
-              <i class="ri-arrow-right-up-line arrow"></i>
+              <i class="ri-arrow-right-up-line arrow" aria-hidden="true"></i>
             </a>
             <a href="mailto:yalokgardeveloper@yalokgar.com" class="contact-link-item">
-              <i class="ri-briefcase-line"></i>
+              <i class="ri-briefcase-line" aria-hidden="true"></i>
               <div class="contact-link-text">
                 <span class="contact-link-label">Business</span>
                 <span class="contact-link-value">yalokgardeveloper@yalokgar.com</span>
               </div>
-              <i class="ri-arrow-right-up-line arrow"></i>
+              <i class="ri-arrow-right-up-line arrow" aria-hidden="true"></i>
             </a>
-            <a href="https://t.me/YALOKGAR" target="_blank" rel="noopener" class="contact-link-item">
-              <i class="ri-telegram-line"></i>
+            <a href="https://t.me/YALOKGAR" target="_blank" rel="noopener noreferrer" class="contact-link-item">
+              <i class="ri-telegram-line" aria-hidden="true"></i>
               <div class="contact-link-text">
                 <span class="contact-link-label">Telegram</span>
                 <span class="contact-link-value">@YALOKGAR</span>
               </div>
-              <i class="ri-arrow-right-up-line arrow"></i>
+              <i class="ri-arrow-right-up-line arrow" aria-hidden="true"></i>
             </a>
-            <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener" class="contact-link-item">
-              <i class="ri-github-line"></i>
+            <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer" class="contact-link-item">
+              <i class="ri-github-line" aria-hidden="true"></i>
               <div class="contact-link-text">
                 <span class="contact-link-label">GitHub</span>
                 <span class="contact-link-value">YALOKGARua</span>
               </div>
-              <i class="ri-arrow-right-up-line arrow"></i>
+              <i class="ri-arrow-right-up-line arrow" aria-hidden="true"></i>
             </a>
-            <a href="https://orcid.org/0009-0003-2879-2740" target="_blank" rel="noopener" class="contact-link-item">
-              <i class="ri-id-card-line"></i>
+            <a href="https://orcid.org/0009-0003-2879-2740" target="_blank" rel="noopener noreferrer" class="contact-link-item">
+              <i class="ri-id-card-line" aria-hidden="true"></i>
               <div class="contact-link-text">
                 <span class="contact-link-label">ORCID</span>
                 <span class="contact-link-value">0009-0003-2879-2740</span>
               </div>
-              <i class="ri-arrow-right-up-line arrow"></i>
+              <i class="ri-arrow-right-up-line arrow" aria-hidden="true"></i>
             </a>
-          </div>
+          </address>
         </div>
         <div class="contact-location" data-animate="fade-up" data-delay="2">
-          <i class="ri-map-pin-line"></i>
+          <i class="ri-map-pin-line" aria-hidden="true"></i>
           <span>Киев, Украина</span>
-          <span class="divider">|</span>
+          <span class="divider" aria-hidden="true">|</span>
           <span>BNB Solution</span>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
+  <footer class="footer" role="contentinfo">
     <div class="container footer-inner">
       <div class="footer-left">
         <span class="footer-logo">[YALOKGAR]</span>
-        <span class="footer-copy">© 2025 :: system.online</span>
+        <span class="footer-copy">© <time datetime="2025">2025</time> :: system.online</span>
       </div>
       <div class="footer-right">
-        <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener" class="footer-social">
-          <i class="ri-github-fill"></i>
+        <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="GitHub">
+          <i class="ri-github-fill" aria-hidden="true"></i>
         </a>
-        <a href="https://t.me/YALOKGAR" target="_blank" rel="noopener" class="footer-social">
-          <i class="ri-telegram-fill"></i>
+        <a href="https://t.me/YALOKGAR" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="Telegram">
+          <i class="ri-telegram-fill" aria-hidden="true"></i>
         </a>
       </div>
     </div>
   </footer>
 
-  <a href="#hero" class="back-to-top" aria-label="Наверх">
-    <i class="ri-arrow-up-line"></i>
+  <a href="#hero" class="back-to-top" aria-label="Вернуться наверх">
+    <i class="ri-arrow-up-line" aria-hidden="true"></i>
   </a>
 
-  <script src="./script.js"></script>
+  <script src="./script.js" defer></script>
 </body>
 </html>
