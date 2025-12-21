@@ -1,8 +1,9 @@
 <!doctype html>
-<html lang="ru" data-theme="dark">
+<html lang="ru" data-theme="dark" class="no-js">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <script>(function(d){var e=d.documentElement;e.classList.remove("no-js");e.classList.add("js");e.dataset.js="pending";})(document);</script>
   <title>YALOKGAR — C/C++ разработчик (Qt, системное программирование, оптимизация)</title>
   <meta name="description" content="C/C++ разработчик (Qt, системное программирование, оптимизация производительности). Разработка на заказ, аудит и профилирование, Киев/Украина." />
   <meta name="keywords" content="C++, C, Qt, QML, разработчик, программист, системное программирование, оптимизация, Киев, Украина, YALOKGAR" />
@@ -34,7 +35,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" as="style" />
+  <link rel="preload" href="./assets/images/profile.jpg" as="image" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" />
 
@@ -73,7 +76,7 @@
   <div class="cursor-glow" aria-hidden="true"></div>
 
   <header class="header" role="banner">
-    <a href="#" class="logo" aria-label="YALOKGAR - На главную">
+    <a href="#hero" class="logo" aria-label="YALOKGAR - На главную">
       <span class="logo-bracket">[</span>
       <span class="logo-text">YG</span>
       <span class="logo-bracket">]</span>
@@ -88,7 +91,7 @@
       <a href="#faq" class="nav-link">FAQ</a>
       <a href="#contact" class="nav-link">Contact</a>
     </nav>
-    <button class="menu-btn" aria-label="Открыть меню навигации" aria-expanded="false" aria-controls="nav">
+    <button class="menu-btn" type="button" aria-label="Открыть меню навигации" aria-expanded="false" aria-controls="nav">
       <span></span>
       <span></span>
     </button>
@@ -126,7 +129,7 @@
       </div>
       <div class="hero-visual" data-animate="scale">
         <div class="hero-image-wrap">
-          <img src="./assets/images/profile.jpg" alt="YALOKGAR - C/C++ разработчик" class="hero-image" width="300" height="300" loading="eager" />
+          <img src="./assets/images/profile.jpg" alt="YALOKGAR - C/C++ разработчик" class="hero-image" width="300" height="300" loading="eager" decoding="async" fetchpriority="high" />
           <div class="hero-ring ring-1"><div class="ring-dot"></div></div>
           <div class="hero-ring ring-2"><div class="ring-dot"></div></div>
           <div class="hero-ring ring-3"><div class="ring-dot"></div></div>
@@ -651,7 +654,7 @@
 
         <div class="faq-list" role="list">
           <article class="faq-item" data-animate="fade-up">
-            <button class="faq-question" aria-expanded="false">
+            <button class="faq-question" type="button" aria-expanded="false">
               <span>Какие услуги вы предоставляете как C/C++ разработчик?</span>
               <i class="ri-add-line" aria-hidden="true"></i>
             </button>
@@ -661,7 +664,7 @@
           </article>
 
           <article class="faq-item" data-animate="fade-up">
-            <button class="faq-question" aria-expanded="false">
+            <button class="faq-question" type="button" aria-expanded="false">
               <span>Работаете ли вы с Qt и QML?</span>
               <i class="ri-add-line" aria-hidden="true"></i>
             </button>
@@ -671,7 +674,7 @@
           </article>
 
           <article class="faq-item" data-animate="fade-up">
-            <button class="faq-question" aria-expanded="false">
+            <button class="faq-question" type="button" aria-expanded="false">
               <span>Помогаете ли с оптимизацией C/C++ приложений?</span>
               <i class="ri-add-line" aria-hidden="true"></i>
             </button>
@@ -681,7 +684,7 @@
           </article>
 
           <article class="faq-item" data-animate="fade-up">
-            <button class="faq-question" aria-expanded="false">
+            <button class="faq-question" type="button" aria-expanded="false">
               <span>Можно ли заказать аудит или рефакторинг существующего кода?</span>
               <i class="ri-add-line" aria-hidden="true"></i>
             </button>
@@ -691,7 +694,7 @@
           </article>
 
           <article class="faq-item" data-animate="fade-up">
-            <button class="faq-question" aria-expanded="false">
+            <button class="faq-question" type="button" aria-expanded="false">
               <span>Что такое YG Unikalizer?</span>
               <i class="ri-add-line" aria-hidden="true"></i>
             </button>
@@ -701,7 +704,7 @@
           </article>
 
           <article class="faq-item" data-animate="fade-up">
-            <button class="faq-question" aria-expanded="false">
+            <button class="faq-question" type="button" aria-expanded="false">
               <span>Как связаться и обсудить проект?</span>
               <i class="ri-add-line" aria-hidden="true"></i>
             </button>

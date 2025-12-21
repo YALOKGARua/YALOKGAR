@@ -1,13 +1,20 @@
-const CACHE_NAME = "yalokgar-v20251217";
+const CACHE_NAME = "yalokgar-v20251221";
+const SCOPE_URL = new URL(self.registration.scope);
+const toScopeUrl = (p) => new URL(p, SCOPE_URL).toString();
 const APP_SHELL = [
-  "/",
-  "/index.html",
-  "/404.html",
-  "/styles.css",
-  "/script.js",
-  "/manifest.webmanifest",
-  "/assets/favicon.svg",
-  "/assets/images/profile.jpg"
+  toScopeUrl("./"),
+  toScopeUrl("./index.html"),
+  toScopeUrl("./404.html"),
+  toScopeUrl("./styles.css"),
+  toScopeUrl("./script.js"),
+  toScopeUrl("./manifest.webmanifest"),
+  toScopeUrl("./photo_2025-05-15_16-53-42.jpg"),
+  toScopeUrl("./robots.txt"),
+  toScopeUrl("./sitemap.xml"),
+  toScopeUrl("./assets/favicon.svg"),
+  toScopeUrl("./assets/images/og-image.jpg"),
+  toScopeUrl("./assets/images/profile.jpg"),
+  toScopeUrl("./assets/images/profile@2x.jpg")
 ];
 
 const CACHE_EXPIRY = 7 * 24 * 60 * 60 * 1000;
@@ -121,10 +128,10 @@ self.addEventListener("fetch", (event) => {
         const response = await networkFirst(request, cache);
         if (response) return response;
         
-        const indexPage = await cache.match("/index.html");
+        const indexPage = await cache.match(toScopeUrl("./index.html"));
         if (indexPage) return indexPage;
         
-        const notFoundPage = await cache.match("/404.html");
+        const notFoundPage = await cache.match(toScopeUrl("./404.html"));
         if (notFoundPage) return notFoundPage;
         
         return new Response("Offline", { 
@@ -133,7 +140,7 @@ self.addEventListener("fetch", (event) => {
         });
       } catch (_) {
         const cache = await caches.open(CACHE_NAME);
-        const indexPage = await cache.match("/index.html");
+        const indexPage = await cache.match(toScopeUrl("./index.html"));
         return indexPage || new Response("Offline", { status: 503 });
       }
     })());

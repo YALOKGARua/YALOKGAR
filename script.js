@@ -1,6 +1,34 @@
 (() => {
+  const root = document.documentElement;
+  if (root.classList.contains("no-js")) root.classList.remove("no-js");
+  root.classList.add("js");
+  if (root.dataset.js !== "ready") root.dataset.js = "pending";
+
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  const enableMotionUI = () => {
+    const animated = document.querySelectorAll("[data-animate]");
+    if (!animated.length) {
+      root.dataset.js = "ready";
+      return;
+    }
+
+    if (prefersReducedMotion || typeof IntersectionObserver === "undefined") {
+      animated.forEach((el) => el.classList.add("is-visible"));
+      root.dataset.js = "ready";
+      return;
+    }
+
+    const vh = window.innerHeight || 0;
+    const cutoff = vh * 0.9;
+    animated.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < cutoff) el.classList.add("is-visible");
+    });
+
+    root.dataset.js = "ready";
+  };
   
   const initMatrixRain = () => {
     if (prefersReducedMotion || isMobile) return;
@@ -10,19 +38,25 @@
     
     const ctx = canvas.getContext("2d");
     
+    const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン{}[]<>;=+-*/%#&|^~!?$@\\/:YALOKGAR".split("");
+    const fontSize = 14;
+    let drops = [];
+    let speeds = [];
+
+    const reset = () => {
+      const columns = Math.max(1, Math.floor(canvas.width / fontSize));
+      drops = Array.from({ length: columns }, () => Math.random() * (canvas.height / fontSize));
+      speeds = Array.from({ length: columns }, () => 0.45 + Math.random() * 0.75);
+    };
+
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      reset();
     };
-    
+
     resize();
-    window.addEventListener("resize", resize);
-    
-    const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン{}[]<>;=+-*/%#&|^~!?$@\\/:YALOKGAR".split("");
-    const fontSize = 14;
-    const columns = Math.floor(canvas.width / fontSize);
-    const drops = Array(columns).fill(1);
-    const speeds = Array(columns).fill(0).map(() => 0.5 + Math.random() * 0.5);
+    window.addEventListener("resize", resize, { passive: true });
     
     const draw = () => {
       ctx.fillStyle = "rgba(10, 10, 15, 0.05)";
@@ -60,14 +94,44 @@
         ctx.shadowBlur = 0;
         
         if (y > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
+          drops[i] = -Math.random() * 10;
         }
         
         drops[i] += speeds[i];
       }
     };
-    
-    setInterval(draw, 35);
+
+    let rafId = 0;
+    let last = 0;
+
+    const frame = (t) => {
+      if (!document.hidden) {
+        if (t - last >= 35) {
+          draw();
+          last = t;
+        }
+      }
+      rafId = requestAnimationFrame(frame);
+    };
+
+    const start = () => {
+      if (rafId) return;
+      last = performance.now();
+      rafId = requestAnimationFrame(frame);
+    };
+
+    const stop = () => {
+      if (!rafId) return;
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    };
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else start();
+    }, { passive: true });
+
+    start();
   };
   
   const initParticles = () => {
@@ -85,7 +149,7 @@
     };
     
     resize();
-    window.addEventListener("resize", resize);
+    window.addEventListener("resize", resize, { passive: true });
     
     const particles = [];
     const particleCount = 50;
@@ -149,6 +213,7 @@
       }
     };
     
+    let rafId = 0;
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
@@ -158,10 +223,26 @@
       });
       
       connectParticles();
-      requestAnimationFrame(animate);
+      rafId = requestAnimationFrame(animate);
     };
-    
-    animate();
+
+    const start = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(animate);
+    };
+
+    const stop = () => {
+      if (!rafId) return;
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    };
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else start();
+    }, { passive: true });
+
+    start();
   };
   
   const initCursorGlow = () => {
@@ -176,7 +257,7 @@
     document.addEventListener("mousemove", (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-    });
+    }, { passive: true });
     
     const animate = () => {
       glowX += (mouseX - glowX) * 0.08;
@@ -239,7 +320,8 @@
         const target = document.querySelector(targetId);
         if (!target) return;
         
-        const headerHeight = 80;
+        const header = document.querySelector(".header");
+        const headerHeight = header instanceof HTMLElement ? header.offsetHeight : 0;
         const targetPosition = target.getBoundingClientRect().top + window.scrollY - headerHeight;
         
         window.scrollTo({
@@ -255,19 +337,43 @@
     const nav = document.querySelector(".nav");
     
     if (!menuBtn || !nav) return;
-    
-    menuBtn.addEventListener("click", () => {
-      menuBtn.classList.toggle("active");
-      nav.classList.toggle("open");
-      document.body.style.overflow = nav.classList.contains("open") ? "hidden" : "";
-    });
-    
+
+    let lastFocused = null;
+
+    const setState = (open) => {
+      menuBtn.classList.toggle("active", open);
+      nav.classList.toggle("open", open);
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      menuBtn.setAttribute("aria-label", open ? "Закрыть меню навигации" : "Открыть меню навигации");
+      document.body.style.overflow = open ? "hidden" : "";
+      if (open) {
+        lastFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        const firstLink = nav.querySelector("a");
+        if (firstLink instanceof HTMLElement) firstLink.focus({ preventScroll: true });
+      } else {
+        if (lastFocused) lastFocused.focus({ preventScroll: true });
+        lastFocused = null;
+      }
+    };
+
+    const isOpen = () => nav.classList.contains("open");
+
+    menuBtn.addEventListener("click", () => setState(!isOpen()));
+
     nav.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        menuBtn.classList.remove("active");
-        nav.classList.remove("open");
-        document.body.style.overflow = "";
-      });
+      link.addEventListener("click", () => setState(false));
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && isOpen()) setState(false);
+    });
+
+    document.addEventListener("pointerdown", (e) => {
+      if (!isOpen()) return;
+      const target = e.target;
+      if (!(target instanceof Node)) return;
+      if (menuBtn.contains(target) || nav.contains(target)) return;
+      setState(false);
     });
   };
   
@@ -302,7 +408,7 @@
         requestAnimationFrame(update);
         ticking = true;
       }
-    });
+    }, { passive: true });
   };
   
   const initActiveNav = () => {
@@ -353,18 +459,57 @@
   const initFAQ = () => {
     const items = document.querySelectorAll(".faq-item");
     
-    items.forEach((item) => {
+    if (!items.length) return;
+
+    const state = new Map();
+
+    const syncHeights = () => {
+      items.forEach((item) => {
+        const s = state.get(item);
+        if (!s) return;
+        if (!item.classList.contains("active")) return;
+        s.answer.style.maxHeight = `${s.answer.scrollHeight}px`;
+      });
+    };
+
+    const closeAll = () => {
+      items.forEach((item) => {
+        const s = state.get(item);
+        if (!s) return;
+        item.classList.remove("active");
+        s.question.setAttribute("aria-expanded", "false");
+        s.answer.style.maxHeight = "0px";
+        s.answer.setAttribute("aria-hidden", "true");
+      });
+    };
+
+    items.forEach((item, idx) => {
       const question = item.querySelector(".faq-question");
-      
+      const answer = item.querySelector(".faq-answer");
+      if (!(question instanceof HTMLButtonElement) || !(answer instanceof HTMLElement)) return;
+
+      const id = answer.id || `faq-answer-${idx + 1}`;
+      answer.id = id;
+      question.setAttribute("aria-controls", id);
+      question.setAttribute("aria-expanded", "false");
+      answer.setAttribute("aria-hidden", "true");
+      answer.style.maxHeight = "0px";
+
+      state.set(item, { question, answer });
+
       question.addEventListener("click", () => {
         const isActive = item.classList.contains("active");
-        
-        items.forEach((i) => i.classList.remove("active"));
-        
-        if (!isActive) {
-          item.classList.add("active");
-        }
+        closeAll();
+        if (isActive) return;
+        item.classList.add("active");
+        question.setAttribute("aria-expanded", "true");
+        answer.setAttribute("aria-hidden", "false");
+        answer.style.maxHeight = `${answer.scrollHeight}px`;
       });
+    });
+
+    window.addEventListener("resize", () => {
+      syncHeights();
     });
   };
 
@@ -378,7 +523,7 @@
       } else {
         btn.classList.remove("visible");
       }
-    });
+    }, { passive: true });
   };
   
   const initTypingEffect = () => {
@@ -406,14 +551,35 @@
     if (prefersReducedMotion) return;
     
     const glitchElements = document.querySelectorAll(".glitch");
-    
-    glitchElements.forEach((el) => {
-      setInterval(() => {
+    if (!glitchElements.length) return;
+
+    let timer = 0;
+
+    const tick = () => {
+      glitchElements.forEach((el) => {
         el.style.animation = "none";
         void el.offsetWidth;
         el.style.animation = "";
-      }, 5000);
-    });
+      });
+    };
+
+    const start = () => {
+      if (timer) return;
+      timer = window.setInterval(tick, 5000);
+    };
+
+    const stop = () => {
+      if (!timer) return;
+      window.clearInterval(timer);
+      timer = 0;
+    };
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else start();
+    }, { passive: true });
+
+    start();
   };
   
   const initSkillHover = () => {
@@ -449,9 +615,9 @@
     window.addEventListener("scroll", () => {
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = scrollTop / docHeight;
+      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
       progressBar.style.transform = `scaleX(${progress})`;
-    });
+    }, { passive: true });
   };
   
   const initParallaxBadges = () => {
@@ -479,7 +645,7 @@
         requestAnimationFrame(update);
         ticking = true;
       }
-    });
+    }, { passive: true });
   };
   
   const initMagneticButtons = () => {
@@ -614,20 +780,26 @@
   };
   
   const initKonamiCode = () => {
-    const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
-    let konamiIndex = 0;
-    
+    if (prefersReducedMotion) return;
+
+    const sequence = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+    let idx = 0;
+
+    const normalizeKey = (k) => (k.length === 1 ? k.toLowerCase() : k);
+
     document.addEventListener("keydown", (e) => {
-      if (e.keyCode === konamiCode[konamiIndex]) {
-        konamiIndex++;
-        
-        if (konamiIndex === konamiCode.length) {
+      const expected = sequence[idx];
+      const actual = normalizeKey(e.key);
+      if (actual === expected) {
+        idx += 1;
+        if (idx === sequence.length) {
           activateEasterEgg();
-          konamiIndex = 0;
+          idx = 0;
         }
-      } else {
-        konamiIndex = 0;
+        return;
       }
+
+      idx = actual === sequence[0] ? 1 : 0;
     });
     
     const activateEasterEgg = () => {
@@ -657,7 +829,11 @@
       }, 2000);
     };
     
+    const existing = document.getElementById("konami-style");
+    if (existing) return;
+
     const style = document.createElement("style");
+    style.id = "konami-style";
     style.textContent = `
       @keyframes rainbow-bg {
         0%, 100% { filter: hue-rotate(0deg); }
@@ -747,8 +923,12 @@
       
       setTimeout(() => ripple.remove(), 600);
     });
-    
+
+    const existing = document.getElementById("click-ripple-style");
+    if (existing) return;
+
     const style = document.createElement("style");
+    style.id = "click-ripple-style";
     style.textContent = `
       @keyframes click-ripple {
         0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
@@ -769,7 +949,16 @@
   const initServiceWorker = () => {
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/sw.js").catch(() => {});
+        const swUrl = new URL("./sw.js", window.location.href);
+        const scopeUrl = new URL("./", window.location.href);
+        navigator.serviceWorker.register(swUrl, { scope: scopeUrl.pathname }).then(() => {
+          let reloading = false;
+          navigator.serviceWorker.addEventListener("controllerchange", () => {
+            if (reloading) return;
+            reloading = true;
+            window.location.reload();
+          });
+        }).catch(() => {});
       });
     }
   };
@@ -781,38 +970,45 @@
   };
   
   const init = () => {
-    initMatrixRain();
-    initParticles();
-    initCursorGlow();
-    initScrollAnimations();
-    initMarquee();
-    initSmoothScroll();
-    initMobileMenu();
-    initHeaderHide();
-    initActiveNav();
-    initProjectHover();
-    initFAQ();
-    initBackToTop();
-    initTypingEffect();
-    initGlitchEffect();
-    initSkillHover();
-    initScrollProgress();
-    initParallaxBadges();
-    initMagneticButtons();
-    initContactLinkCopy();
-    initHeroTextAnimation();
-    initAchievementHover();
-    initLeetCodeAnimation();
-    init3DTilt();
-    initKonamiCode();
-    initTextReveal();
-    initImageHover();
-    initRingDots();
-    initDataStream();
-    initClickRipple();
-    initNoiseOverlay();
-    initServiceWorker();
-    initPreloader();
+    const safe = (fn) => {
+      try { fn(); } catch (_) {}
+    };
+
+    [
+      enableMotionUI,
+      initMatrixRain,
+      initParticles,
+      initCursorGlow,
+      initScrollAnimations,
+      initMarquee,
+      initSmoothScroll,
+      initMobileMenu,
+      initHeaderHide,
+      initActiveNav,
+      initProjectHover,
+      initFAQ,
+      initBackToTop,
+      initTypingEffect,
+      initGlitchEffect,
+      initSkillHover,
+      initScrollProgress,
+      initParallaxBadges,
+      initMagneticButtons,
+      initContactLinkCopy,
+      initHeroTextAnimation,
+      initAchievementHover,
+      initLeetCodeAnimation,
+      init3DTilt,
+      initKonamiCode,
+      initTextReveal,
+      initImageHover,
+      initRingDots,
+      initDataStream,
+      initClickRipple,
+      initNoiseOverlay,
+      initServiceWorker,
+      initPreloader
+    ].forEach(safe);
   };
   
   if (document.readyState === "loading") {
