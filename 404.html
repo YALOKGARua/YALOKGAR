@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>[ ERROR 404 ] — YALOKGAR</title>
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="theme-color" content="#07080f" />
   <meta name="color-scheme" content="dark" />
   
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" sizes="any" />
@@ -18,15 +18,16 @@
   
   <style>
     :root {
-      --color-bg: #0a0a0f;
-      --color-surface: #111118;
+      --color-bg: #07080f;
+      --color-surface: #0f101a;
       --color-text: #e8e8e8;
       --color-text-muted: #6b7280;
-      --color-border: #1f1f2e;
-      --neon-green: #00ff41;
-      --neon-cyan: #00f0ff;
-      --neon-pink: #ff00ff;
-      --neon-red: #ff0040;
+      --color-border: #1d2031;
+      --neon-green: #00e5ff;
+      --neon-cyan: #4cc9ff;
+      --neon-pink: #ff2bd6;
+      --neon-red: #ff2b3d;
+      --neon-blue: #2b6bff;
       --font-display: "Instrument Serif", Georgia, serif;
       --font-sans: "Space Grotesk", sans-serif;
       --font-mono: "JetBrains Mono", monospace;
@@ -61,8 +62,8 @@
       pointer-events: none;
       z-index: -1;
       background-image:
-        linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+        linear-gradient(rgba(76, 201, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(76, 201, 255, 0.03) 1px, transparent 1px);
       background-size: 50px 50px;
     }
     
@@ -75,8 +76,8 @@
         0deg,
         transparent,
         transparent 2px,
-        rgba(0, 255, 65, 0.02) 2px,
-        rgba(0, 255, 65, 0.02) 4px
+        rgba(76, 201, 255, 0.02) 2px,
+        rgba(76, 201, 255, 0.02) 4px
       );
     }
     
@@ -87,7 +88,7 @@
       left: 0;
       right: 0;
       height: 100px;
-      background: linear-gradient(to bottom, rgba(0, 255, 65, 0.08), transparent);
+      background: linear-gradient(to bottom, rgba(76, 201, 255, 0.08), transparent);
       animation: scan 8s linear infinite;
     }
     
@@ -108,7 +109,7 @@
       justify-content: space-between;
       background: rgba(10, 10, 15, 0.85);
       backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+      border-bottom: 1px solid rgba(76, 201, 255, 0.12);
     }
     
     .logo {
@@ -137,14 +138,15 @@
       padding: 48px;
       text-align: center;
       box-shadow: 
-        0 0 40px rgba(0, 255, 65, 0.2),
-        inset 0 0 60px rgba(0, 255, 65, 0.05);
+        0 0 44px rgba(76, 201, 255, 0.18),
+        0 0 70px rgba(43, 107, 255, 0.12),
+        inset 0 0 70px rgba(43, 107, 255, 0.06);
       animation: card-glow 2s ease-in-out infinite;
     }
     
     @keyframes card-glow {
-      0%, 100% { box-shadow: 0 0 40px rgba(0, 255, 65, 0.2), inset 0 0 60px rgba(0, 255, 65, 0.05); }
-      50% { box-shadow: 0 0 60px rgba(0, 255, 65, 0.3), inset 0 0 80px rgba(0, 255, 65, 0.08); }
+      0%, 100% { box-shadow: 0 0 44px rgba(76, 201, 255, 0.18), 0 0 70px rgba(43, 107, 255, 0.12), inset 0 0 70px rgba(43, 107, 255, 0.06); }
+      50% { box-shadow: 0 0 66px rgba(76, 201, 255, 0.26), 0 0 96px rgba(43, 107, 255, 0.16), inset 0 0 92px rgba(43, 107, 255, 0.1); }
     }
     
     .error-code {
@@ -154,9 +156,9 @@
       line-height: 1;
       color: var(--neon-green);
       text-shadow: 
-        0 0 20px var(--neon-green),
-        0 0 40px var(--neon-green),
-        0 0 80px rgba(0, 255, 65, 0.5);
+        0 0 22px rgba(76, 201, 255, 0.85),
+        0 0 52px rgba(43, 107, 255, 0.45),
+        0 0 92px rgba(255, 43, 61, 0.18);
       margin-bottom: 16px;
       animation: error-glitch 3s ease-in-out infinite;
     }
@@ -164,9 +166,9 @@
     @keyframes error-glitch {
       0%, 90%, 100% { 
         text-shadow: 
-          0 0 20px var(--neon-green),
-          0 0 40px var(--neon-green),
-          0 0 80px rgba(0, 255, 65, 0.5);
+          0 0 22px rgba(76, 201, 255, 0.85),
+          0 0 52px rgba(43, 107, 255, 0.45),
+          0 0 92px rgba(255, 43, 61, 0.18);
         transform: translate(0);
       }
       92% {
@@ -183,8 +185,8 @@
       }
       96% {
         text-shadow: 
-          0 0 20px var(--neon-green),
-          0 0 40px var(--neon-green);
+          0 0 22px rgba(76, 201, 255, 0.7),
+          0 0 46px rgba(43, 107, 255, 0.35);
         transform: translate(0);
       }
     }
@@ -196,7 +198,7 @@
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--neon-red);
-      text-shadow: 0 0 10px rgba(255, 0, 64, 0.5);
+      text-shadow: 0 0 12px rgba(255, 43, 61, 0.55);
       margin-bottom: 24px;
     }
     
@@ -247,18 +249,18 @@
     }
     
     .btn-primary {
-      background: rgba(0, 255, 65, 0.1);
-      border: 2px solid var(--neon-green);
-      color: var(--neon-green);
-      text-shadow: 0 0 10px var(--neon-green);
-      box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+      background: linear-gradient(135deg, rgba(43, 107, 255, 0.18), rgba(255, 43, 61, 0.12));
+      border: 1px solid rgba(76, 201, 255, 0.55);
+      color: rgba(232, 232, 232, 0.95);
+      text-shadow: 0 0 12px rgba(76, 201, 255, 0.45);
+      box-shadow: 0 0 22px rgba(76, 201, 255, 0.18), 0 0 44px rgba(43, 107, 255, 0.14);
     }
     
     .btn-primary:hover {
-      background: var(--neon-green);
+      background: linear-gradient(135deg, rgba(76, 201, 255, 0.95), rgba(255, 43, 61, 0.85));
       color: var(--color-bg);
       text-shadow: none;
-      box-shadow: 0 0 40px var(--neon-green);
+      box-shadow: 0 0 28px rgba(76, 201, 255, 0.7), 0 0 64px rgba(43, 107, 255, 0.5), 0 0 84px rgba(255, 43, 61, 0.28);
       transform: translateY(-2px);
     }
     
@@ -284,7 +286,7 @@
       font-family: var(--font-mono);
       font-size: 0.75rem;
       padding: 8px 16px;
-      background: rgba(0, 255, 65, 0.05);
+      background: rgba(43, 107, 255, 0.06);
       border: 1px solid var(--color-border);
       border-radius: 100px;
       color: var(--color-text-muted);
@@ -295,7 +297,7 @@
     .quick-link:hover {
       border-color: var(--neon-green);
       color: var(--neon-green);
-      background: rgba(0, 255, 65, 0.1);
+      background: rgba(76, 201, 255, 0.08);
     }
     
     .footer {

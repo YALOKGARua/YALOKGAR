@@ -7,6 +7,185 @@
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
+  const PERF = (() => {
+    const mem = typeof navigator.deviceMemory === "number" ? navigator.deviceMemory : 8;
+    const cores = typeof navigator.hardwareConcurrency === "number" ? navigator.hardwareConcurrency : 8;
+    const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2.5));
+    const mega = (Math.max(1, window.innerWidth) * Math.max(1, window.innerHeight) * dpr * dpr) / 1e6;
+
+    const conn = typeof navigator.connection === "object" && navigator.connection ? navigator.connection : null;
+    const saveData = !!(conn && conn.saveData);
+    const effectiveType = conn && typeof conn.effectiveType === "string" ? conn.effectiveType : "";
+    const netLow = saveData || effectiveType === "2g" || effectiveType === "slow-2g";
+
+    const hintedLow = prefersReducedMotion || isMobile || mem <= 4 || cores <= 4 || mega >= 5.0 || netLow;
+
+    const url = new URL(window.location.href);
+    const forced = url.searchParams.get("perf");
+    const tier = forced === "low" || forced === "hi" ? forced : hintedLow ? "low" : "hi";
+
+    return tier === "low"
+      ? {
+          tier,
+          matrixFps: 16,
+          particlesFps: 24,
+          canvasScale: 0.62,
+          particleCount: 20,
+          linkDist: 130,
+          linkEvery: 3,
+          shadowScale: 0.6
+        }
+      : {
+          tier,
+          matrixFps: 22,
+          particlesFps: 34,
+          canvasScale: 0.78,
+          particleCount: 30,
+          linkDist: 145,
+          linkEvery: 2,
+          shadowScale: 0.78
+        };
+  })();
+
+  root.dataset.perf = PERF.tier;
+
+  const clampInt = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
+
+  const ACTIVITY = (() => {
+    let lastScroll = 0;
+    const mark = () => {
+      lastScroll = performance.now();
+    };
+    const opts = { passive: true };
+    window.addEventListener("scroll", mark, opts);
+    window.addEventListener("wheel", mark, opts);
+    window.addEventListener("touchmove", mark, opts);
+    return {
+      mark,
+      isScrolling: (t) => t - lastScroll < 140
+    };
+  })();
+
+  const POINTER = (() => {
+    const s = { x: 0, y: 0, inside: false, last: 0 };
+    const update = (e) => {
+      s.x = e.clientX;
+      s.y = e.clientY;
+      s.inside = true;
+      s.last = performance.now();
+    };
+    const leave = () => {
+      s.inside = false;
+      s.last = performance.now();
+    };
+    const opts = { passive: true };
+    if ("PointerEvent" in window) {
+      window.addEventListener("pointermove", update, opts);
+      window.addEventListener("pointerdown", update, opts);
+      window.addEventListener("pointerenter", update, opts);
+      window.addEventListener("pointerleave", leave, opts);
+    } else {
+      window.addEventListener("mousemove", update, opts);
+      window.addEventListener("mousedown", update, opts);
+      window.addEventListener("mouseleave", leave, opts);
+    }
+    window.addEventListener("blur", leave, opts);
+    return s;
+  })();
+
+  const RESIZE = (() => {
+    const fns = new Set();
+    let raf = 0;
+
+    const flush = () => {
+      raf = 0;
+      fns.forEach((fn) => {
+        try { fn(); } catch (_) {}
+      });
+    };
+
+    const on = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(flush);
+    };
+
+    window.addEventListener("resize", on, { passive: true });
+
+    return {
+      add: (fn) => fns.add(fn),
+      delete: (fn) => fns.delete(fn)
+    };
+  })();
+
+  const createTask = (run, { fps = 60, when = () => true } = {}) => {
+    let last = 0;
+    let interval = 1000 / Math.max(1, fps);
+
+    const setFps = (nextFps) => {
+      interval = 1000 / Math.max(1, nextFps);
+    };
+
+    const step = (t) => {
+      if (!when(t)) return;
+      if (t - last < interval) return;
+      last = t;
+      run(t);
+    };
+
+    return { step, setFps };
+  };
+
+  const TICKER = (() => {
+    const tasks = new Map();
+    let rafId = 0;
+    let running = false;
+
+    const frame = (t) => {
+      rafId = requestAnimationFrame(frame);
+      if (document.hidden) return;
+      tasks.forEach((task) => task.step(t));
+    };
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      rafId = requestAnimationFrame(frame);
+    };
+
+    const stop = () => {
+      if (!running) return;
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+      running = false;
+    };
+
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (document.hidden) stop();
+        else start();
+      },
+      { passive: true }
+    );
+
+    start();
+
+    return {
+      add: (name, task) => tasks.set(name, task),
+      delete: (name) => tasks.delete(name),
+      has: (name) => tasks.has(name)
+    };
+  })();
+
+  const fitCanvas = (canvas, scale) => {
+    const w = Math.max(1, Math.floor(window.innerWidth * scale));
+    const h = Math.max(1, Math.floor(window.innerHeight * scale));
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = `${window.innerWidth}px`;
+    canvas.style.height = `${window.innerHeight}px`;
+  };
+
   const enableMotionUI = () => {
     const animated = document.querySelectorAll("[data-animate]");
     if (!animated.length) {
@@ -37,9 +216,16 @@
     if (!canvas) return;
     
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
     
     const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン{}[]<>;=+-*/%#&|^~!?$@\\/:YALOKGAR".split("");
     const fontSize = 14;
+    const font = `${fontSize}px "JetBrains Mono", monospace`;
+
+    const sb25 = 25 * PERF.shadowScale;
+    const sb20 = 20 * PERF.shadowScale;
+    const sb12 = 12 * PERF.shadowScale;
+    const sb5 = 5 * PERF.shadowScale;
     let drops = [];
     let speeds = [];
 
@@ -50,20 +236,21 @@
     };
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      fitCanvas(canvas, PERF.canvasScale);
+      ctx.font = font;
       reset();
     };
 
     resize();
-    window.addEventListener("resize", resize, { passive: true });
+    RESIZE.add(resize);
     
     const draw = () => {
-      ctx.fillStyle = "rgba(10, 10, 15, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      ctx.font = `${fontSize}px "JetBrains Mono", monospace`;
-      
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.fillStyle = "rgba(7, 8, 15, 0.06)";
+      ctx.fillRect(0, 0, w, h);
+
       for (let i = 0; i < drops.length; i++) {
         const char = chars[Math.floor(Math.random() * chars.length)];
         const x = i * fontSize;
@@ -72,28 +259,29 @@
         const brightness = Math.random();
         if (brightness > 0.98) {
           ctx.fillStyle = "#ffffff";
-          ctx.shadowColor = "#00ff41";
-          ctx.shadowBlur = 25;
+          ctx.shadowColor = "#00e5ff";
+          ctx.shadowBlur = sb25;
         } else if (brightness > 0.9) {
-          ctx.fillStyle = "#00ff41";
-          ctx.shadowColor = "#00ff41";
-          ctx.shadowBlur = 20;
+          ctx.fillStyle = "#4cc9ff";
+          ctx.shadowColor = "#00e5ff";
+          ctx.shadowBlur = sb20;
         } else if (brightness > 0.7) {
-          ctx.fillStyle = `rgba(0, 255, 65, ${0.7 + brightness * 0.3})`;
-          ctx.shadowColor = "#00ff41";
-          ctx.shadowBlur = 12;
+          ctx.fillStyle = `rgba(76, 201, 255, ${0.7 + brightness * 0.3})`;
+          ctx.shadowColor = "#4cc9ff";
+          ctx.shadowBlur = sb12;
         } else if (brightness > 0.4) {
-          ctx.fillStyle = `rgba(0, 255, 65, ${0.3 + brightness * 0.4})`;
-          ctx.shadowBlur = 5;
+          ctx.fillStyle = `rgba(43, 107, 255, ${0.28 + brightness * 0.34})`;
+          ctx.shadowColor = "#2b6bff";
+          ctx.shadowBlur = sb5;
         } else {
-          ctx.fillStyle = `rgba(0, 255, 65, ${0.1 + brightness * 0.3})`;
+          ctx.fillStyle = `rgba(76, 201, 255, ${0.08 + brightness * 0.22})`;
           ctx.shadowBlur = 0;
         }
         
         ctx.fillText(char, x, y);
         ctx.shadowBlur = 0;
         
-        if (y > canvas.height && Math.random() > 0.975) {
+        if (y > h && Math.random() > 0.975) {
           drops[i] = -Math.random() * 10;
         }
         
@@ -101,37 +289,15 @@
       }
     };
 
-    let rafId = 0;
-    let last = 0;
+    const task = createTask(
+      (t) => {
+        if (ACTIVITY.isScrolling(t)) return;
+        draw();
+      },
+      { fps: PERF.matrixFps }
+    );
 
-    const frame = (t) => {
-      if (!document.hidden) {
-        if (t - last >= 35) {
-          draw();
-          last = t;
-        }
-      }
-      rafId = requestAnimationFrame(frame);
-    };
-
-    const start = () => {
-      if (rafId) return;
-      last = performance.now();
-      rafId = requestAnimationFrame(frame);
-    };
-
-    const stop = () => {
-      if (!rafId) return;
-      cancelAnimationFrame(rafId);
-      rafId = 0;
-    };
-
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) stop();
-      else start();
-    }, { passive: true });
-
-    start();
+    TICKER.add("matrix", task);
   };
   
   const initParticles = () => {
@@ -142,17 +308,35 @@
     document.body.appendChild(canvas);
     
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
     
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    const linkDist = Math.max(80, PERF.linkDist);
+    const linkDist2 = linkDist * linkDist;
+    const cellSize = linkDist;
+    const invCell = 1 / cellSize;
+
+    let gridW = 1;
+    let gridH = 1;
+    let head = new Int32Array(1);
+
+    const rebuildGrid = () => {
+      gridW = Math.max(1, Math.ceil(canvas.width / cellSize));
+      gridH = Math.max(1, Math.ceil(canvas.height / cellSize));
+      head = new Int32Array(gridW * gridH);
     };
-    
+
+    const resize = () => {
+      fitCanvas(canvas, PERF.canvasScale);
+      rebuildGrid();
+    };
+
     resize();
-    window.addEventListener("resize", resize, { passive: true });
+    RESIZE.add(resize);
+    
+    const particleBlur = 10 * PERF.shadowScale;
     
     const particles = [];
-    const particleCount = 50;
+    const particleCount = PERF.particleCount;
     
     class Particle {
       constructor() {
@@ -166,27 +350,26 @@
         this.speedX = (Math.random() - 0.5) * 0.5;
         this.speedY = (Math.random() - 0.5) * 0.5;
         this.opacity = Math.random() * 0.5 + 0.2;
-        this.hue = Math.random() > 0.5 ? 140 : 180;
+        this.hue = Math.random() > 0.55 ? 198 : 350;
+        const shadowAlpha = Math.min(1, this.opacity + 0.2);
+        this.fill = `hsla(${this.hue}, 100%, 55%, ${this.opacity})`;
+        this.shadow = `hsla(${this.hue}, 100%, 55%, ${shadowAlpha})`;
       }
       
-      update() {
+      update(w, h) {
         this.x += this.speedX;
         this.y += this.speedY;
         
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        if (this.x < 0 || this.x > w) this.speedX *= -1;
+        if (this.y < 0 || this.y > h) this.speedY *= -1;
       }
       
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${this.hue}, 100%, 50%, ${this.opacity})`;
+        ctx.shadowColor = this.shadow;
+        ctx.fillStyle = this.fill;
         ctx.fill();
-        
-        ctx.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
-        ctx.shadowBlur = 10;
-        ctx.fill();
-        ctx.shadowBlur = 0;
       }
     }
     
@@ -194,82 +377,171 @@
       particles.push(new Particle());
     }
     
+    const next = new Int32Array(particles.length);
+
     const connectParticles = () => {
+      head.fill(-1);
+
       for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < 150) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(0, 255, 65, ${0.1 * (1 - distance / 150)})`;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
+        const p = particles[i];
+        const cx = clampInt((p.x * invCell) | 0, 0, gridW - 1);
+        const cy = clampInt((p.y * invCell) | 0, 0, gridH - 1);
+        const idx = cx + cy * gridW;
+        next[i] = head[idx];
+        head[idx] = i;
+      }
+
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = "rgb(76, 201, 255)";
+
+      for (let i = 0; i < particles.length; i++) {
+        const a = particles[i];
+        const cx = clampInt((a.x * invCell) | 0, 0, gridW - 1);
+        const cy = clampInt((a.y * invCell) | 0, 0, gridH - 1);
+
+        for (let ox = -1; ox <= 1; ox++) {
+          const nx = cx + ox;
+          if (nx < 0 || nx >= gridW) continue;
+          for (let oy = -1; oy <= 1; oy++) {
+            const ny = cy + oy;
+            if (ny < 0 || ny >= gridH) continue;
+
+            let j = head[nx + ny * gridW];
+            while (j !== -1) {
+              if (j > i) {
+                const b = particles[j];
+                const dx = a.x - b.x;
+                const dy = a.y - b.y;
+                const d2 = dx * dx + dy * dy;
+                if (d2 <= linkDist2) {
+                  const w = 1 - d2 / linkDist2;
+                  const alpha = 0.10 * w;
+                  if (alpha >= 0.003) {
+                    ctx.globalAlpha = alpha;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                  }
+                }
+              }
+              j = next[j];
+            }
           }
         }
       }
+
+      ctx.globalAlpha = 1;
     };
     
-    let rafId = 0;
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      particles.forEach(p => {
-        p.update();
-        p.draw();
-      });
-      
-      connectParticles();
-      rafId = requestAnimationFrame(animate);
-    };
+    let frameNo = 0;
 
-    const start = () => {
-      if (rafId) return;
-      rafId = requestAnimationFrame(animate);
-    };
+    const task = createTask(
+      (t) => {
+        if (ACTIVITY.isScrolling(t)) return;
+        frameNo++;
 
-    const stop = () => {
-      if (!rafId) return;
-      cancelAnimationFrame(rafId);
-      rafId = 0;
-    };
+        const w = canvas.width;
+        const h = canvas.height;
 
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) stop();
-      else start();
-    }, { passive: true });
+        ctx.clearRect(0, 0, w, h);
 
-    start();
+        ctx.shadowBlur = particleBlur;
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.update(w, h);
+          p.draw();
+        }
+        ctx.shadowBlur = 0;
+
+        if (frameNo % PERF.linkEvery === 0) connectParticles();
+      },
+      { fps: PERF.particlesFps }
+    );
+
+    TICKER.add("particles", task);
   };
   
   const initCursorGlow = () => {
     if (prefersReducedMotion || isMobile) return;
     
     const glow = document.querySelector(".cursor-glow");
-    if (!glow) return;
-    
-    let mouseX = 0, mouseY = 0;
-    let glowX = 0, glowY = 0;
-    
-    document.addEventListener("mousemove", (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    }, { passive: true });
-    
-    const animate = () => {
-      glowX += (mouseX - glowX) * 0.08;
-      glowY += (mouseY - glowY) * 0.08;
-      
-      glow.style.left = glowX + "px";
-      glow.style.top = glowY + "px";
-      
-      requestAnimationFrame(animate);
+    if (!(glow instanceof HTMLElement)) return;
+
+    glow.style.opacity = "0";
+    glow.style.willChange = "transform";
+
+    const canTranslate = "translate" in glow.style;
+    const setPos = canTranslate
+      ? (x, y) => {
+          glow.style.translate = `${x}px ${y}px`;
+        }
+      : (x, y) => {
+          glow.style.left = "0";
+          glow.style.top = "0";
+          glow.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+        };
+
+    const snap = (v) => Math.round(v * 2) / 2;
+
+    let gx = 0;
+    let gy = 0;
+    let lastX = NaN;
+    let lastY = NaN;
+    let visible = false;
+
+    const commit = (x, y) => {
+      const sx = snap(x);
+      const sy = snap(y);
+      if (sx === lastX && sy === lastY) return;
+      lastX = sx;
+      lastY = sy;
+      setPos(sx, sy);
     };
-    
-    animate();
+
+    const task = createTask(
+      (t) => {
+        if (!POINTER.inside) {
+          if (visible) {
+            glow.style.opacity = "0";
+            visible = false;
+          }
+          return;
+        }
+
+        if (!visible) {
+          visible = true;
+          gx = POINTER.x;
+          gy = POINTER.y;
+          glow.style.opacity = "1";
+          commit(gx, gy);
+          return;
+        }
+
+        const tx = POINTER.x;
+        const ty = POINTER.y;
+
+        const k = ACTIVITY.isScrolling(t) ? 0.22 : 0.12;
+        gx += (tx - gx) * k;
+        gy += (ty - gy) * k;
+
+        commit(gx, gy);
+      },
+      {
+        fps: 60,
+        when: (t) => {
+          if (POINTER.inside) {
+            if (!visible) return true;
+            if (ACTIVITY.isScrolling(t)) return true;
+            if (t - POINTER.last < 320) return true;
+            return Math.abs(POINTER.x - gx) > 0.6 || Math.abs(POINTER.y - gy) > 0.6;
+          }
+          return visible;
+        }
+      }
+    );
+
+    TICKER.add("cursorGlow", task);
   };
   
   const initScrollAnimations = () => {
@@ -515,15 +787,26 @@
 
   const initBackToTop = () => {
     const btn = document.querySelector(".back-to-top");
-    if (!btn) return;
-    
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 500) {
-        btn.classList.add("visible");
-      } else {
-        btn.classList.remove("visible");
-      }
-    }, { passive: true });
+    if (!(btn instanceof HTMLElement)) return;
+
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+      btn.classList.toggle("visible", window.scrollY > 500);
+    };
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(update);
+      },
+      { passive: true }
+    );
+
+    update();
   };
   
   const initTypingEffect = () => {
@@ -603,21 +886,36 @@
       top: 0;
       left: 0;
       height: 2px;
-      background: linear-gradient(90deg, #00ff41, #00f0ff, #ff00ff);
+      background: linear-gradient(90deg, #4cc9ff, #2b6bff, #ff2b3d);
       z-index: 10001;
       transform-origin: left;
       transform: scaleX(0);
       transition: transform 0.1s;
-      box-shadow: 0 0 10px #00ff41, 0 0 20px rgba(0, 255, 65, 0.5);
+      box-shadow: 0 0 10px rgba(76, 201, 255, 0.65), 0 0 28px rgba(43, 107, 255, 0.35);
     `;
     document.body.appendChild(progressBar);
-    
-    window.addEventListener("scroll", () => {
+
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = docHeight > 0 ? scrollTop / docHeight : 0;
       progressBar.style.transform = `scaleX(${progress})`;
-    }, { passive: true });
+    };
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(update);
+      },
+      { passive: true }
+    );
+
+    update();
   };
   
   const initParallaxBadges = () => {
@@ -626,6 +924,8 @@
     const badges = document.querySelectorAll("[data-float]");
     
     if (!badges.length) return;
+
+    const canTranslate = badges[0] instanceof HTMLElement && "translate" in badges[0].style;
     
     let scrollY = 0;
     let ticking = false;
@@ -634,7 +934,8 @@
       badges.forEach((badge, index) => {
         const speed = 0.02 + index * 0.01;
         const yPos = scrollY * speed;
-        badge.style.transform = `translateY(${yPos}px)`;
+        if (canTranslate && badge instanceof HTMLElement) badge.style.translate = `0px ${yPos}px`;
+        else badge.style.transform = `translateY(${yPos}px)`;
       });
       ticking = false;
     };
@@ -651,21 +952,91 @@
   const initMagneticButtons = () => {
     if (prefersReducedMotion || isMobile) return;
     
-    const buttons = document.querySelectorAll(".btn-neon, .btn-ghost");
-    
+    const buttons = Array.from(document.querySelectorAll(".btn-neon, .btn-ghost"));
+    if (!buttons.length) return;
+
+    const enterEvent = "PointerEvent" in window ? "pointerenter" : "mouseenter";
+    const leaveEvent = "PointerEvent" in window ? "pointerleave" : "mouseleave";
+
+    const canTranslate = buttons[0] instanceof HTMLElement && "translate" in buttons[0].style;
+    const apply = canTranslate
+      ? (el, x, y) => {
+          el.style.translate = `${x}px ${y}px`;
+        }
+      : (el, x, y) => {
+          el.style.transform = `translate(${x}px, ${y}px)`;
+        };
+
+    let active = null;
+    let rect = null;
+    let ox = 0;
+    let oy = 0;
+
+    const activate = (el) => {
+      active = el;
+      rect = el.getBoundingClientRect();
+      ox = 0;
+      oy = 0;
+      el.style.willChange = "transform";
+    };
+
+    const deactivate = (el) => {
+      apply(el, 0, 0);
+      if (active === el) {
+        active = null;
+        rect = null;
+      }
+    };
+
     buttons.forEach((btn) => {
-      btn.addEventListener("mousemove", (e) => {
-        const rect = btn.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        
-        btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
-      });
-      
-      btn.addEventListener("mouseleave", () => {
-        btn.style.transform = "";
-      });
+      if (!(btn instanceof HTMLElement)) return;
+      btn.addEventListener(enterEvent, () => activate(btn));
+      btn.addEventListener(leaveEvent, () => deactivate(btn));
     });
+
+    RESIZE.add(() => {
+      if (!active) return;
+      rect = active.getBoundingClientRect();
+    });
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!active) return;
+        deactivate(active);
+      },
+      { passive: true }
+    );
+
+    const task = createTask(
+      (t) => {
+        if (!active || !rect) return;
+        if (!POINTER.inside) return;
+        if (ACTIVITY.isScrolling(t)) return;
+
+        const dx = POINTER.x - rect.left - rect.width / 2;
+        const dy = POINTER.y - rect.top - rect.height / 2;
+
+        const tx = dx * 0.18;
+        const ty = dy * 0.18;
+
+        ox += (tx - ox) * 0.25;
+        oy += (ty - oy) * 0.25;
+
+        apply(active, ox, oy);
+      },
+      {
+        fps: 60,
+        when: (t) => {
+          if (!active) return false;
+          if (ACTIVITY.isScrolling(t)) return true;
+          if (t - POINTER.last < 800) return true;
+          return Math.abs(ox) > 0.2 || Math.abs(oy) > 0.2;
+        }
+      }
+    );
+
+    TICKER.add("magneticButtons", task);
   };
   
   const initContactLinkCopy = () => {
@@ -756,27 +1127,89 @@
   const init3DTilt = () => {
     if (prefersReducedMotion || isMobile) return;
     
-    const tiltElements = document.querySelectorAll(".code-window, .about-terminal, .stat-card");
-    
+    const tiltElements = Array.from(document.querySelectorAll(".code-window, .about-terminal, .stat-card"));
+    if (!tiltElements.length) return;
+
+    const enterEvent = "PointerEvent" in window ? "pointerenter" : "mouseenter";
+    const leaveEvent = "PointerEvent" in window ? "pointerleave" : "mouseleave";
+
+    let active = null;
+    let rect = null;
+    let rx = 0;
+    let ry = 0;
+
+    const activate = (el) => {
+      active = el;
+      rect = el.getBoundingClientRect();
+      rx = 0;
+      ry = 0;
+      el.style.willChange = "transform";
+    };
+
+    const deactivate = (el) => {
+      el.style.transform = "";
+      if (active === el) {
+        active = null;
+        rect = null;
+      }
+    };
+
     tiltElements.forEach((el) => {
-      el.addEventListener("mousemove", (e) => {
-        const rect = el.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = (y - centerY) / 20;
-        const rotateY = (centerX - x) / 20;
-        
-        el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-      });
-      
-      el.addEventListener("mouseleave", () => {
-        el.style.transform = "";
-      });
+      if (!(el instanceof HTMLElement)) return;
+      el.addEventListener(enterEvent, () => activate(el));
+      el.addEventListener(leaveEvent, () => deactivate(el));
     });
+
+    RESIZE.add(() => {
+      if (!active) return;
+      rect = active.getBoundingClientRect();
+    });
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!active) return;
+        deactivate(active);
+      },
+      { passive: true }
+    );
+
+    const task = createTask(
+      (t) => {
+        if (!active || !rect) return;
+        if (!POINTER.inside) return;
+        if (ACTIVITY.isScrolling(t)) return;
+
+        const x = POINTER.x - rect.left;
+        const y = POINTER.y - rect.top;
+
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+
+        const tx = (y - cy) / 20;
+        const ty = (cx - x) / 20;
+
+        rx += (tx - rx) * 0.2;
+        ry += (ty - ry) * 0.2;
+
+        const max = 12;
+        const ax = Math.max(-max, Math.min(max, rx));
+        const ay = Math.max(-max, Math.min(max, ry));
+
+        active.style.transform = `perspective(1000px) rotateX(${ax}deg) rotateY(${ay}deg) translateZ(10px)`;
+      },
+      {
+        fps: 60,
+        when: (t) => {
+          if (!active) return false;
+          if (ACTIVITY.isScrolling(t)) return true;
+          if (t - POINTER.last < 800) return true;
+          return Math.abs(rx) > 0.1 || Math.abs(ry) > 0.1;
+        }
+      }
+    );
+
+    TICKER.add("tilt3d", task);
   };
   
   const initKonamiCode = () => {
@@ -814,8 +1247,8 @@
         transform: translate(-50%, -50%);
         font-family: var(--font-mono);
         font-size: 2rem;
-        color: #00ff41;
-        text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41;
+        color: #4cc9ff;
+        text-shadow: 0 0 20px rgba(76, 201, 255, 0.85), 0 0 40px rgba(43, 107, 255, 0.65);
         z-index: 99999;
         animation: konami-bounce 0.5s ease-out;
         pointer-events: none;
@@ -911,7 +1344,7 @@
         top: ${e.clientY}px;
         width: 10px;
         height: 10px;
-        background: rgba(0, 255, 65, 0.5);
+        background: rgba(76, 201, 255, 0.55);
         border-radius: 50%;
         pointer-events: none;
         z-index: 99999;
@@ -947,20 +1380,88 @@
   };
   
   const initServiceWorker = () => {
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        const swUrl = new URL("./sw.js", window.location.href);
-        const scopeUrl = new URL("./", window.location.href);
-        navigator.serviceWorker.register(swUrl, { scope: scopeUrl.pathname }).then(() => {
-          let reloading = false;
-          navigator.serviceWorker.addEventListener("controllerchange", () => {
-            if (reloading) return;
-            reloading = true;
-            window.location.reload();
-          });
-        }).catch(() => {});
-      });
-    }
+    if (!("serviceWorker" in navigator)) return;
+
+    const once = (fn) => {
+      let done = false;
+      return () => {
+        if (done) return;
+        done = true;
+        try { fn(); } catch (_) {}
+      };
+    };
+
+    const reloadNow = once(() => window.location.reload());
+
+    const safePost = (sw, msg) => {
+      try {
+        if (!sw) return;
+        sw.postMessage(msg);
+      } catch (_) {}
+    };
+
+    const wire = (registration) => {
+      const promote = () => safePost(registration.waiting, "skipWaiting");
+
+      const onUpdateFound = () => {
+        const sw = registration.installing;
+        if (!sw) return;
+        sw.addEventListener("statechange", () => {
+          if (sw.state !== "installed") return;
+          if (!navigator.serviceWorker.controller) return;
+          promote();
+        });
+      };
+
+      registration.addEventListener("updatefound", onUpdateFound);
+      navigator.serviceWorker.addEventListener("controllerchange", reloadNow);
+
+      const update = () => {
+        try { registration.update(); } catch (_) {}
+        promote();
+      };
+
+      const schedule = (() => {
+        let last = 0;
+        return () => {
+          const now = Date.now();
+          if (now - last < 15000) return;
+          last = now;
+          update();
+        };
+      })();
+
+      window.addEventListener("online", schedule, { passive: true });
+      window.addEventListener("focus", schedule, { passive: true });
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) schedule();
+      }, { passive: true });
+
+      setInterval(schedule, 30 * 60 * 1000);
+      schedule();
+    };
+
+    window.addEventListener("load", () => {
+      const swUrl = new URL("./sw.js", window.location.href);
+      const scopeUrl = new URL("./", window.location.href);
+
+      const register = async () => {
+        try {
+          return await navigator.serviceWorker.register(swUrl, { scope: scopeUrl.pathname, updateViaCache: "none" });
+        } catch (_) {
+          try {
+            return await navigator.serviceWorker.register(swUrl, { scope: scopeUrl.pathname });
+          } catch (_) {
+            return null;
+          }
+        }
+      };
+
+      register().then((reg) => {
+        if (!reg) return;
+        wire(reg);
+      }).catch(() => {});
+    });
   };
   
   const initPreloader = () => {
