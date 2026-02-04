@@ -6,11 +6,12 @@
 
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
   const PERF = (() => {
-    const mem = typeof navigator.deviceMemory === "number" ? navigator.deviceMemory : 8;
-    const cores = typeof navigator.hardwareConcurrency === "number" ? navigator.hardwareConcurrency : 8;
-    const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2.5));
+    const mem = typeof navigator.deviceMemory === "number" ? navigator.deviceMemory : 4;
+    const cores = typeof navigator.hardwareConcurrency === "number" ? navigator.hardwareConcurrency : 4;
+    const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
     const mega = (Math.max(1, window.innerWidth) * Math.max(1, window.innerHeight) * dpr * dpr) / 1e6;
 
     const conn = typeof navigator.connection === "object" && navigator.connection ? navigator.connection : null;
@@ -18,7 +19,7 @@
     const effectiveType = conn && typeof conn.effectiveType === "string" ? conn.effectiveType : "";
     const netLow = saveData || effectiveType === "2g" || effectiveType === "slow-2g";
 
-    const hintedLow = prefersReducedMotion || isMobile || mem <= 4 || cores <= 4 || mega >= 5.0 || netLow;
+    const hintedLow = prefersReducedMotion || isMobile || isTouch || mem <= 4 || cores <= 4 || mega >= 3.5 || netLow;
 
     const url = new URL(window.location.href);
     const forced = url.searchParams.get("perf");
@@ -27,23 +28,25 @@
     return tier === "low"
       ? {
           tier,
-          matrixFps: 16,
-          particlesFps: 24,
-          canvasScale: 0.62,
-          particleCount: 20,
-          linkDist: 130,
-          linkEvery: 3,
-          shadowScale: 0.6
+          matrixFps: 6,
+          particlesFps: 8,
+          canvasScale: 0.25,
+          particleCount: 6,
+          linkDist: 80,
+          linkEvery: 8,
+          shadowEnabled: false,
+          matrixEnabled: false
         }
       : {
           tier,
-          matrixFps: 22,
-          particlesFps: 34,
-          canvasScale: 0.78,
-          particleCount: 30,
-          linkDist: 145,
-          linkEvery: 2,
-          shadowScale: 0.78
+          matrixFps: 8,
+          particlesFps: 12,
+          canvasScale: 0.35,
+          particleCount: 10,
+          linkDist: 90,
+          linkEvery: 5,
+          shadowEnabled: false,
+          matrixEnabled: true
         };
   })();
 
@@ -210,82 +213,73 @@
   };
   
   const initMatrixRain = () => {
-    if (prefersReducedMotion || isMobile) return;
+    if (prefersReducedMotion || isMobile || !PERF.matrixEnabled) return;
     
     const canvas = document.getElementById("matrix-bg");
     if (!canvas) return;
     
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
     
-    const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン{}[]<>;=+-*/%#&|^~!?$@\\/:YALOKGAR".split("");
-    const fontSize = 14;
-    const font = `${fontSize}px "JetBrains Mono", monospace`;
-
-    const sb25 = 25 * PERF.shadowScale;
-    const sb20 = 20 * PERF.shadowScale;
-    const sb12 = 12 * PERF.shadowScale;
-    const sb5 = 5 * PERF.shadowScale;
+    const chars = "01<>{}[];=+-*/YALOKGAR10101010110010".split("");
+    const fontSize = 16;
+    const font = `${fontSize}px monospace`;
+    
     let drops = [];
     let speeds = [];
+    let columnCount = 0;
 
     const reset = () => {
-      const columns = Math.max(1, Math.floor(canvas.width / fontSize));
-      drops = Array.from({ length: columns }, () => Math.random() * (canvas.height / fontSize));
-      speeds = Array.from({ length: columns }, () => 0.45 + Math.random() * 0.75);
+      columnCount = Math.max(1, Math.floor(canvas.width / fontSize));
+      drops = new Float32Array(columnCount);
+      speeds = new Float32Array(columnCount);
+      for (let i = 0; i < columnCount; i++) {
+        drops[i] = Math.random() * (canvas.height / fontSize);
+        speeds[i] = 0.3 + Math.random() * 0.5;
+      }
     };
 
     const resize = () => {
       fitCanvas(canvas, PERF.canvasScale);
       ctx.font = font;
+      ctx.textBaseline = "top";
       reset();
     };
 
     resize();
     RESIZE.add(resize);
     
+    const colors = [
+      "rgba(57,255,20,0.2)",
+      "rgba(57,255,20,0.35)",
+      "rgba(0,255,255,0.3)",
+      "rgba(57,255,20,0.6)",
+      "rgba(255,0,255,0.25)",
+      "rgba(0,255,255,0.5)"
+    ];
+    
     const draw = () => {
       const w = canvas.width;
       const h = canvas.height;
 
-      ctx.fillStyle = "rgba(7, 8, 15, 0.06)";
+      ctx.fillStyle = "rgba(3,3,8,0.1)";
       ctx.fillRect(0, 0, w, h);
 
-      for (let i = 0; i < drops.length; i++) {
-        const char = chars[Math.floor(Math.random() * chars.length)];
-        const x = i * fontSize;
+      const len = drops.length;
+      for (let i = 0; i < len; i++) {
         const y = drops[i] * fontSize;
-        
-        const brightness = Math.random();
-        if (brightness > 0.98) {
-          ctx.fillStyle = "#ffffff";
-          ctx.shadowColor = "#00e5ff";
-          ctx.shadowBlur = sb25;
-        } else if (brightness > 0.9) {
-          ctx.fillStyle = "#4cc9ff";
-          ctx.shadowColor = "#00e5ff";
-          ctx.shadowBlur = sb20;
-        } else if (brightness > 0.7) {
-          ctx.fillStyle = `rgba(76, 201, 255, ${0.7 + brightness * 0.3})`;
-          ctx.shadowColor = "#4cc9ff";
-          ctx.shadowBlur = sb12;
-        } else if (brightness > 0.4) {
-          ctx.fillStyle = `rgba(43, 107, 255, ${0.28 + brightness * 0.34})`;
-          ctx.shadowColor = "#2b6bff";
-          ctx.shadowBlur = sb5;
-        } else {
-          ctx.fillStyle = `rgba(76, 201, 255, ${0.08 + brightness * 0.22})`;
-          ctx.shadowBlur = 0;
-        }
-        
-        ctx.fillText(char, x, y);
-        ctx.shadowBlur = 0;
-        
-        if (y > h && Math.random() > 0.975) {
-          drops[i] = -Math.random() * 10;
+        if (y < h) {
+          const char = chars[(Math.random() * chars.length) | 0];
+          const ci = (Math.random() * 6) | 0;
+          ctx.fillStyle = colors[ci];
+          ctx.fillText(char, i * fontSize, y);
         }
         
         drops[i] += speeds[i];
+        
+        if (drops[i] * fontSize > h && Math.random() > 0.98) {
+          drops[i] = -Math.random() * 8;
+        }
       }
     };
 
@@ -301,138 +295,39 @@
   };
   
   const initParticles = () => {
-    if (prefersReducedMotion || isMobile) return;
+    return;
     
     const canvas = document.createElement("canvas");
     canvas.id = "particles-canvas";
     document.body.appendChild(canvas);
     
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
     
-    const linkDist = Math.max(80, PERF.linkDist);
+    const linkDist = PERF.linkDist;
     const linkDist2 = linkDist * linkDist;
-    const cellSize = linkDist;
-    const invCell = 1 / cellSize;
-
-    let gridW = 1;
-    let gridH = 1;
-    let head = new Int32Array(1);
-
-    const rebuildGrid = () => {
-      gridW = Math.max(1, Math.ceil(canvas.width / cellSize));
-      gridH = Math.max(1, Math.ceil(canvas.height / cellSize));
-      head = new Int32Array(gridW * gridH);
-    };
 
     const resize = () => {
       fitCanvas(canvas, PERF.canvasScale);
-      rebuildGrid();
     };
 
     resize();
     RESIZE.add(resize);
     
-    const particleBlur = 10 * PERF.shadowScale;
-    
-    const particles = [];
     const particleCount = PERF.particleCount;
-    
-    class Particle {
-      constructor() {
-        this.reset();
-      }
-      
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 0.5;
-        this.speedX = (Math.random() - 0.5) * 0.5;
-        this.speedY = (Math.random() - 0.5) * 0.5;
-        this.opacity = Math.random() * 0.5 + 0.2;
-        this.hue = Math.random() > 0.55 ? 198 : 350;
-        const shadowAlpha = Math.min(1, this.opacity + 0.2);
-        this.fill = `hsla(${this.hue}, 100%, 55%, ${this.opacity})`;
-        this.shadow = `hsla(${this.hue}, 100%, 55%, ${shadowAlpha})`;
-      }
-      
-      update(w, h) {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        
-        if (this.x < 0 || this.x > w) this.speedX *= -1;
-        if (this.y < 0 || this.y > h) this.speedY *= -1;
-      }
-      
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.shadowColor = this.shadow;
-        ctx.fillStyle = this.fill;
-        ctx.fill();
-      }
-    }
+    const px = new Float32Array(particleCount);
+    const py = new Float32Array(particleCount);
+    const vx = new Float32Array(particleCount);
+    const vy = new Float32Array(particleCount);
+    const sizes = new Float32Array(particleCount);
     
     for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle());
+      px[i] = Math.random() * canvas.width;
+      py[i] = Math.random() * canvas.height;
+      vx[i] = (Math.random() - 0.5) * 0.3;
+      vy[i] = (Math.random() - 0.5) * 0.3;
+      sizes[i] = Math.random() * 1.5 + 0.5;
     }
-    
-    const next = new Int32Array(particles.length);
-
-    const connectParticles = () => {
-      head.fill(-1);
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        const cx = clampInt((p.x * invCell) | 0, 0, gridW - 1);
-        const cy = clampInt((p.y * invCell) | 0, 0, gridH - 1);
-        const idx = cx + cy * gridW;
-        next[i] = head[idx];
-        head[idx] = i;
-      }
-
-      ctx.lineWidth = 0.5;
-      ctx.strokeStyle = "rgb(76, 201, 255)";
-
-      for (let i = 0; i < particles.length; i++) {
-        const a = particles[i];
-        const cx = clampInt((a.x * invCell) | 0, 0, gridW - 1);
-        const cy = clampInt((a.y * invCell) | 0, 0, gridH - 1);
-
-        for (let ox = -1; ox <= 1; ox++) {
-          const nx = cx + ox;
-          if (nx < 0 || nx >= gridW) continue;
-          for (let oy = -1; oy <= 1; oy++) {
-            const ny = cy + oy;
-            if (ny < 0 || ny >= gridH) continue;
-
-            let j = head[nx + ny * gridW];
-            while (j !== -1) {
-              if (j > i) {
-                const b = particles[j];
-                const dx = a.x - b.x;
-                const dy = a.y - b.y;
-                const d2 = dx * dx + dy * dy;
-                if (d2 <= linkDist2) {
-                  const w = 1 - d2 / linkDist2;
-                  const alpha = 0.10 * w;
-                  if (alpha >= 0.003) {
-                    ctx.globalAlpha = alpha;
-                    ctx.beginPath();
-                    ctx.moveTo(a.x, a.y);
-                    ctx.lineTo(b.x, b.y);
-                    ctx.stroke();
-                  }
-                }
-              }
-              j = next[j];
-            }
-          }
-        }
-      }
-
-      ctx.globalAlpha = 1;
-    };
     
     let frameNo = 0;
 
@@ -445,16 +340,37 @@
         const h = canvas.height;
 
         ctx.clearRect(0, 0, w, h);
-
-        ctx.shadowBlur = particleBlur;
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-          p.update(w, h);
-          p.draw();
+        
+        for (let i = 0; i < particleCount; i++) {
+          px[i] += vx[i];
+          py[i] += vy[i];
+          if (px[i] < 0 || px[i] > w) vx[i] *= -1;
+          if (py[i] < 0 || py[i] > h) vy[i] *= -1;
         }
-        ctx.shadowBlur = 0;
+        
+        ctx.fillStyle = "rgba(57,255,20,0.7)";
+        for (let i = 0; i < particleCount; i++) {
+          ctx.beginPath();
+          ctx.arc(px[i], py[i], sizes[i], 0, 6.28);
+          ctx.fill();
+        }
 
-        if (frameNo % PERF.linkEvery === 0) connectParticles();
+        if (frameNo % PERF.linkEvery === 0) {
+          ctx.strokeStyle = "rgba(0,255,255,0.1)";
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          for (let i = 0; i < particleCount - 1; i++) {
+            for (let j = i + 1; j < particleCount; j++) {
+              const dx = px[i] - px[j];
+              const dy = py[i] - py[j];
+              if (dx * dx + dy * dy < linkDist2) {
+                ctx.moveTo(px[i], py[i]);
+                ctx.lineTo(px[j], py[j]);
+              }
+            }
+          }
+          ctx.stroke();
+        }
       },
       { fps: PERF.particlesFps }
     );
@@ -463,85 +379,56 @@
   };
   
   const initCursorGlow = () => {
-    if (prefersReducedMotion || isMobile) return;
+    return;
     
     const glow = document.querySelector(".cursor-glow");
     if (!(glow instanceof HTMLElement)) return;
 
     glow.style.opacity = "0";
-    glow.style.willChange = "transform";
-
-    const canTranslate = "translate" in glow.style;
-    const setPos = canTranslate
-      ? (x, y) => {
-          glow.style.translate = `${x}px ${y}px`;
-        }
-      : (x, y) => {
-          glow.style.left = "0";
-          glow.style.top = "0";
-          glow.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-        };
-
-    const snap = (v) => Math.round(v * 2) / 2;
 
     let gx = 0;
     let gy = 0;
-    let lastX = NaN;
-    let lastY = NaN;
     let visible = false;
+    let rafId = 0;
 
-    const commit = (x, y) => {
-      const sx = snap(x);
-      const sy = snap(y);
-      if (sx === lastX && sy === lastY) return;
-      lastX = sx;
-      lastY = sy;
-      setPos(sx, sy);
+    const update = () => {
+      rafId = 0;
+      if (!POINTER.inside) {
+        if (visible) {
+          glow.style.opacity = "0";
+          visible = false;
+        }
+        return;
+      }
+
+      if (!visible) {
+        visible = true;
+        gx = POINTER.x;
+        gy = POINTER.y;
+        glow.style.opacity = "1";
+      }
+
+      gx += (POINTER.x - gx) * 0.15;
+      gy += (POINTER.y - gy) * 0.15;
+
+      glow.style.transform = `translate3d(${gx | 0}px, ${gy | 0}px, 0) translate(-50%, -50%)`;
+      
+      if (Math.abs(POINTER.x - gx) > 1 || Math.abs(POINTER.y - gy) > 1) {
+        rafId = requestAnimationFrame(update);
+      }
     };
 
-    const task = createTask(
-      (t) => {
-        if (!POINTER.inside) {
-          if (visible) {
-            glow.style.opacity = "0";
-            visible = false;
-          }
-          return;
-        }
+    const schedule = () => {
+      if (!rafId) rafId = requestAnimationFrame(update);
+    };
 
-        if (!visible) {
-          visible = true;
-          gx = POINTER.x;
-          gy = POINTER.y;
-          glow.style.opacity = "1";
-          commit(gx, gy);
-          return;
-        }
-
-        const tx = POINTER.x;
-        const ty = POINTER.y;
-
-        const k = ACTIVITY.isScrolling(t) ? 0.22 : 0.12;
-        gx += (tx - gx) * k;
-        gy += (ty - gy) * k;
-
-        commit(gx, gy);
-      },
-      {
-        fps: 60,
-        when: (t) => {
-          if (POINTER.inside) {
-            if (!visible) return true;
-            if (ACTIVITY.isScrolling(t)) return true;
-            if (t - POINTER.last < 320) return true;
-            return Math.abs(POINTER.x - gx) > 0.6 || Math.abs(POINTER.y - gy) > 0.6;
-          }
-          return visible;
-        }
+    window.addEventListener("pointermove", schedule, { passive: true });
+    window.addEventListener("pointerleave", () => {
+      if (visible) {
+        glow.style.opacity = "0";
+        visible = false;
       }
-    );
-
-    TICKER.add("cursorGlow", task);
+    }, { passive: true });
   };
   
   const initScrollAnimations = () => {
@@ -705,25 +592,15 @@
   };
   
   const initProjectHover = () => {
-    if (prefersReducedMotion) return;
-    
-    const projects = document.querySelectorAll(".project-card");
-    
-    projects.forEach((project) => {
-      project.addEventListener("mouseenter", () => {
-        projects.forEach((p) => {
-          if (p !== project) {
-            p.style.opacity = "0.4";
-            p.style.filter = "blur(1px)";
-          }
-        });
+    const cards = document.querySelectorAll(".project-card");
+    cards.forEach((card) => {
+      card.addEventListener("mouseenter", () => {
+        const title = card.querySelector(".project-title");
+        if (title) title.style.textShadow = "0 0 20px rgba(76, 201, 255, 0.5)";
       });
-      
-      project.addEventListener("mouseleave", () => {
-        projects.forEach((p) => {
-          p.style.opacity = "1";
-          p.style.filter = "none";
-        });
+      card.addEventListener("mouseleave", () => {
+        const title = card.querySelector(".project-title");
+        if (title) title.style.textShadow = "";
       });
     });
   };
@@ -810,233 +687,36 @@
   };
   
   const initTypingEffect = () => {
-    const typingElements = document.querySelectorAll(".typing");
-    
-    typingElements.forEach((el) => {
-      const text = el.textContent;
-      el.textContent = "";
-      el.style.borderRight = "2px solid var(--neon-green)";
-      
-      let i = 0;
-      const typeChar = () => {
-        if (i < text.length) {
-          el.textContent += text.charAt(i);
-          i++;
-          setTimeout(typeChar, 60 + Math.random() * 40);
-        }
-      };
-      
-      setTimeout(typeChar, 800);
-    });
+    const typing = document.querySelector(".typing");
+    if (!typing) return;
+    typing.style.width = "0";
+    setTimeout(() => {
+      typing.style.width = "";
+    }, 100);
   };
   
   const initGlitchEffect = () => {
-    if (prefersReducedMotion) return;
-    
-    const glitchElements = document.querySelectorAll(".glitch");
-    if (!glitchElements.length) return;
-
-    let timer = 0;
-
-    const tick = () => {
-      glitchElements.forEach((el) => {
-        el.style.animation = "none";
-        void el.offsetWidth;
-        el.style.animation = "";
-      });
-    };
-
-    const start = () => {
-      if (timer) return;
-      timer = window.setInterval(tick, 5000);
-    };
-
-    const stop = () => {
-      if (!timer) return;
-      window.clearInterval(timer);
-      timer = 0;
-    };
-
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) stop();
-      else start();
-    }, { passive: true });
-
-    start();
   };
   
   const initSkillHover = () => {
-    const skills = document.querySelectorAll(".skill-chip");
-    
-    skills.forEach((skill) => {
-      skill.addEventListener("mouseenter", function() {
-        this.style.transform = "translateY(-2px) scale(1.05)";
+    const chips = document.querySelectorAll(".skill-chip");
+    chips.forEach((chip) => {
+      chip.addEventListener("mouseenter", () => {
+        chip.style.transform = "translateY(-3px) scale(1.08)";
       });
-      
-      skill.addEventListener("mouseleave", function() {
-        this.style.transform = "";
+      chip.addEventListener("mouseleave", () => {
+        chip.style.transform = "";
       });
     });
   };
   
   const initScrollProgress = () => {
-    const progressBar = document.createElement("div");
-    progressBar.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 2px;
-      background: linear-gradient(90deg, #4cc9ff, #2b6bff, #ff2b3d);
-      z-index: 10001;
-      transform-origin: left;
-      transform: scaleX(0);
-      transition: transform 0.1s;
-      box-shadow: 0 0 10px rgba(76, 201, 255, 0.65), 0 0 28px rgba(43, 107, 255, 0.35);
-    `;
-    document.body.appendChild(progressBar);
-
-    let ticking = false;
-
-    const update = () => {
-      ticking = false;
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
-      progressBar.style.transform = `scaleX(${progress})`;
-    };
-
-    window.addEventListener(
-      "scroll",
-      () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(update);
-      },
-      { passive: true }
-    );
-
-    update();
   };
   
   const initParallaxBadges = () => {
-    if (prefersReducedMotion || isMobile) return;
-    
-    const badges = document.querySelectorAll("[data-float]");
-    
-    if (!badges.length) return;
-
-    const canTranslate = badges[0] instanceof HTMLElement && "translate" in badges[0].style;
-    
-    let scrollY = 0;
-    let ticking = false;
-    
-    const update = () => {
-      badges.forEach((badge, index) => {
-        const speed = 0.02 + index * 0.01;
-        const yPos = scrollY * speed;
-        if (canTranslate && badge instanceof HTMLElement) badge.style.translate = `0px ${yPos}px`;
-        else badge.style.transform = `translateY(${yPos}px)`;
-      });
-      ticking = false;
-    };
-    
-    window.addEventListener("scroll", () => {
-      scrollY = window.scrollY;
-      if (!ticking) {
-        requestAnimationFrame(update);
-        ticking = true;
-      }
-    }, { passive: true });
   };
   
   const initMagneticButtons = () => {
-    if (prefersReducedMotion || isMobile) return;
-    
-    const buttons = Array.from(document.querySelectorAll(".btn-neon, .btn-ghost"));
-    if (!buttons.length) return;
-
-    const enterEvent = "PointerEvent" in window ? "pointerenter" : "mouseenter";
-    const leaveEvent = "PointerEvent" in window ? "pointerleave" : "mouseleave";
-
-    const canTranslate = buttons[0] instanceof HTMLElement && "translate" in buttons[0].style;
-    const apply = canTranslate
-      ? (el, x, y) => {
-          el.style.translate = `${x}px ${y}px`;
-        }
-      : (el, x, y) => {
-          el.style.transform = `translate(${x}px, ${y}px)`;
-        };
-
-    let active = null;
-    let rect = null;
-    let ox = 0;
-    let oy = 0;
-
-    const activate = (el) => {
-      active = el;
-      rect = el.getBoundingClientRect();
-      ox = 0;
-      oy = 0;
-      el.style.willChange = "transform";
-    };
-
-    const deactivate = (el) => {
-      apply(el, 0, 0);
-      if (active === el) {
-        active = null;
-        rect = null;
-      }
-    };
-
-    buttons.forEach((btn) => {
-      if (!(btn instanceof HTMLElement)) return;
-      btn.addEventListener(enterEvent, () => activate(btn));
-      btn.addEventListener(leaveEvent, () => deactivate(btn));
-    });
-
-    RESIZE.add(() => {
-      if (!active) return;
-      rect = active.getBoundingClientRect();
-    });
-
-    window.addEventListener(
-      "scroll",
-      () => {
-        if (!active) return;
-        deactivate(active);
-      },
-      { passive: true }
-    );
-
-    const task = createTask(
-      (t) => {
-        if (!active || !rect) return;
-        if (!POINTER.inside) return;
-        if (ACTIVITY.isScrolling(t)) return;
-
-        const dx = POINTER.x - rect.left - rect.width / 2;
-        const dy = POINTER.y - rect.top - rect.height / 2;
-
-        const tx = dx * 0.18;
-        const ty = dy * 0.18;
-
-        ox += (tx - ox) * 0.25;
-        oy += (ty - oy) * 0.25;
-
-        apply(active, ox, oy);
-      },
-      {
-        fps: 60,
-        when: (t) => {
-          if (!active) return false;
-          if (ACTIVITY.isScrolling(t)) return true;
-          if (t - POINTER.last < 800) return true;
-          return Math.abs(ox) > 0.2 || Math.abs(oy) > 0.2;
-        }
-      }
-    );
-
-    TICKER.add("magneticButtons", task);
   };
   
   const initContactLinkCopy = () => {
@@ -1071,312 +751,55 @@
   };
   
   const initHeroTextAnimation = () => {
-    const lines = document.querySelectorAll(".hero-title .line");
-    
-    lines.forEach((line, index) => {
-      line.style.opacity = "0";
-      line.style.transform = "translateY(50px)";
-      
-      setTimeout(() => {
-        line.style.transition = "opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)";
-        line.style.opacity = "1";
-        line.style.transform = "translateY(0)";
-      }, 400 + index * 200);
-    });
   };
   
   const initAchievementHover = () => {
     const cards = document.querySelectorAll(".achievement-card");
-    
     cards.forEach((card) => {
-      card.addEventListener("mouseenter", function() {
-        const icon = this.querySelector(".achievement-icon");
-        if (icon) {
-          icon.style.transform = "scale(1.1) rotate(5deg)";
-        }
+      card.addEventListener("mouseenter", () => {
+        const icon = card.querySelector(".achievement-icon");
+        if (icon) icon.style.transform = "scale(1.15) rotate(8deg)";
       });
-      
-      card.addEventListener("mouseleave", function() {
-        const icon = this.querySelector(".achievement-icon");
-        if (icon) {
-          icon.style.transform = "";
-        }
+      card.addEventListener("mouseleave", () => {
+        const icon = card.querySelector(".achievement-icon");
+        if (icon) icon.style.transform = "";
       });
     });
   };
 
   const initLeetCodeAnimation = () => {
-    const wheel = document.querySelector(".wheel-ring");
-    if (!wheel) return;
-    
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            wheel.style.animation = "wheel-rotate 20s linear infinite";
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-    
-    observer.observe(wheel);
   };
   
   const init3DTilt = () => {
-    if (prefersReducedMotion || isMobile) return;
-    
-    const tiltElements = Array.from(document.querySelectorAll(".code-window, .about-terminal, .stat-card"));
-    if (!tiltElements.length) return;
-
-    const enterEvent = "PointerEvent" in window ? "pointerenter" : "mouseenter";
-    const leaveEvent = "PointerEvent" in window ? "pointerleave" : "mouseleave";
-
-    let active = null;
-    let rect = null;
-    let rx = 0;
-    let ry = 0;
-
-    const activate = (el) => {
-      active = el;
-      rect = el.getBoundingClientRect();
-      rx = 0;
-      ry = 0;
-      el.style.willChange = "transform";
-    };
-
-    const deactivate = (el) => {
-      el.style.transform = "";
-      if (active === el) {
-        active = null;
-        rect = null;
-      }
-    };
-
-    tiltElements.forEach((el) => {
-      if (!(el instanceof HTMLElement)) return;
-      el.addEventListener(enterEvent, () => activate(el));
-      el.addEventListener(leaveEvent, () => deactivate(el));
-    });
-
-    RESIZE.add(() => {
-      if (!active) return;
-      rect = active.getBoundingClientRect();
-    });
-
-    window.addEventListener(
-      "scroll",
-      () => {
-        if (!active) return;
-        deactivate(active);
-      },
-      { passive: true }
-    );
-
-    const task = createTask(
-      (t) => {
-        if (!active || !rect) return;
-        if (!POINTER.inside) return;
-        if (ACTIVITY.isScrolling(t)) return;
-
-        const x = POINTER.x - rect.left;
-        const y = POINTER.y - rect.top;
-
-        const cx = rect.width / 2;
-        const cy = rect.height / 2;
-
-        const tx = (y - cy) / 20;
-        const ty = (cx - x) / 20;
-
-        rx += (tx - rx) * 0.2;
-        ry += (ty - ry) * 0.2;
-
-        const max = 12;
-        const ax = Math.max(-max, Math.min(max, rx));
-        const ay = Math.max(-max, Math.min(max, ry));
-
-        active.style.transform = `perspective(1000px) rotateX(${ax}deg) rotateY(${ay}deg) translateZ(10px)`;
-      },
-      {
-        fps: 60,
-        when: (t) => {
-          if (!active) return false;
-          if (ACTIVITY.isScrolling(t)) return true;
-          if (t - POINTER.last < 800) return true;
-          return Math.abs(rx) > 0.1 || Math.abs(ry) > 0.1;
-        }
-      }
-    );
-
-    TICKER.add("tilt3d", task);
   };
   
   const initKonamiCode = () => {
-    if (prefersReducedMotion) return;
-
-    const sequence = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
-    let idx = 0;
-
-    const normalizeKey = (k) => (k.length === 1 ? k.toLowerCase() : k);
-
-    document.addEventListener("keydown", (e) => {
-      const expected = sequence[idx];
-      const actual = normalizeKey(e.key);
-      if (actual === expected) {
-        idx += 1;
-        if (idx === sequence.length) {
-          activateEasterEgg();
-          idx = 0;
-        }
-        return;
-      }
-
-      idx = actual === sequence[0] ? 1 : 0;
-    });
-    
-    const activateEasterEgg = () => {
-      document.body.style.animation = "rainbow-bg 2s ease-in-out";
-      
-      const message = document.createElement("div");
-      message.innerHTML = "🎮 KONAMI CODE ACTIVATED! 🎮";
-      message.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-family: var(--font-mono);
-        font-size: 2rem;
-        color: #4cc9ff;
-        text-shadow: 0 0 20px rgba(76, 201, 255, 0.85), 0 0 40px rgba(43, 107, 255, 0.65);
-        z-index: 99999;
-        animation: konami-bounce 0.5s ease-out;
-        pointer-events: none;
-      `;
-      
-      document.body.appendChild(message);
-      
-      setTimeout(() => {
-        message.remove();
-        document.body.style.animation = "";
-      }, 2000);
-    };
-    
-    const existing = document.getElementById("konami-style");
-    if (existing) return;
-
-    const style = document.createElement("style");
-    style.id = "konami-style";
-    style.textContent = `
-      @keyframes rainbow-bg {
-        0%, 100% { filter: hue-rotate(0deg); }
-        50% { filter: hue-rotate(360deg); }
-      }
-      @keyframes konami-bounce {
-        0% { transform: translate(-50%, -50%) scale(0); }
-        50% { transform: translate(-50%, -50%) scale(1.2); }
-        100% { transform: translate(-50%, -50%) scale(1); }
-      }
-    `;
-    document.head.appendChild(style);
   };
   
   const initTextReveal = () => {
-    const revealElements = document.querySelectorAll(".section-title, .hero-subtitle, .contact-title");
-    
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.style.opacity = "1";
-            entry.target.style.transform = "translateY(0)";
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-    
-    revealElements.forEach((el) => observer.observe(el));
   };
   
   const initImageHover = () => {
-    const heroImage = document.querySelector(".hero-image");
-    if (!heroImage) return;
-    
-    heroImage.addEventListener("mouseenter", () => {
-      heroImage.style.filter = "grayscale(0%) contrast(1.1) brightness(1.05)";
+    const wrap = document.querySelector(".hero-image-wrap");
+    if (!wrap) return;
+    wrap.addEventListener("mouseenter", () => {
+      wrap.style.transform = "scale(1.03)";
     });
-    
-    heroImage.addEventListener("mouseleave", () => {
-      heroImage.style.filter = "";
+    wrap.addEventListener("mouseleave", () => {
+      wrap.style.transform = "";
     });
   };
   
   const initRingDots = () => {
-    const rings = document.querySelectorAll(".hero-ring");
-    
-    rings.forEach((ring) => {
-      if (!ring.querySelector(".ring-dot")) {
-        const dot = document.createElement("div");
-        dot.className = "ring-dot";
-        ring.appendChild(dot);
-      }
-    });
   };
   
   const initDataStream = () => {
-    if (prefersReducedMotion || isMobile) return;
-    
-    const stream = document.createElement("div");
-    stream.className = "data-stream";
-    document.body.appendChild(stream);
   };
   
   const initClickRipple = () => {
-    if (prefersReducedMotion) return;
-    
-    document.addEventListener("click", (e) => {
-      const ripple = document.createElement("div");
-      ripple.style.cssText = `
-        position: fixed;
-        left: ${e.clientX}px;
-        top: ${e.clientY}px;
-        width: 10px;
-        height: 10px;
-        background: rgba(76, 201, 255, 0.55);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 99999;
-        transform: translate(-50%, -50%);
-        animation: click-ripple 0.6s ease-out forwards;
-      `;
-      
-      document.body.appendChild(ripple);
-      
-      setTimeout(() => ripple.remove(), 600);
-    });
-
-    const existing = document.getElementById("click-ripple-style");
-    if (existing) return;
-
-    const style = document.createElement("style");
-    style.id = "click-ripple-style";
-    style.textContent = `
-      @keyframes click-ripple {
-        0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        100% { transform: translate(-50%, -50%) scale(20); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
   };
   
   const initNoiseOverlay = () => {
-    if (prefersReducedMotion) return;
-    
-    const noise = document.createElement("div");
-    noise.className = "noise-overlay";
-    document.body.appendChild(noise);
   };
   
   const initServiceWorker = () => {

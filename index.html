@@ -2,7 +2,10 @@
 <html lang="ru" data-theme="dark" class="no-js">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=5, viewport-fit=cover" />
+  <meta name="HandheldFriendly" content="true" />
+  <meta name="MobileOptimized" content="width" />
+  <meta name="format-detection" content="telephone=no" />
   <script>(function(d){var e=d.documentElement;e.classList.remove("no-js");e.classList.add("js");e.dataset.js="pending";})(document);</script>
   <title>YALOKGAR — C/C++ разработчик (Qt, системное программирование, оптимизация)</title>
   <meta name="description" content="C/C++ разработчик (Qt, системное программирование, оптимизация производительности). Разработка на заказ, аудит и профилирование, Киев/Украина." />
@@ -17,14 +20,14 @@
   <meta property="og:url" content="https://yalokgar.com/" />
   <meta property="og:title" content="YALOKGAR — C/C++ разработчик" />
   <meta property="og:description" content="C/C++ разработчик (Qt, системное программирование, оптимизация производительности)." />
-  <meta property="og:image" content="https://yalokgar.com/file_00000000ff7471f4a5d8a5817cf43992.png" />
+  <meta property="og:image" content="https://yalokgar.com/assets/images/hero-avatar.png" />
   <meta property="og:site_name" content="YALOKGAR" />
   <meta property="og:locale" content="ru_RU" />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="YALOKGAR — C/C++ разработчик" />
   <meta name="twitter:description" content="C/C++ разработчик (Qt, системное программирование, оптимизация производительности)." />
-  <meta name="twitter:image" content="https://yalokgar.com/file_00000000ff7471f4a5d8a5817cf43992.png" />
+  <meta name="twitter:image" content="https://yalokgar.com/assets/images/hero-avatar.png" />
 
   <meta name="theme-color" content="#0a0a0f" />
   <meta name="color-scheme" content="dark" />
@@ -37,7 +40,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" as="style" />
-  <link rel="preload" href="./file_00000000ff7471f4a5d8a5817cf43992.png" as="image" fetchpriority="high" />
+  <link rel="preload" href="./assets/images/hero-avatar.png" as="image" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" />
 
@@ -50,7 +53,7 @@
     "@type": "Person",
     "name": "YALOKGAR",
     "url": "https://yalokgar.com/",
-    "image": "https://yalokgar.com/file_00000000ff7471f4a5d8a5817cf43992.png",
+    "image": "https://yalokgar.com/assets/images/hero-avatar.png",
     "jobTitle": "C/C++ разработчик",
     "worksFor": {
       "@type": "Organization",
@@ -72,7 +75,6 @@
 </head>
 <body>
   <canvas id="matrix-bg" aria-hidden="true"></canvas>
-  <div class="scan-line" aria-hidden="true"></div>
   <div class="cursor-glow" aria-hidden="true"></div>
 
   <header class="header" role="banner">
@@ -129,10 +131,19 @@
       </div>
       <div class="hero-visual" data-animate="scale">
         <div class="hero-image-wrap">
-          <img src="./file_00000000ff7471f4a5d8a5817cf43992.png" alt="YALOKGAR" class="hero-image" width="300" height="300" loading="eager" decoding="async" fetchpriority="high" />
-          <div class="hero-ring ring-1"><div class="ring-dot"></div></div>
-          <div class="hero-ring ring-2"><div class="ring-dot"></div></div>
-          <div class="hero-ring ring-3"><div class="ring-dot"></div></div>
+          <img src="./assets/images/hero-avatar.png" alt="YALOKGAR" class="hero-image" width="400" height="400" loading="eager" decoding="async" fetchpriority="high" />
+          <div class="hero-ring ring-1"></div>
+          <div class="hero-ring ring-2"></div>
+          <div class="hero-ring ring-3"></div>
+          <div class="binary-orbit" aria-hidden="true">
+            <div class="binary-ring binary-ring-1">
+              <span>01001000</span><span>11010110</span><span>01110101</span><span>10001011</span>
+            </div>
+            <div class="binary-ring binary-ring-2">
+              <span>10110100</span><span>01001101</span><span>11100010</span><span>00111001</span>
+            </div>
+          </div>
+          <div class="hex-glow-layer" aria-hidden="true"></div>
         </div>
         <div class="code-window" aria-hidden="true">
           <div class="code-header">
@@ -163,6 +174,18 @@
   <span class="kw">return</span> <span class="num">0</span>;
 }</code></pre>
         </div>
+        <div class="cyber-badge cyber-badge-1" data-float aria-hidden="true">
+          <span class="cyber-badge-indicator"></span>
+          <span class="cyber-badge-text">ACCESS_GRANTED</span>
+        </div>
+        <div class="cyber-badge cyber-badge-2" data-float aria-hidden="true">
+          <span class="cyber-badge-indicator"></span>
+          <span class="cyber-badge-text">DECRYPTION_COMPLETE</span>
+        </div>
+        <div class="cyber-badge cyber-badge-3" data-float aria-hidden="true">
+          <span class="cyber-badge-indicator magenta"></span>
+          <span class="cyber-badge-text">SYSTEM_ONLINE</span>
+        </div>
         <div class="floating-badge badge-1" data-float aria-hidden="true">
           <span class="badge-icon">⚡</span>
           <span class="badge-text">C++20/23</span>
@@ -177,6 +200,13 @@
         <div class="scroll-line"></div>
       </div>
     </section>
+
+    <div class="electric-divider" aria-hidden="true">
+      <svg class="lightning-svg" viewBox="0 0 100 20" preserveAspectRatio="none">
+        <path class="lightning-path lightning-1" d="M0,10 L20,8 L25,12 L40,9 L45,11 L60,8 L65,13 L80,10 L85,9 L100,10" />
+        <path class="lightning-path lightning-2" d="M0,10 L15,11 L20,8 L35,12 L50,9 L55,11 L70,8 L85,12 L100,10" />
+      </svg>
+    </div>
 
     <section class="marquee-section" aria-hidden="true">
       <div class="marquee">
@@ -488,46 +518,46 @@
               <span>LeetCode Stats</span>
             </div>
             <div class="leetcode-stats">
-              <div class="leetcode-wheel" aria-label="Всего решено 1742 задачи">
+              <div class="leetcode-wheel" aria-label="Всего решено 1955 задач">
                 <div class="wheel-ring"></div>
                 <div class="wheel-center">
-                  <span class="wheel-number">1742</span>
+                  <span class="wheel-number">1955</span>
                   <span class="wheel-label">Solved</span>
                 </div>
               </div>
               <div class="leetcode-breakdown">
                 <div class="difficulty easy">
                   <span class="diff-label">Easy</span>
-                  <div class="diff-bar"><div class="diff-fill" style="--fill: 52%"></div></div>
-                  <span class="diff-count">478/910</span>
+                  <div class="diff-bar"><div class="diff-fill" style="--fill: 57%"></div></div>
+                  <span class="diff-count">531/924</span>
                 </div>
                 <div class="difficulty medium">
                   <span class="diff-label">Medium</span>
-                  <div class="diff-bar"><div class="diff-fill" style="--fill: 48%"></div></div>
-                  <span class="diff-count">937/1944</span>
+                  <div class="diff-bar"><div class="diff-fill" style="--fill: 51%"></div></div>
+                  <span class="diff-count">1020/2002</span>
                 </div>
                 <div class="difficulty hard">
                   <span class="diff-label">Hard</span>
-                  <div class="diff-bar"><div class="diff-fill" style="--fill: 37%"></div></div>
-                  <span class="diff-count">327/881</span>
+                  <div class="diff-bar"><div class="diff-fill" style="--fill: 45%"></div></div>
+                  <span class="diff-count">404/906</span>
                 </div>
               </div>
             </div>
             <div class="leetcode-metrics">
               <div class="metric">
-                <span class="metric-value">1576</span>
+                <span class="metric-value">1,576</span>
                 <span class="metric-label">Contest Rating</span>
               </div>
               <div class="metric">
-                <span class="metric-value">205K</span>
+                <span class="metric-value">217K</span>
                 <span class="metric-label">Global Rank</span>
               </div>
               <div class="metric">
-                <span class="metric-value">26.76%</span>
+                <span class="metric-value">26.88%</span>
                 <span class="metric-label">Top Percentile</span>
               </div>
               <div class="metric">
-                <span class="metric-value">72</span>
+                <span class="metric-value">50</span>
                 <span class="metric-label">Active Days</span>
               </div>
             </div>
@@ -608,7 +638,6 @@
         <div class="product-showcase" data-animate="fade-up" data-delay="2">
           <div class="product-visual">
             <img src="https://raw.githubusercontent.com/YALOKGARua/YG-Unikalizer/main/docs/hero.svg" alt="YG Unikalizer - интерфейс приложения" loading="lazy" width="100%" height="auto" />
-            <div class="product-glow" aria-hidden="true"></div>
           </div>
           <div class="product-info">
             <h3 class="product-name">YG Unikalizer</h3>
