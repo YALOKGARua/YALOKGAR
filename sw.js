@@ -1,4 +1,4 @@
-const APP_VERSION = "20260205r4";
+const APP_VERSION = "20260205r5";
 const CACHE_NAME = `yalokgar-v${APP_VERSION}`;
 const SCOPE_URL = new URL(self.registration.scope);
 const toScopeUrl = (p) => new URL(p, SCOPE_URL).toString();
