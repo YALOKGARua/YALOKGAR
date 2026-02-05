@@ -39,12 +39,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" as="style" />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;600;700&display=swap" as="style" />
   <link rel="preload" href="./assets/images/hero-avatar.png" as="image" fetchpriority="high" />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" />
+  <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/splitting@1.0.6/dist/splitting.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/splitting@1.0.6/dist/splitting-cells.css" />
 
-  <link rel="stylesheet" href="./styles.css?v=20260101r1" />
+  <link rel="stylesheet" href="./styles.css?v=20260205r4" />
   <link rel="manifest" href="./manifest.webmanifest?v=20260101r1" />
 
   <script type="application/ld+json">
@@ -74,8 +77,24 @@
   </script>
 </head>
 <body>
+  <div class="custom-cursor" aria-hidden="true">
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+  </div>
+  <div id="tsparticles" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="crt-overlay" aria-hidden="true"></div>
   <canvas id="matrix-bg" aria-hidden="true"></canvas>
-  <div class="cursor-glow" aria-hidden="true"></div>
+  <div class="circuit-lines" aria-hidden="true">
+    <svg class="circuit-svg circuit-left" viewBox="0 0 200 600" preserveAspectRatio="none">
+      <path class="circuit-path" d="M0,50 L50,50 L50,150 L100,150 L100,100 L150,100 L150,200 L80,200 L80,300 L120,300 L120,250 L180,250 L180,350 L60,350 L60,450 L140,450 L140,400 L200,400" />
+      <path class="circuit-path delay-1" d="M0,200 L30,200 L30,280 L70,280 L70,320 L110,320 L110,380 L50,380 L50,480 L90,480 L90,550 L150,550" />
+    </svg>
+    <svg class="circuit-svg circuit-right" viewBox="0 0 200 600" preserveAspectRatio="none">
+      <path class="circuit-path delay-2" d="M200,80 L150,80 L150,160 L100,160 L100,120 L50,120 L50,220 L120,220 L120,280 L80,280 L80,360 L140,360 L140,420 L60,420 L60,500 L100,500" />
+      <path class="circuit-path delay-3" d="M200,300 L170,300 L170,380 L130,380 L130,340 L90,340 L90,440 L150,440 L150,520 L110,520 L110,580 L50,580" />
+    </svg>
+  </div>
 
   <header class="header" role="banner">
     <a href="#hero" class="logo" aria-label="YALOKGAR - На главную">
@@ -84,14 +103,11 @@
       <span class="logo-bracket">]</span>
     </a>
     <nav class="nav" id="nav" role="navigation" aria-label="Основная навигация">
-      <a href="#about" class="nav-link">About</a>
-      <a href="#skills" class="nav-link">Skills</a>
-      <a href="#projects" class="nav-link">Projects</a>
-      <a href="#stats" class="nav-link">Stats</a>
-      <a href="#achievements" class="nav-link">Achievements</a>
-      <a href="#product" class="nav-link">Product</a>
-      <a href="#faq" class="nav-link">FAQ</a>
-      <a href="#contact" class="nav-link">Contact</a>
+      <a href="#hero" class="nav-link">[ /HOME ]</a>
+      <a href="#operations" class="nav-link">[ /PROJECTS ]</a>
+      <a href="#skills" class="nav-link">[ /SKILLS ]</a>
+      <a href="#about" class="nav-link">[ /ABOUT ]</a>
+      <a href="#contact" class="nav-link">[ /CONTACT ]</a>
     </nav>
     <button class="menu-btn" type="button" aria-label="Открыть меню навигации" aria-expanded="false" aria-controls="nav">
       <span></span>
@@ -101,467 +117,510 @@
 
   <main role="main">
     <section class="hero" id="hero" aria-labelledby="hero-title">
-      <div class="hero-content">
-        <div class="terminal-line" data-animate="fade-up">
-          <span class="prompt">root@yalokgar:~$</span>
-          <span class="command typing">./init_developer.sh</span>
+      <div class="hero-status-badges">
+        <div class="status-badge badge-left" data-float aria-hidden="true">
+          <div class="badge-indicator pulse-magenta"></div>
+          <div class="badge-content">
+            <span class="badge-label">SECURE SYSTEM STATUS:</span>
+            <span class="badge-value magenta">COMPROMISED</span>
+          </div>
         </div>
-        <h1 id="hero-title" class="hero-title" data-animate="fade-up" data-delay="1">
-          <span class="line">Привет, я</span>
-          <span class="line glitch" data-text="YALOKGAR">YALOKGAR</span>
-        </h1>
-        <p class="hero-subtitle" data-animate="fade-up" data-delay="2">
-          <span class="neon-text">C/C++ Developer</span> :: кроссплатформенные desktop‑приложения (Qt) :: 
-          системное программирование :: оптимизация производительности
-        </p>
-        <div class="hero-cta" data-animate="fade-up" data-delay="3">
-          <a href="#projects" class="btn btn-neon">
-            <span>Смотреть работы</span>
-            <i class="ri-arrow-down-line" aria-hidden="true"></i>
-          </a>
-          <a href="#contact" class="btn btn-ghost">
-            <i class="ri-terminal-line" aria-hidden="true"></i>
-            <span>Контакт</span>
-          </a>
-          <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
-            <i class="ri-github-line" aria-hidden="true"></i>
-            <span>GitHub</span>
-          </a>
+        <div class="status-badge badge-top-right" data-float aria-hidden="true">
+          <div class="badge-indicator pulse-cyan"></div>
+          <div class="badge-content">
+            <span class="badge-label">ENCRYPTION LEVEL:</span>
+            <span class="badge-value cyan">QUANTUM BREACHED</span>
+          </div>
+        </div>
+        <div class="status-badge badge-bottom-right" data-float aria-hidden="true">
+          <div class="badge-indicator pulse-green"></div>
+          <div class="badge-content">
+            <span class="badge-label">TARGET ACQUIRED:</span>
+            <span class="badge-value green">CORPORATE MAINFRAME</span>
+          </div>
         </div>
       </div>
-      <div class="hero-visual" data-animate="scale">
-        <div class="hero-image-wrap">
-          <img src="./assets/images/hero-avatar.png" alt="YALOKGAR" class="hero-image" width="400" height="400" loading="eager" decoding="async" fetchpriority="high" />
-          <div class="hero-ring ring-1"></div>
-          <div class="hero-ring ring-2"></div>
-          <div class="hero-ring ring-3"></div>
-          <div class="binary-orbit" aria-hidden="true">
-            <div class="binary-ring binary-ring-1">
-              <span>01001000</span><span>11010110</span><span>01110101</span><span>10001011</span>
+
+      <div class="hero-terminal">
+        <div class="terminal-header">
+          <div class="terminal-status">
+            <span class="status-dot"></span>
+            <span class="status-text">CONNECTED</span>
+          </div>
+          <span class="terminal-title">root@yalokgar:~/system</span>
+          <span class="terminal-ping">PING: 12ms</span>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-matrix-overlay" aria-hidden="true"></div>
+          <div class="terminal-content">
+            <div class="terminal-line">
+              <span class="prompt">root@yalokgar:~$</span>
+              <span class="command typing-text">./init_breach.sh --target=mainframe</span>
             </div>
-            <div class="binary-ring binary-ring-2">
-              <span>10110100</span><span>01001101</span><span>11100010</span><span>00111001</span>
+            <div class="terminal-output">
+              <span class="output-line">[*] Initializing connection...</span>
+              <span class="output-line">[*] Bypassing firewall...</span>
+              <span class="output-line success">[+] ACCESS GRANTED</span>
+            </div>
+            <h1 id="hero-title" class="hero-title glitch-wrapper">
+              <span class="glitch-text" data-text="YALOKGAR" data-splitting>YALOKGAR</span>
+            </h1>
+            <p class="hero-subtitle">
+              <span class="bracket">&lt;</span>
+              <span class="subtitle-text">C/C++ Developer</span>
+              <span class="bracket">/&gt;</span>
+              <span class="cursor-blink">_</span>
+            </p>
+            <div class="hero-tags">
+              <span class="tag">SYSTEM_PROGRAMMING</span>
+              <span class="tag">QT_FRAMEWORK</span>
+              <span class="tag">PERFORMANCE_OPT</span>
+              <span class="tag">LOW_LEVEL</span>
             </div>
           </div>
-          <div class="hex-glow-layer" aria-hidden="true"></div>
-        </div>
-        <div class="code-window" aria-hidden="true">
-          <div class="code-header">
-            <span class="dot red"></span>
-            <span class="dot yellow"></span>
-            <span class="dot green"></span>
-            <span class="code-title">main.cpp</span>
-          </div>
-          <pre class="code-body"><code><span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;memory&gt;</span>
-
-<span class="kw">class</span> <span class="ty">Developer</span> {
-<span class="kw">public</span>:
-  <span class="kw">explicit</span> <span class="fn">Developer</span>(<span class="ty">std</span>::string n) 
-    : name_(<span class="kw">std</span>::move(n)) {}
-
-  <span class="ty">void</span> <span class="fn">execute</span>() <span class="kw">const</span> {
-    <span class="kw">std</span>::cout << <span class="str">"[ACCESS GRANTED]"</span>;
-  }
-<span class="kw">private</span>:
-  <span class="ty">std</span>::string name_;
-};
-
-<span class="ty">int</span> <span class="fn">main</span>() {
-  <span class="kw">auto</span> dev = <span class="kw">std</span>::make_unique&lt;<span class="ty">Developer</span>&gt;(
-    <span class="str">"YALOKGAR"</span>);
-  dev-><span class="fn">execute</span>();
-  <span class="kw">return</span> <span class="num">0</span>;
-}</code></pre>
-        </div>
-        <div class="cyber-badge cyber-badge-1" data-float aria-hidden="true">
-          <span class="cyber-badge-indicator"></span>
-          <span class="cyber-badge-text">ACCESS_GRANTED</span>
-        </div>
-        <div class="cyber-badge cyber-badge-2" data-float aria-hidden="true">
-          <span class="cyber-badge-indicator"></span>
-          <span class="cyber-badge-text">DECRYPTION_COMPLETE</span>
-        </div>
-        <div class="cyber-badge cyber-badge-3" data-float aria-hidden="true">
-          <span class="cyber-badge-indicator magenta"></span>
-          <span class="cyber-badge-text">SYSTEM_ONLINE</span>
-        </div>
-        <div class="floating-badge badge-1" data-float aria-hidden="true">
-          <span class="badge-icon">⚡</span>
-          <span class="badge-text">C++20/23</span>
-        </div>
-        <div class="floating-badge badge-2" data-float aria-hidden="true">
-          <span class="badge-icon">🔧</span>
-          <span class="badge-text">Qt/QML</span>
         </div>
       </div>
-      <div class="scroll-indicator" data-animate="fade-up" data-delay="4" aria-hidden="true">
-        <span>Scroll</span>
-        <div class="scroll-line"></div>
+
+      <div class="hero-hex-cluster" aria-hidden="true">
+        <div class="hex hex-1"><span>01</span></div>
+        <div class="hex hex-2"><span>FF</span></div>
+        <div class="hex hex-3"><span>A7</span></div>
+        <div class="hex hex-4"><span>C4</span></div>
+        <div class="hex hex-5"><span>9E</span></div>
+      </div>
+
+      <div class="hero-cta" data-animate="fade-up">
+        <a href="#operations" class="btn btn-cyber" data-magnetic>
+          <span class="btn-glitch" data-text="VIEW_PROJECTS">VIEW_PROJECTS</span>
+          <i class="ri-arrow-down-line" aria-hidden="true"></i>
+        </a>
+        <a href="#contact" class="btn btn-ghost" data-magnetic>
+          <i class="ri-terminal-line" aria-hidden="true"></i>
+          <span>INIT_CONTACT</span>
+        </a>
+        <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" data-magnetic>
+          <i class="ri-github-line" aria-hidden="true"></i>
+          <span>GITHUB</span>
+        </a>
       </div>
     </section>
 
     <div class="electric-divider" aria-hidden="true">
-      <svg class="lightning-svg" viewBox="0 0 100 20" preserveAspectRatio="none">
-        <path class="lightning-path lightning-1" d="M0,10 L20,8 L25,12 L40,9 L45,11 L60,8 L65,13 L80,10 L85,9 L100,10" />
-        <path class="lightning-path lightning-2" d="M0,10 L15,11 L20,8 L35,12 L50,9 L55,11 L70,8 L85,12 L100,10" />
+      <svg class="lightning-svg" viewBox="0 0 100 30" preserveAspectRatio="none">
+        <path class="lightning-path lightning-main" d="M0,15 L10,12 L15,18 L25,10 L30,20 L40,8 L45,22 L55,5 L60,18 L70,12 L75,20 L85,10 L90,15 L100,15" />
+        <path class="lightning-path lightning-secondary" d="M0,15 L8,18 L18,10 L28,22 L38,8 L48,20 L58,12 L68,18 L78,8 L88,20 L100,15" />
+        <path class="lightning-path lightning-tertiary" d="M0,15 L12,8 L22,20 L32,12 L42,18 L52,10 L62,22 L72,8 L82,18 L92,12 L100,15" />
       </svg>
+      <div class="spark spark-1"></div>
+      <div class="spark spark-2"></div>
+      <div class="spark spark-3"></div>
     </div>
 
-    <section class="marquee-section" aria-hidden="true">
-      <div class="marquee">
-        <div class="marquee-content">
-          <span>C++ Development</span>
-          <span class="marquee-dot">◆</span>
-          <span>Qt Applications</span>
-          <span class="marquee-dot">◆</span>
-          <span>System Programming</span>
-          <span class="marquee-dot">◆</span>
-          <span>Performance Optimization</span>
-          <span class="marquee-dot">◆</span>
-          <span>Cross-Platform</span>
-          <span class="marquee-dot">◆</span>
-          <span>Low-Level Hacking</span>
-          <span class="marquee-dot">◆</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="about" id="about" aria-labelledby="about-title">
+    <section class="operations" id="operations" aria-labelledby="operations-title">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag" data-animate="fade-up">&lt;about&gt;</span>
-          <h2 id="about-title" class="section-title" data-animate="fade-up" data-delay="1">
-            <span class="title-line">Немного</span>
-            <span class="title-line neon-gradient">обо мне</span>
+          <div class="section-tag-wrap">
+            <span class="section-tag">&lt;CURRENT_OPERATIONS/&gt;</span>
+            <span class="section-status online">ACTIVE</span>
+          </div>
+          <h2 id="operations-title" class="section-title">
+            <span class="title-bracket">[</span>
+            <span class="title-text">PROJECTS</span>
+            <span class="title-bracket">]</span>
           </h2>
         </div>
-        <div class="about-grid">
-          <div class="about-text" data-animate="fade-up" data-delay="2">
-            <p class="lead">
-              C/C++ разработчик с фокусом на кроссплатформенные desktop‑приложения, 
-              системное программирование и оптимизацию производительности.
-            </p>
-            <p>
-              Использую современные практики C++20/23, RAII, шаблоны, профилирование и отладку. 
-              Текущий фокус: Qt6 и QML, эффективность алгоритмов и структур данных, 
-              безопасность памяти и конкурентность.
-            </p>
-            <ul class="about-list" role="list">
-              <li><span class="list-marker" aria-hidden="true">></span> Modern C++ (C++20/23, STL, RAII, move semantics)</li>
-              <li><span class="list-marker" aria-hidden="true">></span> Кроссплатформенная разработка (Qt, CMake; Linux/Windows/macOS)</li>
-              <li><span class="list-marker" aria-hidden="true">></span> Оптимизация производительности (GDB, Valgrind, Clang)</li>
-              <li><span class="list-marker" aria-hidden="true">></span> Системное программирование: сети, файловые системы</li>
-            </ul>
-          </div>
-          <div class="about-terminal" data-animate="fade-up" data-delay="3" aria-hidden="true">
-            <div class="terminal-header">
-              <span class="dot red"></span>
-              <span class="dot yellow"></span>
-              <span class="dot green"></span>
-              <span>system_info.sh</span>
-            </div>
-            <div class="terminal-body">
-              <div class="term-line"><span class="prompt">$</span> cat /etc/developer</div>
-              <div class="term-output">
-                <div>Name: <span class="neon-cyan">YALOKGAR</span></div>
-                <div>Location: <span class="neon-cyan">Kyiv, Ukraine</span></div>
-                <div>Company: <span class="neon-cyan">BNB Solution</span></div>
-                <div>Focus: <span class="neon-cyan">C/C++, Qt, Performance</span></div>
-                <div>Status: <span class="neon-green">[ ONLINE ]</span></div>
+
+        <div class="cyber-panel operations-panel">
+          <div class="panel-corner corner-tl"></div>
+          <div class="panel-corner corner-tr"></div>
+          <div class="panel-corner corner-bl"></div>
+          <div class="panel-corner corner-br"></div>
+          
+          <div class="projects-grid">
+            <article class="project-card" data-animate="fade-up" data-tilt data-tilt-glare data-tilt-max-glare="0.15">
+              <div class="project-header">
+                <span class="project-index">01</span>
+                <span class="project-status">DEPLOYED</span>
               </div>
-              <div class="term-line"><span class="prompt">$</span> <span class="cursor-blink">_</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="skills" id="skills" aria-labelledby="skills-title">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-tag" data-animate="fade-up">&lt;skills&gt;</span>
-          <h2 id="skills-title" class="section-title" data-animate="fade-up" data-delay="1">
-            <span class="title-line">Технологии &</span>
-            <span class="title-line neon-gradient">навыки</span>
-          </h2>
-        </div>
-        <div class="skills-grid" data-animate="fade-up" data-delay="2">
-          <article class="skill-category">
-            <h3 class="skill-category-title">
-              <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-              Languages
-            </h3>
-            <div class="skill-items">
-              <span class="skill-chip" data-level="expert">C</span>
-              <span class="skill-chip" data-level="expert">C++20/23</span>
-              <span class="skill-chip" data-level="advanced">Python</span>
-              <span class="skill-chip" data-level="advanced">Rust</span>
-              <span class="skill-chip" data-level="intermediate">Go</span>
-              <span class="skill-chip" data-level="intermediate">JavaScript</span>
-            </div>
-          </article>
-          <article class="skill-category">
-            <h3 class="skill-category-title">
-              <i class="ri-stack-line" aria-hidden="true"></i>
-              Frameworks
-            </h3>
-            <div class="skill-items">
-              <span class="skill-chip" data-level="expert">Qt6</span>
-              <span class="skill-chip" data-level="expert">STL</span>
-              <span class="skill-chip" data-level="advanced">Boost</span>
-              <span class="skill-chip" data-level="advanced">POCO</span>
-              <span class="skill-chip" data-level="intermediate">Electron</span>
-            </div>
-          </article>
-          <article class="skill-category">
-            <h3 class="skill-category-title">
-              <i class="ri-tools-line" aria-hidden="true"></i>
-              Tools
-            </h3>
-            <div class="skill-items">
-              <span class="skill-chip" data-level="expert">CMake</span>
-              <span class="skill-chip" data-level="expert">GDB</span>
-              <span class="skill-chip" data-level="advanced">Valgrind</span>
-              <span class="skill-chip" data-level="advanced">Clang</span>
-              <span class="skill-chip" data-level="expert">Git</span>
-              <span class="skill-chip" data-level="intermediate">Docker</span>
-            </div>
-          </article>
-          <article class="skill-category">
-            <h3 class="skill-category-title">
-              <i class="ri-database-2-line" aria-hidden="true"></i>
-              Databases
-            </h3>
-            <div class="skill-items">
-              <span class="skill-chip" data-level="advanced">PostgreSQL</span>
-              <span class="skill-chip" data-level="advanced">SQLite</span>
-              <span class="skill-chip" data-level="intermediate">Redis</span>
-            </div>
-          </article>
-          <article class="skill-category">
-            <h3 class="skill-category-title">
-              <i class="ri-computer-line" aria-hidden="true"></i>
-              Platforms
-            </h3>
-            <div class="skill-items">
-              <span class="skill-chip" data-level="expert">Linux</span>
-              <span class="skill-chip" data-level="expert">Windows</span>
-              <span class="skill-chip" data-level="advanced">macOS</span>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="projects" id="projects" aria-labelledby="projects-title">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-tag" data-animate="fade-up">&lt;projects&gt;</span>
-          <h2 id="projects-title" class="section-title" data-animate="fade-up" data-delay="1">
-            <span class="title-line">Избранные</span>
-            <span class="title-line neon-gradient">проекты</span>
-          </h2>
-        </div>
-        
-        <div class="projects-list">
-          <article class="project-card" data-animate="fade-up">
-            <div class="project-index">01</div>
-            <div class="project-content">
               <h3 class="project-title">YG Unikalizer</h3>
-              <p class="project-desc">
-                Приложение для уникализации фото с нативным ускорением на C++, 
-                Electron + React 19, поиск дубликатов (a/d/pHash), управление EXIF.
-              </p>
+              <p class="project-desc">Приложение для уникализации фото с нативным ускорением на C++, Electron + React 19, поиск дубликатов (a/d/pHash).</p>
               <div class="project-tags">
                 <span>C++</span>
                 <span>Electron</span>
                 <span>React</span>
-                <span>Image Processing</span>
               </div>
-            </div>
-            <a href="https://github.com/YALOKGARua/YG-Unikalizer" target="_blank" rel="noopener noreferrer" class="project-link">
-              <span>GitHub</span>
-              <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
-            </a>
-          </article>
+              <a href="https://github.com/YALOKGARua/YG-Unikalizer" target="_blank" rel="noopener noreferrer" class="project-link">
+                <span>ACCESS_REPO</span>
+                <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
+              </a>
+            </article>
 
-          <article class="project-card" data-animate="fade-up">
-            <div class="project-index">02</div>
-            <div class="project-content">
+            <article class="project-card" data-animate="fade-up" data-tilt data-tilt-glare data-tilt-max-glare="0.15">
+              <div class="project-header">
+                <span class="project-index">02</span>
+                <span class="project-status">ACTIVE</span>
+              </div>
               <h3 class="project-title">AntiCheatYALOKGAR</h3>
-              <p class="project-desc">
-                Anti-Cheat система на C++/Assembly с низкоуровневой защитой, 
-                kernel-level мониторингом и обнаружением инъекций.
-              </p>
+              <p class="project-desc">Anti-Cheat система на C++/Assembly с низкоуровневой защитой, kernel-level мониторингом.</p>
               <div class="project-tags">
                 <span>C++</span>
                 <span>Assembly</span>
-                <span>Security</span>
                 <span>Kernel</span>
               </div>
-            </div>
-            <a href="https://github.com/YALOKGARua/AntiCheatYALOKGAR" target="_blank" rel="noopener noreferrer" class="project-link">
-              <span>GitHub</span>
-              <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
-            </a>
-          </article>
+              <a href="https://github.com/YALOKGARua/AntiCheatYALOKGAR" target="_blank" rel="noopener noreferrer" class="project-link">
+                <span>ACCESS_REPO</span>
+                <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
+              </a>
+            </article>
 
-          <article class="project-card" data-animate="fade-up">
-            <div class="project-index">03</div>
-            <div class="project-content">
+            <article class="project-card" data-animate="fade-up" data-tilt data-tilt-glare data-tilt-max-glare="0.15">
+              <div class="project-header">
+                <span class="project-index">03</span>
+                <span class="project-status">COMPLETE</span>
+              </div>
               <h3 class="project-title">VirtuProcessor</h3>
-              <p class="project-desc">
-                Эмулятор мини‑CPU на C: арифметика, логические операции, работа с памятью, CLI интерфейс.
-              </p>
+              <p class="project-desc">Эмулятор мини-CPU на C: арифметика, логические операции, работа с памятью, CLI интерфейс.</p>
               <div class="project-tags">
                 <span>C</span>
                 <span>Emulation</span>
                 <span>CPU</span>
-                <span>Low-Level</span>
               </div>
-            </div>
-            <a href="https://github.com/YALOKGARua/VirtuProcessor" target="_blank" rel="noopener noreferrer" class="project-link">
-              <span>GitHub</span>
-              <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
-            </a>
-          </article>
+              <a href="https://github.com/YALOKGARua/VirtuProcessor" target="_blank" rel="noopener noreferrer" class="project-link">
+                <span>ACCESS_REPO</span>
+                <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
+              </a>
+            </article>
 
-          <article class="project-card" data-animate="fade-up">
-            <div class="project-index">04</div>
-            <div class="project-content">
+            <article class="project-card" data-animate="fade-up" data-tilt data-tilt-glare data-tilt-max-glare="0.15">
+              <div class="project-header">
+                <span class="project-index">04</span>
+                <span class="project-status">DEPLOYED</span>
+              </div>
               <h3 class="project-title">CryptoMaster</h3>
-              <p class="project-desc">
-                Криптографическая библиотека на C++ с реализацией современных алгоритмов шифрования.
-              </p>
+              <p class="project-desc">Криптографическая библиотека на C++ с реализацией современных алгоритмов шифрования.</p>
               <div class="project-tags">
                 <span>C++</span>
-                <span>Cryptography</span>
+                <span>Crypto</span>
                 <span>Security</span>
               </div>
-            </div>
-            <a href="https://github.com/YALOKGARua/CryptoMaster-" target="_blank" rel="noopener noreferrer" class="project-link">
-              <span>GitHub</span>
-              <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
-            </a>
-          </article>
+              <a href="https://github.com/YALOKGARua/CryptoMaster-" target="_blank" rel="noopener noreferrer" class="project-link">
+                <span>ACCESS_REPO</span>
+                <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
+              </a>
+            </article>
 
-          <article class="project-card" data-animate="fade-up">
-            <div class="project-index">05</div>
-            <div class="project-content">
+            <article class="project-card" data-animate="fade-up" data-tilt data-tilt-glare data-tilt-max-glare="0.15">
+              <div class="project-header">
+                <span class="project-index">05</span>
+                <span class="project-status">ACTIVE</span>
+              </div>
               <h3 class="project-title">DBManager</h3>
-              <p class="project-desc">
-                Высокопроизводительный менеджер баз данных на C++ с оптимизированными запросами.
-              </p>
+              <p class="project-desc">Высокопроизводительный менеджер баз данных на C++ с оптимизированными запросами.</p>
               <div class="project-tags">
                 <span>C++</span>
                 <span>Database</span>
                 <span>SQL</span>
               </div>
-            </div>
-            <a href="https://github.com/YALOKGARua/DBManager" target="_blank" rel="noopener noreferrer" class="project-link">
-              <span>GitHub</span>
-              <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
-            </a>
-          </article>
+              <a href="https://github.com/YALOKGARua/DBManager" target="_blank" rel="noopener noreferrer" class="project-link">
+                <span>ACCESS_REPO</span>
+                <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
+              </a>
+            </article>
 
-          <article class="project-card" data-animate="fade-up">
-            <div class="project-index">06</div>
-            <div class="project-content">
+            <article class="project-card" data-animate="fade-up" data-tilt data-tilt-glare data-tilt-max-glare="0.15">
+              <div class="project-header">
+                <span class="project-index">06</span>
+                <span class="project-status">TESTING</span>
+              </div>
               <h3 class="project-title">TradingStrategy</h3>
-              <p class="project-desc">
-                Quant/Trading стратегии и алгоритмы для автоматизированной торговли.
-              </p>
+              <p class="project-desc">Quant/Trading стратегии и алгоритмы для автоматизированной торговли.</p>
               <div class="project-tags">
                 <span>C++</span>
                 <span>Trading</span>
                 <span>Algorithms</span>
               </div>
-            </div>
-            <a href="https://github.com/YALOKGARua/TradingStrategy" target="_blank" rel="noopener noreferrer" class="project-link">
-              <span>GitHub</span>
-              <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
-            </a>
-          </article>
-        </div>
+              <a href="https://github.com/YALOKGARua/TradingStrategy" target="_blank" rel="noopener noreferrer" class="project-link">
+                <span>ACCESS_REPO</span>
+                <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
+              </a>
+            </article>
+          </div>
 
-        <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer" class="view-all" data-animate="fade-up">
-          <span>Все проекты на GitHub</span>
-          <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
-        </a>
+          <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer" class="view-all-link">
+            <span>VIEW_ALL_REPOSITORIES</span>
+            <i class="ri-arrow-right-up-line" aria-hidden="true"></i>
+          </a>
+        </div>
       </div>
     </section>
 
-    <section class="stats" id="stats" aria-labelledby="stats-title">
+    <div class="electric-divider" aria-hidden="true">
+      <svg class="lightning-svg" viewBox="0 0 100 30" preserveAspectRatio="none">
+        <path class="lightning-path lightning-main" d="M0,15 L10,12 L15,18 L25,10 L30,20 L40,8 L45,22 L55,5 L60,18 L70,12 L75,20 L85,10 L90,15 L100,15" />
+        <path class="lightning-path lightning-secondary" d="M0,15 L8,18 L18,10 L28,22 L38,8 L48,20 L58,12 L68,18 L78,8 L88,20 L100,15" />
+      </svg>
+    </div>
+
+    <section class="skills" id="skills" aria-labelledby="skills-title">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag" data-animate="fade-up">&lt;stats&gt;</span>
-          <h2 id="stats-title" class="section-title" data-animate="fade-up" data-delay="1">
-            <span class="title-line">GitHub &</span>
-            <span class="title-line neon-gradient">LeetCode</span>
+          <div class="section-tag-wrap">
+            <span class="section-tag">&lt;SKILLS_CLUSTER/&gt;</span>
+            <span class="section-status online">LOADED</span>
+          </div>
+          <h2 id="skills-title" class="section-title">
+            <span class="title-bracket">[</span>
+            <span class="title-text">TECH_STACK</span>
+            <span class="title-bracket">]</span>
           </h2>
         </div>
 
-        <div class="stats-grid">
-          <article class="stat-card github-card" data-animate="fade-up">
-            <div class="stat-card-header">
-              <i class="ri-github-fill" aria-hidden="true"></i>
-              <span>GitHub Stats</span>
-            </div>
-            <img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=YALOKGARua&theme=github_dark" alt="GitHub профиль YALOKGAR - статистика активности" loading="lazy" width="100%" height="auto" />
-            <img src="https://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=YALOKGARua&theme=github_dark" alt="Распределение языков программирования в репозиториях" loading="lazy" width="100%" height="auto" />
-          </article>
+        <div class="skills-container">
+          <div class="cyber-panel skills-panel">
+            <div class="panel-corner corner-tl"></div>
+            <div class="panel-corner corner-tr"></div>
+            <div class="panel-corner corner-bl"></div>
+            <div class="panel-corner corner-br"></div>
 
-          <article class="stat-card leetcode-card" data-animate="fade-up" data-delay="1">
-            <div class="stat-card-header">
-              <i class="ri-code-box-fill" aria-hidden="true"></i>
-              <span>LeetCode Stats</span>
+            <div class="skills-grid">
+              <div class="skill-category">
+                <div class="category-header">
+                  <div class="hex-icon"><i class="ri-code-s-slash-line"></i></div>
+                  <h3>LANGUAGES</h3>
+                </div>
+                <div class="skill-bars">
+                  <div class="skill-bar">
+                    <div class="skill-info">
+                      <span class="skill-name">C/C++</span>
+                      <span class="skill-level">EXPERT</span>
+                    </div>
+                    <div class="bar-track"><div class="bar-fill" style="--fill: 95%"></div></div>
+                  </div>
+                  <div class="skill-bar">
+                    <div class="skill-info">
+                      <span class="skill-name">Python</span>
+                      <span class="skill-level">ADVANCED</span>
+                    </div>
+                    <div class="bar-track"><div class="bar-fill" style="--fill: 80%"></div></div>
+                  </div>
+                  <div class="skill-bar">
+                    <div class="skill-info">
+                      <span class="skill-name">Rust</span>
+                      <span class="skill-level">ADVANCED</span>
+                    </div>
+                    <div class="bar-track"><div class="bar-fill" style="--fill: 75%"></div></div>
+                  </div>
+                  <div class="skill-bar">
+                    <div class="skill-info">
+                      <span class="skill-name">Assembly</span>
+                      <span class="skill-level">INTERMEDIATE</span>
+                    </div>
+                    <div class="bar-track"><div class="bar-fill" style="--fill: 60%"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="skill-category">
+                <div class="category-header">
+                  <div class="hex-icon"><i class="ri-stack-line"></i></div>
+                  <h3>FRAMEWORKS</h3>
+                </div>
+                <div class="skill-bars">
+                  <div class="skill-bar">
+                    <div class="skill-info">
+                      <span class="skill-name">Qt6/QML</span>
+                      <span class="skill-level">EXPERT</span>
+                    </div>
+                    <div class="bar-track"><div class="bar-fill cyan" style="--fill: 92%"></div></div>
+                  </div>
+                  <div class="skill-bar">
+                    <div class="skill-info">
+                      <span class="skill-name">STL/Boost</span>
+                      <span class="skill-level">EXPERT</span>
+                    </div>
+                    <div class="bar-track"><div class="bar-fill cyan" style="--fill: 90%"></div></div>
+                  </div>
+                  <div class="skill-bar">
+                    <div class="skill-info">
+                      <span class="skill-name">Electron</span>
+                      <span class="skill-level">ADVANCED</span>
+                    </div>
+                    <div class="bar-track"><div class="bar-fill cyan" style="--fill: 78%"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="skill-category">
+                <div class="category-header">
+                  <div class="hex-icon"><i class="ri-tools-line"></i></div>
+                  <h3>TOOLS</h3>
+                </div>
+                <div class="skill-bars">
+                  <div class="skill-bar">
+                    <div class="skill-info">
+                      <span class="skill-name">CMake/GDB</span>
+                      <span class="skill-level">EXPERT</span>
+                    </div>
+                    <div class="bar-track"><div class="bar-fill magenta" style="--fill: 95%"></div></div>
+                  </div>
+                  <div class="skill-bar">
+                    <div class="skill-info">
+                      <span class="skill-name">Valgrind</span>
+                      <span class="skill-level">ADVANCED</span>
+                    </div>
+                    <div class="bar-track"><div class="bar-fill magenta" style="--fill: 85%"></div></div>
+                  </div>
+                  <div class="skill-bar">
+                    <div class="skill-info">
+                      <span class="skill-name">Git/Docker</span>
+                      <span class="skill-level">EXPERT</span>
+                    </div>
+                    <div class="bar-track"><div class="bar-fill magenta" style="--fill: 90%"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="skill-category">
+                <div class="category-header">
+                  <div class="hex-icon"><i class="ri-server-line"></i></div>
+                  <h3>PLATFORMS</h3>
+                </div>
+                <div class="skill-bars">
+                  <div class="skill-bar">
+                    <div class="skill-info">
+                      <span class="skill-name">Linux</span>
+                      <span class="skill-level">EXPERT</span>
+                    </div>
+                    <div class="bar-track"><div class="bar-fill purple" style="--fill: 95%"></div></div>
+                  </div>
+                  <div class="skill-bar">
+                    <div class="skill-info">
+                      <span class="skill-name">Windows</span>
+                      <span class="skill-level">EXPERT</span>
+                    </div>
+                    <div class="bar-track"><div class="bar-fill purple" style="--fill: 92%"></div></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="leetcode-stats">
-              <div class="leetcode-wheel" aria-label="Всего решено 1955 задач">
-                <div class="wheel-ring"></div>
+          </div>
+
+          <div class="hex-cluster-decoration" aria-hidden="true">
+            <div class="hex-deco hex-d1"></div>
+            <div class="hex-deco hex-d2"></div>
+            <div class="hex-deco hex-d3"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="electric-divider" aria-hidden="true">
+      <svg class="lightning-svg" viewBox="0 0 100 30" preserveAspectRatio="none">
+        <path class="lightning-path lightning-main" d="M0,15 L10,12 L15,18 L25,10 L30,20 L40,8 L45,22 L55,5 L60,18 L70,12 L75,20 L85,10 L90,15 L100,15" />
+      </svg>
+    </div>
+
+    <section class="about" id="about" aria-labelledby="about-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag-wrap">
+            <span class="section-tag">&lt;SYSTEM_INFO/&gt;</span>
+            <span class="section-status online">ONLINE</span>
+          </div>
+          <h2 id="about-title" class="section-title">
+            <span class="title-bracket">[</span>
+            <span class="title-text">ABOUT</span>
+            <span class="title-bracket">]</span>
+          </h2>
+        </div>
+
+        <div class="about-grid">
+          <div class="cyber-panel about-panel">
+            <div class="panel-corner corner-tl"></div>
+            <div class="panel-corner corner-tr"></div>
+            <div class="panel-corner corner-bl"></div>
+            <div class="panel-corner corner-br"></div>
+
+            <div class="about-content">
+              <div class="about-avatar">
+                <div class="avatar-frame">
+                  <img data-src="./assets/images/hero-avatar.png" alt="YALOKGAR" width="200" height="200" class="lazyload" />
+                  <div class="avatar-glitch-overlay"></div>
+                </div>
+                <div class="avatar-scan-line"></div>
+              </div>
+              <div class="about-text">
+                <div class="terminal-block">
+                  <div class="term-line"><span class="prompt">$</span> cat /etc/developer.conf</div>
+                  <div class="term-output">
+                    <p><span class="key">NAME:</span> <span class="val cyan">YALOKGAR</span></p>
+                    <p><span class="key">LOCATION:</span> <span class="val">Kyiv, Ukraine</span></p>
+                    <p><span class="key">COMPANY:</span> <span class="val">BNB Solution</span></p>
+                    <p><span class="key">FOCUS:</span> <span class="val green">C/C++, Qt, Performance</span></p>
+                    <p><span class="key">STATUS:</span> <span class="val blink">[ONLINE]</span></p>
+                  </div>
+                </div>
+                <p class="about-desc">C/C++ разработчик с фокусом на кроссплатформенные desktop-приложения, системное программирование и оптимизацию производительности. Modern C++20/23, RAII, шаблоны.</p>
+                <ul class="about-list">
+                  <li><span class="marker">&gt;</span> Modern C++ (C++20/23, STL, RAII)</li>
+                  <li><span class="marker">&gt;</span> Cross-platform (Qt, CMake)</li>
+                  <li><span class="marker">&gt;</span> Performance optimization (GDB, Valgrind)</li>
+                  <li><span class="marker">&gt;</span> System programming: networks, filesystems</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="cyber-panel stats-panel">
+            <div class="panel-corner corner-tl"></div>
+            <div class="panel-corner corner-tr"></div>
+            <div class="panel-corner corner-bl"></div>
+            <div class="panel-corner corner-br"></div>
+
+            <h3 class="panel-title">LEETCODE_STATS</h3>
+            <div class="leetcode-display">
+              <div class="leetcode-wheel">
+                <svg viewBox="0 0 100 100">
+                  <circle class="wheel-bg" cx="50" cy="50" r="40" />
+                  <circle class="wheel-progress easy" cx="50" cy="50" r="40" stroke-dasharray="70 251" stroke-dashoffset="0" />
+                  <circle class="wheel-progress medium" cx="50" cy="50" r="40" stroke-dasharray="130 251" stroke-dashoffset="-70" />
+                  <circle class="wheel-progress hard" cx="50" cy="50" r="40" stroke-dasharray="51 251" stroke-dashoffset="-200" />
+                </svg>
                 <div class="wheel-center">
                   <span class="wheel-number">1955</span>
-                  <span class="wheel-label">Solved</span>
+                  <span class="wheel-label">SOLVED</span>
                 </div>
               </div>
               <div class="leetcode-breakdown">
-                <div class="difficulty easy">
-                  <span class="diff-label">Easy</span>
-                  <div class="diff-bar"><div class="diff-fill" style="--fill: 57%"></div></div>
-                  <span class="diff-count">531/924</span>
+                <div class="lc-stat easy">
+                  <span class="lc-label">EASY</span>
+                  <span class="lc-count">531/924</span>
                 </div>
-                <div class="difficulty medium">
-                  <span class="diff-label">Medium</span>
-                  <div class="diff-bar"><div class="diff-fill" style="--fill: 51%"></div></div>
-                  <span class="diff-count">1020/2002</span>
+                <div class="lc-stat medium">
+                  <span class="lc-label">MEDIUM</span>
+                  <span class="lc-count">1020/2002</span>
                 </div>
-                <div class="difficulty hard">
-                  <span class="diff-label">Hard</span>
-                  <div class="diff-bar"><div class="diff-fill" style="--fill: 45%"></div></div>
-                  <span class="diff-count">404/906</span>
+                <div class="lc-stat hard">
+                  <span class="lc-label">HARD</span>
+                  <span class="lc-count">404/906</span>
                 </div>
               </div>
             </div>
-            <div class="leetcode-metrics">
+            <div class="stats-metrics">
               <div class="metric">
-                <span class="metric-value">1,576</span>
-                <span class="metric-label">Contest Rating</span>
+                <span class="metric-val">1,576</span>
+                <span class="metric-label">RATING</span>
               </div>
               <div class="metric">
-                <span class="metric-value">217K</span>
-                <span class="metric-label">Global Rank</span>
+                <span class="metric-val">217K</span>
+                <span class="metric-label">RANK</span>
               </div>
               <div class="metric">
-                <span class="metric-value">26.88%</span>
-                <span class="metric-label">Top Percentile</span>
-              </div>
-              <div class="metric">
-                <span class="metric-value">50</span>
-                <span class="metric-label">Active Days</span>
+                <span class="metric-val">26.88%</span>
+                <span class="metric-label">TOP</span>
               </div>
             </div>
-          </article>
+          </div>
         </div>
       </div>
     </section>
@@ -569,285 +628,178 @@
     <section class="achievements" id="achievements" aria-labelledby="achievements-title">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag" data-animate="fade-up">&lt;achievements&gt;</span>
-          <h2 id="achievements-title" class="section-title" data-animate="fade-up" data-delay="1">
-            <span class="title-line">CodinGame</span>
-            <span class="title-line neon-gradient">Certifications</span>
+          <div class="section-tag-wrap">
+            <span class="section-tag">&lt;CERTIFICATIONS/&gt;</span>
+            <span class="section-status online">VERIFIED</span>
+          </div>
+          <h2 id="achievements-title" class="section-title">
+            <span class="title-bracket">[</span>
+            <span class="title-text">ACHIEVEMENTS</span>
+            <span class="title-bracket">]</span>
           </h2>
         </div>
 
         <div class="achievements-grid">
-          <article class="achievement-card legend" data-animate="fade-up">
+          <div class="achievement-card legend">
             <div class="achievement-rank">LEGEND</div>
-            <div class="achievement-icon" aria-hidden="true">CS</div>
-            <div class="achievement-content">
+            <div class="achievement-hex">CS</div>
+            <div class="achievement-info">
               <h3>Coding Speed</h3>
-              <p>Молниеносное решение сложных задач, глубокое знание языков и окружений.</p>
+              <p>Молниеносное решение сложных задач</p>
             </div>
-          </article>
-
-          <article class="achievement-card legend" data-animate="fade-up">
+          </div>
+          <div class="achievement-card legend">
             <div class="achievement-rank">LEGEND</div>
-            <div class="achievement-icon" aria-hidden="true">ALG</div>
-            <div class="achievement-content">
+            <div class="achievement-hex">ALG</div>
+            <div class="achievement-info">
               <h3>Algorithms</h3>
-              <p>Графы, динамическое программирование, обработка изображений и криптография.</p>
+              <p>Графы, DP, криптография</p>
             </div>
-          </article>
-
-          <article class="achievement-card legend" data-animate="fade-up">
+          </div>
+          <div class="achievement-card legend">
             <div class="achievement-rank">LEGEND</div>
-            <div class="achievement-icon" aria-hidden="true">COL</div>
-            <div class="achievement-content">
+            <div class="achievement-hex">COL</div>
+            <div class="achievement-info">
               <h3>Collaboration</h3>
-              <p>Командная работа, менторство и вклад в сообщества на высшем уровне.</p>
+              <p>Командная работа и менторство</p>
             </div>
-          </article>
-
-          <article class="achievement-card legend" data-animate="fade-up">
+          </div>
+          <div class="achievement-card legend">
             <div class="achievement-rank">LEGEND</div>
-            <div class="achievement-icon" aria-hidden="true">OPT</div>
-            <div class="achievement-content">
+            <div class="achievement-hex">OPT</div>
+            <div class="achievement-info">
               <h3>Optimization</h3>
-              <p>Максимальная эффективность по CPU и памяти для embedded-систем.</p>
+              <p>Максимальная эффективность</p>
             </div>
-          </article>
-
-          <article class="achievement-card gold" data-animate="fade-up">
+          </div>
+          <div class="achievement-card gold">
             <div class="achievement-rank">GOLD</div>
-            <div class="achievement-icon" aria-hidden="true">AI</div>
-            <div class="achievement-content">
+            <div class="achievement-hex">AI</div>
+            <div class="achievement-info">
               <h3>Artificial Intelligence</h3>
-              <p>Разработка стратегических AI-ботов, адаптирующихся к контексту.</p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="product" id="product" aria-labelledby="product-title">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-tag" data-animate="fade-up">&lt;product&gt;</span>
-          <h2 id="product-title" class="section-title" data-animate="fade-up" data-delay="1">
-            <span class="title-line">Мой</span>
-            <span class="title-line neon-gradient">продукт</span>
-          </h2>
-        </div>
-
-        <div class="product-showcase" data-animate="fade-up" data-delay="2">
-          <div class="product-visual">
-            <img src="https://raw.githubusercontent.com/YALOKGARua/YG-Unikalizer/main/docs/hero.svg" alt="YG Unikalizer - интерфейс приложения" loading="lazy" width="100%" height="auto" />
-          </div>
-          <div class="product-info">
-            <h3 class="product-name">YG Unikalizer</h3>
-            <p class="product-desc">
-              Мощный инструмент для уникализации фото с нативным ускорением на C++, 
-              современным UI на Electron + React 19 и продвинутым поиском дубликатов.
-            </p>
-            <ul class="product-features" role="list">
-              <li><i class="ri-check-line" aria-hidden="true"></i> Форматы: JPG, PNG, WebP, AVIF, HEIC</li>
-              <li><i class="ri-check-line" aria-hidden="true"></i> Очистка/подмена EXIF, защита приватности</li>
-              <li><i class="ri-check-line" aria-hidden="true"></i> Поиск дубликатов по перцепционным хешам (a/d/pHash)</li>
-              <li><i class="ri-check-line" aria-hidden="true"></i> Стабильные сборки для Windows</li>
-              <li><i class="ri-check-line" aria-hidden="true"></i> Многоязычность: RU, UK, EN, AR, ZH</li>
-            </ul>
-            <div class="product-price">
-              <span class="price-label">Цена:</span>
-              <span class="price-value">по запросу</span>
-            </div>
-            <div class="product-actions">
-              <a href="https://t.me/YALOKGAR" target="_blank" rel="noopener noreferrer" class="btn btn-neon">
-                <i class="ri-telegram-line" aria-hidden="true"></i>
-                <span>Купить в Telegram</span>
-              </a>
-              <a href="https://github.com/YALOKGARua/YG-Unikalizer" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
-                <i class="ri-github-line" aria-hidden="true"></i>
-                <span>GitHub</span>
-              </a>
+              <p>Стратегические AI-боты</p>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="faq" id="faq" aria-labelledby="faq-title">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-tag" data-animate="fade-up">&lt;faq&gt;</span>
-          <h2 id="faq-title" class="section-title" data-animate="fade-up" data-delay="1">
-            <span class="title-line">Часто задаваемые</span>
-            <span class="title-line neon-gradient">вопросы</span>
-          </h2>
-        </div>
-
-        <div class="faq-list" role="list">
-          <article class="faq-item" data-animate="fade-up">
-            <button class="faq-question" type="button" aria-expanded="false">
-              <span>Какие услуги вы предоставляете как C/C++ разработчик?</span>
-              <i class="ri-add-line" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer">
-              <p>Разработка кроссплатформенных desktop‑приложений (Qt/QML), системное программирование, оптимизация производительности, аудит и профилирование, рефакторинг, консультации.</p>
-            </div>
-          </article>
-
-          <article class="faq-item" data-animate="fade-up">
-            <button class="faq-question" type="button" aria-expanded="false">
-              <span>Работаете ли вы с Qt и QML?</span>
-              <i class="ri-add-line" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer">
-              <p>Да. Qt6/QML, кроссплатформенные GUI, интеграция с CMake, подготовка стабильных сборок для Windows/Linux/macOS.</p>
-            </div>
-          </article>
-
-          <article class="faq-item" data-animate="fade-up">
-            <button class="faq-question" type="button" aria-expanded="false">
-              <span>Помогаете ли с оптимизацией C/C++ приложений?</span>
-              <i class="ri-add-line" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer">
-              <p>Да. Профилирование, устранение узких мест, оптимизация алгоритмов и структур данных, безопасная конкурентность, снижение потребления памяти и CPU.</p>
-            </div>
-          </article>
-
-          <article class="faq-item" data-animate="fade-up">
-            <button class="faq-question" type="button" aria-expanded="false">
-              <span>Можно ли заказать аудит или рефакторинг существующего кода?</span>
-              <i class="ri-add-line" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer">
-              <p>Да. Провожу аудит качества, безопасности и производительности, предлагаю план улучшений и постепенно реализую изменения.</p>
-            </div>
-          </article>
-
-          <article class="faq-item" data-animate="fade-up">
-            <button class="faq-question" type="button" aria-expanded="false">
-              <span>Что такое YG Unikalizer?</span>
-              <i class="ri-add-line" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer">
-              <p>Инструмент для уникализации фото с нативным ускорением на C++, поддержкой a/d/pHash поиска дубликатов и управлением EXIF. Доступен в релизах GitHub и по запросу.</p>
-            </div>
-          </article>
-
-          <article class="faq-item" data-animate="fade-up">
-            <button class="faq-question" type="button" aria-expanded="false">
-              <span>Как связаться и обсудить проект?</span>
-              <i class="ri-add-line" aria-hidden="true"></i>
-            </button>
-            <div class="faq-answer">
-              <p>Напишите в Telegram @YALOKGAR или на email yalokgar@gmail.com. Отвечаю в течение 24 часов.</p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="marquee-section marquee-reverse" aria-hidden="true">
-      <div class="marquee" data-direction="reverse">
-        <div class="marquee-content">
-          <span>Let's Work Together</span>
-          <span class="marquee-dot">★</span>
-          <span>Available for Projects</span>
-          <span class="marquee-dot">★</span>
-          <span>Open to Collaboration</span>
-          <span class="marquee-dot">★</span>
-          <span>Remote Friendly</span>
-          <span class="marquee-dot">★</span>
         </div>
       </div>
     </section>
 
     <section class="contact" id="contact" aria-labelledby="contact-title">
       <div class="container">
-        <div class="contact-wrap">
-          <div class="contact-info" data-animate="fade-up">
-            <span class="section-tag">&lt;contact&gt;</span>
-            <h2 id="contact-title" class="contact-title">
-              Давайте создадим<br>
-              <span class="neon-gradient">что-то крутое</span>
-            </h2>
-            <p class="contact-desc">
-              Открыт для интересных проектов, сотрудничества и консультаций. 
-              Свяжитесь любым удобным способом.
-            </p>
+        <div class="section-header">
+          <div class="section-tag-wrap">
+            <span class="section-tag">&lt;INIT_CONNECTION/&gt;</span>
+            <span class="section-status online">READY</span>
           </div>
-          <address class="contact-links" data-animate="fade-up" data-delay="1">
-            <a href="mailto:yalokgar@gmail.com" class="contact-link-item">
-              <i class="ri-mail-line" aria-hidden="true"></i>
-              <div class="contact-link-text">
-                <span class="contact-link-label">Email</span>
-                <span class="contact-link-value">yalokgar@gmail.com</span>
-              </div>
-              <i class="ri-arrow-right-up-line arrow" aria-hidden="true"></i>
-            </a>
-            <a href="mailto:yalokgardeveloper@yalokgar.com" class="contact-link-item">
-              <i class="ri-briefcase-line" aria-hidden="true"></i>
-              <div class="contact-link-text">
-                <span class="contact-link-label">Business</span>
-                <span class="contact-link-value">yalokgardeveloper@yalokgar.com</span>
-              </div>
-              <i class="ri-arrow-right-up-line arrow" aria-hidden="true"></i>
-            </a>
-            <a href="https://t.me/YALOKGAR" target="_blank" rel="noopener noreferrer" class="contact-link-item">
-              <i class="ri-telegram-line" aria-hidden="true"></i>
-              <div class="contact-link-text">
-                <span class="contact-link-label">Telegram</span>
-                <span class="contact-link-value">@YALOKGAR</span>
-              </div>
-              <i class="ri-arrow-right-up-line arrow" aria-hidden="true"></i>
-            </a>
-            <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer" class="contact-link-item">
-              <i class="ri-github-line" aria-hidden="true"></i>
-              <div class="contact-link-text">
-                <span class="contact-link-label">GitHub</span>
-                <span class="contact-link-value">YALOKGARua</span>
-              </div>
-              <i class="ri-arrow-right-up-line arrow" aria-hidden="true"></i>
-            </a>
-            <a href="https://orcid.org/0009-0003-2879-2740" target="_blank" rel="noopener noreferrer" class="contact-link-item">
-              <i class="ri-id-card-line" aria-hidden="true"></i>
-              <div class="contact-link-text">
-                <span class="contact-link-label">ORCID</span>
-                <span class="contact-link-value">0009-0003-2879-2740</span>
-              </div>
-              <i class="ri-arrow-right-up-line arrow" aria-hidden="true"></i>
-            </a>
-          </address>
+          <h2 id="contact-title" class="section-title">
+            <span class="title-bracket">[</span>
+            <span class="title-text">CONTACT</span>
+            <span class="title-bracket">]</span>
+          </h2>
         </div>
-        <div class="contact-location" data-animate="fade-up" data-delay="2">
-          <i class="ri-map-pin-line" aria-hidden="true"></i>
-          <span>Киев, Украина</span>
-          <span class="divider" aria-hidden="true">|</span>
-          <span>BNB Solution</span>
+
+        <div class="contact-grid">
+          <div class="cyber-panel contact-panel">
+            <div class="panel-corner corner-tl"></div>
+            <div class="panel-corner corner-tr"></div>
+            <div class="panel-corner corner-bl"></div>
+            <div class="panel-corner corner-br"></div>
+
+            <div class="contact-content">
+              <h3 class="contact-heading">ESTABLISH_CONNECTION</h3>
+              <p class="contact-desc">Открыт для интересных проектов, сотрудничества и консультаций.</p>
+              
+              <div class="contact-links">
+                <a href="mailto:yalokgar@gmail.com" class="contact-link">
+                  <div class="link-icon"><i class="ri-mail-line"></i></div>
+                  <div class="link-info">
+                    <span class="link-label">EMAIL</span>
+                    <span class="link-value">yalokgar@gmail.com</span>
+                  </div>
+                  <i class="ri-arrow-right-up-line link-arrow"></i>
+                </a>
+                <a href="https://t.me/YALOKGAR" target="_blank" rel="noopener noreferrer" class="contact-link">
+                  <div class="link-icon"><i class="ri-telegram-line"></i></div>
+                  <div class="link-info">
+                    <span class="link-label">TELEGRAM</span>
+                    <span class="link-value">@YALOKGAR</span>
+                  </div>
+                  <i class="ri-arrow-right-up-line link-arrow"></i>
+                </a>
+                <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer" class="contact-link">
+                  <div class="link-icon"><i class="ri-github-line"></i></div>
+                  <div class="link-info">
+                    <span class="link-label">GITHUB</span>
+                    <span class="link-value">YALOKGARua</span>
+                  </div>
+                  <i class="ri-arrow-right-up-line link-arrow"></i>
+                </a>
+              </div>
+
+              <div class="contact-location">
+                <i class="ri-map-pin-line"></i>
+                <span>Kyiv, Ukraine</span>
+                <span class="divider">|</span>
+                <span>BNB Solution</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
+
+    <div class="hacker-marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <div class="marquee-content">
+          <span>INITIALIZING HACK...</span>
+          <span class="dot">◆</span>
+          <span>ACCESS GRANTED...</span>
+          <span class="dot">◆</span>
+          <span>SYSTEM BREACH IMMINENT...</span>
+          <span class="dot">◆</span>
+          <span>YALOKGAR // DARK WEB INTERFACE</span>
+          <span class="dot">◆</span>
+          <span>ENCRYPTION BYPASSED...</span>
+          <span class="dot">◆</span>
+          <span>FIREWALL DISABLED...</span>
+          <span class="dot">◆</span>
+          <span>ROOT ACCESS OBTAINED...</span>
+          <span class="dot">◆</span>
+        </div>
+      </div>
+    </div>
   </main>
 
   <footer class="footer" role="contentinfo">
     <div class="container footer-inner">
       <div class="footer-left">
         <span class="footer-logo">[YALOKGAR]</span>
-        <span class="footer-copy">© <time datetime="2025">2025</time> :: system.online</span>
+        <span class="footer-copy">© <time datetime="2025">2025</time> :: SYSTEM.ONLINE</span>
       </div>
       <div class="footer-right">
         <a href="https://github.com/YALOKGARua" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="GitHub">
-          <i class="ri-github-fill" aria-hidden="true"></i>
+          <i class="ri-github-fill"></i>
         </a>
         <a href="https://t.me/YALOKGAR" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="Telegram">
-          <i class="ri-telegram-fill" aria-hidden="true"></i>
+          <i class="ri-telegram-fill"></i>
         </a>
       </div>
     </div>
   </footer>
 
   <a href="#hero" class="back-to-top" aria-label="Вернуться наверх">
-    <i class="ri-arrow-up-line" aria-hidden="true"></i>
+    <i class="ri-arrow-up-line"></i>
   </a>
 
-  <script src="./script.js?v=20260101r1" defer></script>
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/splitting@1.0.6/dist/splitting.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js" async></script>
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.3.0/dist/quicklink.umd.js"></script>
+  <script src="./script.js?v=20260205r4" defer></script>
 </body>
 </html>
