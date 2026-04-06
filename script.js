@@ -5,8 +5,9 @@
   root.dataset.js = "pending";
 
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+  const isMobile = isTouch && window.matchMedia("(max-width: 768px)").matches;
+  const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
 
   let lenis = null;
 
@@ -14,38 +15,34 @@
     if (prefersReducedMotion || typeof Lenis === "undefined") return;
 
     lenis = new Lenis({
-      duration: 1.4,
+      duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 0.8,
-      touchMultiplier: 1.5,
+      wheelMultiplier: 1,
+      touchMultiplier: 1.8,
       infinite: false
     });
 
-    const raf = (time) => {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    };
-
-    requestAnimationFrame(raf);
-
     if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
       gsap.registerPlugin(ScrollTrigger);
-      
       lenis.on("scroll", ScrollTrigger.update);
-
       gsap.ticker.add((time) => {
         lenis.raf(time * 1000);
       });
-
       gsap.ticker.lagSmoothing(0);
+    } else {
+      const raf = (time) => {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      };
+      requestAnimationFrame(raf);
     }
   };
 
   const initCustomCursor = () => {
-    if (isTouch || isMobile) return;
+    if (isTouch || isCoarsePointer) return;
 
     const cursor = document.querySelector(".custom-cursor");
     if (!cursor) return;
@@ -80,7 +77,7 @@
   };
 
   const initMagneticButtons = () => {
-    if (isTouch || isMobile || typeof gsap === "undefined") return;
+    if (isTouch || isCoarsePointer || typeof gsap === "undefined") return;
 
     document.querySelectorAll("[data-magnetic]").forEach((btn) => {
       const strength = 0.35;
@@ -111,7 +108,7 @@
   };
 
   const initVanillaTilt = () => {
-    if (isTouch || isMobile || typeof VanillaTilt === "undefined") return;
+    if (isTouch || isCoarsePointer || typeof VanillaTilt === "undefined") return;
 
     VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
       max: 8,
@@ -156,11 +153,11 @@
     if (prefersReducedMotion || typeof tsParticles === "undefined") return;
 
     tsParticles.load("tsparticles", {
-      fpsLimit: 60,
+      fpsLimit: 30,
       particles: {
         number: {
-          value: isMobile ? 30 : 80,
-          density: { enable: true, value_area: 1000 }
+          value: isMobile ? 15 : 40,
+          density: { enable: true, value_area: 1200 }
         },
         color: {
           value: ["#39FF14", "#00FFFF", "#FF00FF", "#9D00FF"]
@@ -224,8 +221,6 @@
 
   const initGSAPAnimations = () => {
     if (prefersReducedMotion || typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
-
-    gsap.registerPlugin(ScrollTrigger);
 
     gsap.fromTo(".hero-terminal", 
       { opacity: 0, y: 60, scale: 0.95 },
@@ -490,40 +485,27 @@
           const col = colorPalette[colors[i]];
           const alpha = brightness[i];
           
-          const isHead = Math.random() > 0.7;
-          
-          if (isHead) {
+          if (Math.random() > 0.7) {
             ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-            ctx.shadowColor = `rgb(${col.r}, ${col.g}, ${col.b})`;
-            ctx.shadowBlur = 15;
           } else {
             ctx.fillStyle = `rgba(${col.r}, ${col.g}, ${col.b}, ${alpha * 0.8})`;
-            ctx.shadowBlur = 0;
           }
           
-          const char = chars[Math.floor(Math.random() * charsLen)];
-          ctx.fillText(char, i * spacing, y);
+          ctx.fillText(chars[Math.floor(Math.random() * charsLen)], i * spacing, y);
           
-          if (Math.random() > 0.85 && y > 0) {
-            const trailAlpha = alpha * 0.3;
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = `rgba(${col.r}, ${col.g}, ${col.b}, ${trailAlpha})`;
+          if (Math.random() > 0.9 && y > 0) {
+            ctx.fillStyle = `rgba(${col.r}, ${col.g}, ${col.b}, ${alpha * 0.25})`;
             ctx.fillText(chars[Math.floor(Math.random() * charsLen)], i * spacing, y - fontSize);
-            ctx.fillText(chars[Math.floor(Math.random() * charsLen)], i * spacing, y - fontSize * 2);
           }
-          
-          ctx.shadowBlur = 0;
         }
         
         drops[i] += speeds[i];
         
-        if (drops[i] * fontSize > canvas.height) {
-          if (Math.random() > 0.92) {
-            drops[i] = Math.random() * -25;
-            speeds[i] = 0.4 + Math.random() * 0.8;
-            colors[i] = Math.floor(Math.random() * colorPalette.length);
-            brightness[i] = 0.6 + Math.random() * 0.4;
-          }
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.92) {
+          drops[i] = Math.random() * -25;
+          speeds[i] = 0.4 + Math.random() * 0.8;
+          colors[i] = Math.floor(Math.random() * colorPalette.length);
+          brightness[i] = 0.6 + Math.random() * 0.4;
         }
       }
 
@@ -678,6 +660,91 @@
     });
   };
 
+  const initLeetCodeStats = () => {
+    const LEETCODE_USER = "YALOKGAR";
+    const STORAGE_KEY = "lc_stats";
+    const TTL = 6 * 3600 * 1000;
+    const CIRC = 2 * Math.PI * 40;
+
+    const render = (stats) => {
+      const total = stats.easy + stats.medium + stats.hard;
+      if (!total) return;
+
+      const wheelNum = document.querySelector(".wheel-number");
+      if (wheelNum) wheelNum.textContent = total.toLocaleString();
+
+      const counts = document.querySelectorAll(".lc-count");
+      if (counts[0]) counts[0].textContent = stats.easy + "/" + stats.totalEasy;
+      if (counts[1]) counts[1].textContent = stats.medium + "/" + stats.totalMedium;
+      if (counts[2]) counts[2].textContent = stats.hard + "/" + stats.totalHard;
+
+      const metrics = document.querySelectorAll(".stats-metrics .metric-val");
+      if (stats.rating && metrics[0]) metrics[0].textContent = stats.rating.toLocaleString();
+      if (stats.rank && metrics[1]) metrics[1].textContent = stats.rank >= 1000 ? Math.round(stats.rank / 1000) + "K" : String(stats.rank);
+      if (stats.topPct && metrics[2]) metrics[2].textContent = stats.topPct.toFixed(2) + "%";
+
+      const easyArc = (stats.easy / total) * CIRC;
+      const mediumArc = (stats.medium / total) * CIRC;
+      const hardArc = (stats.hard / total) * CIRC;
+
+      const rings = document.querySelectorAll(".wheel-progress");
+      if (rings[0]) {
+        rings[0].setAttribute("stroke-dasharray", Math.round(easyArc) + " " + Math.round(CIRC));
+        rings[0].setAttribute("stroke-dashoffset", "0");
+      }
+      if (rings[1]) {
+        rings[1].setAttribute("stroke-dasharray", Math.round(mediumArc) + " " + Math.round(CIRC));
+        rings[1].setAttribute("stroke-dashoffset", String(-Math.round(easyArc)));
+      }
+      if (rings[2]) {
+        rings[2].setAttribute("stroke-dasharray", Math.round(hardArc) + " " + Math.round(CIRC));
+        rings[2].setAttribute("stroke-dashoffset", String(-Math.round(easyArc + mediumArc)));
+      }
+    };
+
+    try {
+      const cached = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (cached && Date.now() - cached.ts < TTL) {
+        render(cached.data);
+        return;
+      }
+    } catch (_) {}
+
+    fetch("https://leetcode-stats-api.herokuapp.com/" + LEETCODE_USER)
+      .then((r) => r.ok ? r.json() : Promise.reject(r.status))
+      .then((data) => {
+        if (data.status !== "success") return;
+
+        const stats = {
+          easy: data.easySolved,
+          totalEasy: data.totalEasy,
+          medium: data.mediumSolved,
+          totalMedium: data.totalMedium,
+          hard: data.hardSolved,
+          totalHard: data.totalHard,
+          rating: null,
+          rank: null,
+          topPct: null
+        };
+
+        render(stats);
+
+        fetch("https://alfa-leetcode-api.onrender.com/" + LEETCODE_USER + "/contest")
+          .then((r) => r.ok ? r.json() : Promise.reject(r.status))
+          .then((contest) => {
+            if (contest.contestRating) stats.rating = Math.round(contest.contestRating);
+            if (contest.contestGlobalRanking) stats.rank = contest.contestGlobalRanking;
+            if (contest.contestTopPercentage) stats.topPct = contest.contestTopPercentage;
+            render(stats);
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now(), data: stats })); } catch (_) {}
+          })
+          .catch(() => {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now(), data: stats })); } catch (_) {}
+          });
+      })
+      .catch(() => {});
+  };
+
   const enableMotionUI = () => {
     root.dataset.js = "ready";
   };
@@ -702,7 +769,8 @@
       initMobileMenu,
       initHeaderHide,
       initActiveNav,
-      initBackToTop
+      initBackToTop,
+      initLeetCodeStats
     ].forEach(run);
   };
 

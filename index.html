@@ -29,9 +29,11 @@
   <meta name="twitter:description" content="C/C++ разработчик (Qt, системное программирование, оптимизация производительности)." />
   <meta name="twitter:image" content="https://yalokgar.com/assets/images/hero-avatar.png" />
 
-  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="theme-color" content="#020204" />
   <meta name="color-scheme" content="dark" />
-  <meta name="msapplication-TileColor" content="#0a0a0f" />
+  <meta name="msapplication-TileColor" content="#020204" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https://yalokgar.com; connect-src 'self' https://leetcode-stats-api.herokuapp.com https://alfa-leetcode-api.onrender.com; worker-src 'self'; manifest-src 'self'" />
 
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" sizes="any" />
   <link rel="apple-touch-icon" href="./photo_2025-05-15_16-53-42.jpg" />
@@ -39,16 +41,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;600;700&display=swap" as="style" />
+  <link rel="preconnect" href="https://leetcode-stats-api.herokuapp.com" crossorigin />
+  <link rel="dns-prefetch" href="https://alfa-leetcode-api.onrender.com" />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" as="style" />
   <link rel="preload" href="./assets/images/hero-avatar.png" as="image" fetchpriority="high" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/splitting@1.0.6/dist/splitting.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/splitting@1.0.6/dist/splitting-cells.css" />
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" as="script" crossorigin />
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" as="script" crossorigin />
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" as="script" crossorigin />
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js" as="script" crossorigin />
+  <link rel="preload" href="./styles.min.css?v=20260406r1" as="style" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" integrity="sha384-hlyh3bZtgya52o/xl1sa3jb1Hv8UW8lsNRB1mlJM26/nlx1S1J7zVBZMOjkKl+MU" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.css" integrity="sha384-KJ5PVEqRubvyTkEk9eSz4NphibkpEJll7FJEsAmuLvb6BiwWLVXVOVoQsI5ReK8E" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/splitting@1.0.6/dist/splitting.css" integrity="sha384-6z/M4zCNHzM59q8BnJ1btvx5I7ArdKNNBgb/V4m7ZTUPI4e2SVF0o5IQAGCO414a" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/splitting@1.0.6/dist/splitting-cells.css" integrity="sha384-y6P68QahVJCCHTs++clRdwi/t3TFb2Se2v91Z9KniuEKV98RPXh2fYhLHvQEfqg2" crossorigin="anonymous" />
 
-  <link rel="stylesheet" href="./styles.css?v=20260205r5" />
-  <link rel="manifest" href="./manifest.webmanifest?v=20260101r1" />
+  <style>:root{--bg-dark:#020204;--bg-darker:#010102;--bg-surface:#060610;--bg-surface-light:#0a0a14;--bg-elevated:#0e0e18;--text-primary:#e8e8ec;--text-secondary:#8a8a9a;--text-muted:#5a5a6a;--border-color:#101018;--border-light:#181828;--neon-green:#39FF14;--neon-green-dim:#2ecc10;--neon-green-soft:rgba(57,255,20,0.2);--neon-green-glow:0 0 10px #39FF14,0 0 20px #39FF14,0 0 40px rgba(57,255,20,0.5);--neon-cyan:#00FFFF;--neon-cyan-dim:#00cccc;--neon-cyan-soft:rgba(0,255,255,0.2);--neon-cyan-glow:0 0 10px #00FFFF,0 0 20px #00FFFF,0 0 40px rgba(0,255,255,0.5);--neon-magenta:#FF00FF;--neon-magenta-dim:#cc00cc;--neon-magenta-soft:rgba(255,0,255,0.2);--neon-magenta-glow:0 0 10px #FF00FF,0 0 20px #FF00FF,0 0 40px rgba(255,0,255,0.5);--neon-purple:#9D00FF;--neon-yellow:#facc15;--neon-red:#ff3366;--font-display:"Orbitron",sans-serif;--font-mono:"Share Tech Mono","JetBrains Mono",monospace;--ease-smooth:cubic-bezier(0.4,0,0.2,1);--ease-out:cubic-bezier(0.0,0,0.2,1);--ease-spring:cubic-bezier(0.34,1.56,0.64,1);--container-width:1400px;--container-padding:clamp(20px,5vw,80px)}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{font-size:16px;scroll-padding-top:100px;-webkit-font-smoothing:antialiased;scrollbar-width:thin;scrollbar-color:var(--neon-green) var(--bg-dark)}body{font-family:var(--font-mono);background:var(--bg-dark);color:var(--text-primary);line-height:1.6;overflow-x:hidden;cursor:none}@media(pointer:coarse){body{cursor:auto}.custom-cursor{display:none!important}}a{color:inherit;text-decoration:none}img{max-width:100%;height:auto;display:block}button{font-family:inherit;cursor:pointer;border:none;background:none}.container{max-width:var(--container-width);margin:0 auto;padding:0 var(--container-padding);width:100%}.scanlines{position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,transparent 0px,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px)}.crt-overlay{position:fixed;inset:0;pointer-events:none;z-index:9998;background:radial-gradient(ellipse at center,transparent 0%,rgba(0,0,0,.4) 100%)}#matrix-bg{position:fixed;inset:0;z-index:-1;opacity:.35}#tsparticles{position:fixed;inset:0;z-index:0;pointer-events:none}.circuit-lines{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.4}.header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:14px var(--container-padding);display:flex;align-items:center;justify-content:space-between;background:rgba(2,2,4,.97);border-bottom:2px solid var(--neon-green);box-shadow:0 0 20px rgba(57,255,20,.25);transition:transform .4s var(--ease-smooth);will-change:transform}.header.hidden{transform:translateY(-100%)}.logo{font-family:var(--font-display);font-size:1.5rem;font-weight:700;letter-spacing:.1em;display:flex;align-items:center;text-shadow:var(--neon-green-glow)}.logo-bracket{color:var(--neon-cyan);text-shadow:var(--neon-cyan-glow)}.logo-text{color:var(--neon-green)}.nav{display:flex;gap:clamp(10px,2vw,28px)}.nav-link{font-family:var(--font-mono);font-size:.75rem;color:var(--text-secondary);padding:8px 4px;position:relative}.menu-btn{display:none;flex-direction:column;gap:5px;padding:8px}.hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px var(--container-padding) 60px;position:relative;overflow:hidden}.hero-terminal{position:relative;width:100%;max-width:850px;background:rgba(2,2,4,.95);border:3px solid var(--neon-green);z-index:5}.hero-title{font-family:var(--font-display);font-size:clamp(3rem,10vw,6rem);font-weight:900;letter-spacing:.15em;text-align:center;margin-bottom:20px;line-height:1}::selection{background:var(--neon-green);color:var(--bg-dark)}</style>
+  <link rel="stylesheet" href="./styles.min.css?v=20260406r1" />
+  <link rel="manifest" href="./manifest.webmanifest?v=20260406r1" />
 
   <script type="application/ld+json">
   {
@@ -77,6 +87,7 @@
   </script>
 </head>
 <body>
+  <a href="#hero" class="skip-link">Перейти к содержимому</a>
   <div class="custom-cursor" aria-hidden="true">
     <div class="cursor-dot"></div>
     <div class="cursor-ring"></div>
@@ -394,28 +405,28 @@
                       <span class="skill-name">C/C++</span>
                       <span class="skill-level">EXPERT</span>
                     </div>
-                    <div class="bar-track"><div class="bar-fill" style="--fill: 95%"></div></div>
+                    <div class="bar-track" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" aria-label="C/C++"><div class="bar-fill" style="--fill: 95%"></div></div>
                   </div>
                   <div class="skill-bar">
                     <div class="skill-info">
                       <span class="skill-name">Python</span>
                       <span class="skill-level">ADVANCED</span>
                     </div>
-                    <div class="bar-track"><div class="bar-fill" style="--fill: 80%"></div></div>
+                    <div class="bar-track" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="Python"><div class="bar-fill" style="--fill: 80%"></div></div>
                   </div>
                   <div class="skill-bar">
                     <div class="skill-info">
                       <span class="skill-name">Rust</span>
                       <span class="skill-level">ADVANCED</span>
                     </div>
-                    <div class="bar-track"><div class="bar-fill" style="--fill: 75%"></div></div>
+                    <div class="bar-track" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="Rust"><div class="bar-fill" style="--fill: 75%"></div></div>
                   </div>
                   <div class="skill-bar">
                     <div class="skill-info">
                       <span class="skill-name">Assembly</span>
                       <span class="skill-level">INTERMEDIATE</span>
                     </div>
-                    <div class="bar-track"><div class="bar-fill" style="--fill: 60%"></div></div>
+                    <div class="bar-track" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="Assembly"><div class="bar-fill" style="--fill: 60%"></div></div>
                   </div>
                 </div>
               </div>
@@ -431,21 +442,21 @@
                       <span class="skill-name">Qt6/QML</span>
                       <span class="skill-level">EXPERT</span>
                     </div>
-                    <div class="bar-track"><div class="bar-fill cyan" style="--fill: 92%"></div></div>
+                    <div class="bar-track" role="progressbar" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100" aria-label="Qt6/QML"><div class="bar-fill cyan" style="--fill: 92%"></div></div>
                   </div>
                   <div class="skill-bar">
                     <div class="skill-info">
                       <span class="skill-name">STL/Boost</span>
                       <span class="skill-level">EXPERT</span>
                     </div>
-                    <div class="bar-track"><div class="bar-fill cyan" style="--fill: 90%"></div></div>
+                    <div class="bar-track" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" aria-label="STL/Boost"><div class="bar-fill cyan" style="--fill: 90%"></div></div>
                   </div>
                   <div class="skill-bar">
                     <div class="skill-info">
                       <span class="skill-name">Electron</span>
                       <span class="skill-level">ADVANCED</span>
                     </div>
-                    <div class="bar-track"><div class="bar-fill cyan" style="--fill: 78%"></div></div>
+                    <div class="bar-track" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100" aria-label="Electron"><div class="bar-fill cyan" style="--fill: 78%"></div></div>
                   </div>
                 </div>
               </div>
@@ -461,21 +472,21 @@
                       <span class="skill-name">CMake/GDB</span>
                       <span class="skill-level">EXPERT</span>
                     </div>
-                    <div class="bar-track"><div class="bar-fill magenta" style="--fill: 95%"></div></div>
+                    <div class="bar-track" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" aria-label="CMake/GDB"><div class="bar-fill magenta" style="--fill: 95%"></div></div>
                   </div>
                   <div class="skill-bar">
                     <div class="skill-info">
                       <span class="skill-name">Valgrind</span>
                       <span class="skill-level">ADVANCED</span>
                     </div>
-                    <div class="bar-track"><div class="bar-fill magenta" style="--fill: 85%"></div></div>
+                    <div class="bar-track" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="Valgrind"><div class="bar-fill magenta" style="--fill: 85%"></div></div>
                   </div>
                   <div class="skill-bar">
                     <div class="skill-info">
                       <span class="skill-name">Git/Docker</span>
                       <span class="skill-level">EXPERT</span>
                     </div>
-                    <div class="bar-track"><div class="bar-fill magenta" style="--fill: 90%"></div></div>
+                    <div class="bar-track" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" aria-label="Git/Docker"><div class="bar-fill magenta" style="--fill: 90%"></div></div>
                   </div>
                 </div>
               </div>
@@ -491,14 +502,14 @@
                       <span class="skill-name">Linux</span>
                       <span class="skill-level">EXPERT</span>
                     </div>
-                    <div class="bar-track"><div class="bar-fill purple" style="--fill: 95%"></div></div>
+                    <div class="bar-track" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" aria-label="Linux"><div class="bar-fill purple" style="--fill: 95%"></div></div>
                   </div>
                   <div class="skill-bar">
                     <div class="skill-info">
                       <span class="skill-name">Windows</span>
                       <span class="skill-level">EXPERT</span>
                     </div>
-                    <div class="bar-track"><div class="bar-fill purple" style="--fill: 92%"></div></div>
+                    <div class="bar-track" role="progressbar" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100" aria-label="Windows"><div class="bar-fill purple" style="--fill: 92%"></div></div>
                   </div>
                 </div>
               </div>
@@ -544,7 +555,7 @@
             <div class="about-content">
               <div class="about-avatar">
                 <div class="avatar-frame">
-                  <img data-src="./assets/images/hero-avatar.png" alt="YALOKGAR" width="200" height="200" class="lazyload" />
+                  <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="./assets/images/hero-avatar.png" alt="YALOKGAR" width="200" height="200" class="lazyload" decode="async" />
                   <div class="avatar-glitch-overlay"></div>
                 </div>
                 <div class="avatar-scan-line"></div>
@@ -791,15 +802,16 @@
     <i class="ri-arrow-up-line"></i>
   </a>
 
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/splitting@1.0.6/dist/splitting.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js" async></script>
-  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.3.0/dist/quicklink.umd.js"></script>
-  <script src="./script.js?v=20260205r5" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer integrity="sha384-tKsJDT6PlUI0pSBt9/sBKJluKgA19/a6mBrDsZaXotLB4ZYfMGM6xt6/WgGpYhTm" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js" defer integrity="sha384-0k1dj5tm+KUH/4vkNk/i90XsjDA8Ltmt+ybcrFoH4t0dgv/WZsPpVBnkhcroX8UL" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js" defer integrity="sha384-gZSNMuUgSbqcltOBBRNXCH+szg+2C69ISFyCk2w+xsZc0iFU+bIVPfYPmLwLtNzz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/splitting@1.0.6/dist/splitting.min.js" defer integrity="sha384-taxnKSnzdVS5gZB4jZcieFZlmBPQMFqhdEmCScZsrIFCxX8Zizq4fKJJH5kBwMXT" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js" defer integrity="sha384-cMrTlShXEGSdSFA359p+3aVUxK/R+0TAfbRZMcTlAn8yqzxEDj05QsS65nTFMMj4" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js" async integrity="sha384-3gT/vsepWkfz/ff7PpWNUeMzeWoH3cDhm/A8jM7ouoAK0/fP/9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.3.0/dist/quicklink.umd.js" defer integrity="sha384-aD7FsuQkS1ohgFKY41fJfeA+Wd/QRNnrOd9Bs58K3FzKdJJv8yPnYU8Tnp5z1agS" crossorigin="anonymous"></script>
+  <script src="./script.min.js?v=20260406r1" defer></script>
+  <noscript><style>[data-animate]{opacity:1!important;transform:none!important}.nav{opacity:1!important;visibility:visible!important;transform:none!important;position:static!important}.menu-btn{display:none!important}</style></noscript>
 </body>
 </html>

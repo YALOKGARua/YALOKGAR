@@ -1,4 +1,4 @@
-const APP_VERSION = "20260205r5";
+const APP_VERSION = "20260406r1";
 const CACHE_NAME = `yalokgar-v${APP_VERSION}`;
 const SCOPE_URL = new URL(self.registration.scope);
 const toScopeUrl = (p) => new URL(p, SCOPE_URL).toString();
@@ -11,15 +11,13 @@ const APP_SHELL = [
   toScopeUrl("./"),
   toScopeUrl("./index.html"),
   toScopeUrl("./404.html"),
-  toVersionedUrl("./styles.css"),
-  toVersionedUrl("./script.js"),
+  toVersionedUrl("./styles.min.css"),
+  toVersionedUrl("./script.min.js"),
   toVersionedUrl("./manifest.webmanifest"),
   toScopeUrl("./robots.txt"),
   toScopeUrl("./sitemap.xml"),
   toScopeUrl("./assets/favicon.svg"),
-  toScopeUrl("./assets/images/og-image.jpg"),
-  toScopeUrl("./assets/images/profile.jpg"),
-  toScopeUrl("./assets/images/profile@2x.jpg")
+  toScopeUrl("./assets/images/hero-avatar.png")
 ];
 
 self.addEventListener("install", (event) => {

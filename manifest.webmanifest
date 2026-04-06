@@ -6,8 +6,8 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#07080f",
-  "theme_color": "#4cc9ff",
+  "background_color": "#020204",
+  "theme_color": "#020204",
   "lang": "ru",
   "dir": "ltr",
   "categories": ["developer", "portfolio", "programming"],
@@ -16,17 +16,13 @@
       "src": "./assets/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "./photo_2025-05-15_16-53-42.jpg",
-      "sizes": "192x192",
-      "type": "image/jpeg"
-    },
-    {
-      "src": "./photo_2025-05-15_16-53-42.jpg",
-      "sizes": "512x512",
-      "type": "image/jpeg"
+      "src": "./assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
   "screenshots": [],
